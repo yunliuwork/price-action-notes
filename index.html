@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>价格行为学习笔记 · 总目录（全 26 章）</title>
+<title>价格行为趋势分析教程 · 全 26 章目录</title>
 <style>
 :root{
   color-scheme:light dark;
@@ -72,115 +72,296 @@ button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:wh
 @media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
 @media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
 </style>
+
+<style>
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);text-decoration:none;font-weight:600;font-size:.95rem}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{opacity:.88}
+.hero .cta .btn{background:light-dark(#fff,#1d2531)}
+.hero .cta .btn.primary{background:var(--accent);color:#fff}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem;line-height:1.4}
+.partdesc{color:var(--muted);font-size:.95rem;margin:-4px 0 16px}
+.searchbox{display:flex;gap:8px;margin:14px 0 8px}
+.searchbox input{flex:1;min-width:0;font:inherit;font-size:1rem;padding:13px 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--text)}
+.searchbox input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.searchbox button{font:inherit;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--muted);cursor:pointer}
+kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82em;padding:2px 6px;border:1px solid var(--line);border-radius:5px;background:var(--surface2)}
+.qresults{margin-top:14px}
+.qcount{color:var(--muted);font-size:.88rem;margin-bottom:8px}
+.qitem{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:9px;background:var(--surface2)}
+.qitem:hover{border-color:var(--accent)}
+.qhead{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;margin-bottom:5px}
+.qb{font-size:.74rem;color:var(--accent);border:1px solid var(--line);border-radius:99px;padding:2px 9px;white-space:nowrap}
+.qt{font-weight:700}
+.qsnip{color:var(--muted);font-size:.9rem;line-height:1.6}
+.qmeta{color:var(--muted);font-size:.8rem;margin-top:5px;opacity:.85}
+mark{background:light-dark(#ffe9a8,#6b5400);color:inherit;padding:0 2px;border-radius:3px}
+.noresult{color:var(--muted);padding:14px;border:1px dashed var(--line);border-radius:12px}
+.qa{display:grid;gap:9px}
+.qa a{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:11px 14px;background:var(--surface2)}
+.qa a:hover{border-left-color:var(--green)}
+.qa b{display:block;font-size:.98rem;margin-bottom:3px}
+.qa span{color:var(--muted);font-size:.86rem}
+.chapters{display:grid;gap:10px}
+.ch{border:1px solid var(--line);border-radius:14px;background:var(--surface2);overflow:hidden}
+.chmain{display:grid;grid-template-columns:52px 1fr;gap:14px;text-decoration:none;color:inherit;padding:14px 16px;align-items:start}
+.chmain:hover{background:light-dark(#e6ecf4,#28323f)}
+.chnum{font-size:1.35rem;font-weight:800;color:var(--accent);letter-spacing:-.02em;line-height:1.2}
+.chbody{display:block;min-width:0}
+.chtitle{display:block;font-weight:700;font-size:1.05rem;line-height:1.4;margin-bottom:4px}
+.chblurb{display:block;color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:6px}
+.chmeta{display:block;color:var(--muted);font-size:.79rem;opacity:.85}
+.chkeys{display:flex;flex-wrap:wrap;gap:7px;padding:0 16px 13px 82px}
+.ks{font-size:.79rem;text-decoration:none;color:var(--accent);border:1px solid var(--line);border-radius:99px;padding:3px 10px;background:var(--surface)}
+.ks:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.card .src{color:var(--muted);font-size:.82rem;margin-top:6px;margin-bottom:0}
+@media(max-width:820px){
+  .chkeys{padding-left:16px}
+  .chmain{grid-template-columns:40px 1fr;gap:10px}
+  .chnum{font-size:1.1rem}
+}
+@media print{
+  .searchbox,#qhint,#qresults,.cta,.chkeys{display:none!important}
+  .ch,.qa a{break-inside:avoid}
+  .ch{border:1px solid #ccc;background:#fafafa}
+}
+</style>
 </head><body>
 <div id="app">
 <header class="hero"><div class="hero-inner">
 <div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
 <div class="chap">总目录</div>
-<h1>《高级趋势技术分析》学习笔记</h1>
-<p class="lead">价格行为交易系统之趋势分析 · <strong>全 26 章</strong>。本索引按<strong>书的四篇结构</strong>与<strong>谱系顺序</strong>组织，每章一页独立笔记，包含自绘示意图、对照表、操作流程、5 题自测与看盘清单。</p>
-<div class="tags"><span class="tag">26 章</span><span class="tag">四篇</span><span class="tag">自绘示意图</span><span class="tag">130 道自测题</span><span class="tag">看盘清单</span></div>
+<h1>价格行为趋势分析教程</h1>
+<p class="lead">一套中文学习笔记，共 <strong>26 章</strong>。每章包含结构示意图、对照表、操作流程、自测题与看盘清单，目标是<strong>把价格行为的判断变成可执行、可复盘的步骤</strong>，而不是背形态名称。</p>
+<div class="tags"><span class="tag">26 章 · 四篇</span><span class="tag">17.3 万字</span><span class="tag">30 张示意图</span><span class="tag">130 道自测题</span><span class="tag">可全文搜索</span><span class="tag">支持离线阅读</span></div>
+<div class="cta">
+<a class="btn primary" href="#search">开始搜索 / 浏览 ⌄</a>
+<a class="btn" href="price_action_chapter1_notes.html">从第 1 章开始读 →</a>
+</div>
 </div></header>
 <div class="layout">
 <nav>
 <strong>本页目录</strong>
-<a href="#path">学习路径</a><a href="#part1">第一篇 价格行为（1–12）</a><a href="#part2">第二篇 趋势线与通道（13–17）</a><a href="#part3">第三篇 趋势（18–20）</a><a href="#part4">第四篇 常见趋势形态（21–26）</a><a href="#map">概念地图</a><a href="#howto">怎么用这套笔记</a><a href="disclaimer.html">免责声明</a>
+<a href="#path">学习路径</a>
+<a href="#search">搜索全部内容</a>
+<a href="#quick">按问题找章节</a>
+<a href="#part1">第一篇 价格行为（1–12）</a>
+<a href="#part2">第二篇 趋势线与通道（13–17）</a>
+<a href="#part3">第三篇 趋势（18–20）</a>
+<a href="#part4">第四篇 常见趋势形态（21–26）</a>
+<a href="#map">八条主线</a>
+<a href="#howto">怎么用这套笔记</a>
+<a href="disclaimer.html">免责声明</a>
 </nav>
 <main>
 
 <section id="path">
 <h2>建议的学习顺序</h2>
-<div class="callout"><strong>不要按章号死读。</strong>这套笔记的核心是一条主线：<strong>先学会定位（第 1–3 章）→ 再掌握建仓语法（第 4–7 章）→ 然后处理执行细节（第 8–11 章）→ 最后理解趋势与交易日类型（第 12–26 章）</strong>。后面的章节全部建立在前面建立的语言之上。</div>
+<div class="callout"><strong>不要按章号死读。</strong>这套笔记的主线是：<strong>先学会定位 → 再掌握建仓语法 → 然后处理执行细节 → 最后理解趋势与交易日类型</strong>。后面的章节全部建立在前面建立的语言之上。</div>
 <table><thead><tr><th>阶段</th><th>章节</th><th>这一阶段要解决的问题</th></tr></thead><tbody>
-<tr><td><strong>① 坐标系</strong></td><td>1 – 3</td><td>现在是趋势还是区间？这根 K 线由谁掌控？这段行情在急速还是通道？</td></tr>
-<tr><td><strong>② 建仓语法</strong></td><td>4 – 7</td><td>建仓形态、信号 K 线、入场 K 线的定义；反转 K 线、其他信号类型、外包 K 线。</td></tr>
-<tr><td><strong>③ 执行细节</strong></td><td>8 – 11</td><td>为什么必须等收盘；如何换视角复核；二次入场点；迟到与错过的入场点。</td></tr>
-<tr><td><strong>④ 趋势与通道</strong></td><td>12 – 17</td><td>形态的演变；趋势线、趋势通道线、通道、微型通道、水平线。</td></tr>
-<tr><td><strong>⑤ 趋势本身</strong></td><td>18 – 20</td><td>趋势中如何入场与管理；趋势强度的特征；两段式行情。</td></tr>
-<tr><td><strong>⑥ 交易日类型</strong></td><td>21 – 26</td><td>急速与通道、趋势性交易区间、始于开盘与小幅回撤、反转、趋势恢复、楼梯形态。</td></tr>
+<tr><td><strong>① 坐标系</strong></td><td><a href="price_action_chapter1_notes.html">1</a> <a href="price_action_chapter2_notes.html">2</a> <a href="price_action_chapter3_notes.html">3</a></td><td>现在是趋势还是区间？这根 K 线由谁掌控？这段行情在急速还是通道？</td></tr>
+<tr><td><strong>② 建仓语法</strong></td><td><a href="price_action_chapter4_notes.html">4</a> <a href="price_action_chapter5_notes.html">5</a> <a href="price_action_chapter6_notes.html">6</a> <a href="price_action_chapter7_notes.html">7</a></td><td>建仓形态、信号 K 线、入场 K 线的定义；反转 K 线与其他信号类型；外包 K 线。</td></tr>
+<tr><td><strong>③ 执行细节</strong></td><td><a href="price_action_chapter8_notes.html">8</a> <a href="price_action_chapter9_notes.html">9</a> <a href="price_action_chapter10_notes.html">10</a> <a href="price_action_chapter11_notes.html">11</a></td><td>为什么必须等收盘；如何换视角复核；二次入场点；迟到与错过的入场点。</td></tr>
+<tr><td><strong>④ 趋势与通道</strong></td><td><a href="price_action_chapter12_notes.html">12</a> <a href="price_action_chapter13_notes.html">13</a> <a href="price_action_chapter14_notes.html">14</a> <a href="price_action_chapter15_notes.html">15</a> <a href="price_action_chapter16_notes.html">16</a> <a href="price_action_chapter17_notes.html">17</a></td><td>形态的演变；趋势线、趋势通道线、通道、微型通道、水平线。</td></tr>
+<tr><td><strong>⑤ 趋势本身</strong></td><td><a href="price_action_chapter18_notes.html">18</a> <a href="price_action_chapter19_notes.html">19</a> <a href="price_action_chapter20_notes.html">20</a></td><td>趋势中如何入场与管理；趋势强度的特征；两段式行情。</td></tr>
+<tr><td><strong>⑥ 交易日类型</strong></td><td><a href="price_action_chapter21_notes.html">21</a> <a href="price_action_chapter22_notes.html">22</a> <a href="price_action_chapter23_notes.html">23</a> <a href="price_action_chapter24_notes.html">24</a> <a href="price_action_chapter25_notes.html">25</a> <a href="price_action_chapter26_notes.html">26</a></td><td>急速与通道、趋势性交易区间、始于开盘与小幅回撤、反转、趋势恢复、楼梯形态。</td></tr>
 </tbody></table>
+<div class="callout good"><strong>时间预算：</strong>全书正文约 17 万字。如果按每章 15–25 分钟通读，完整过一遍约 <strong>7–10 小时</strong>；配合自测题与看盘练习，建议分 2–3 周。</div>
+</section>
+
+<section id="search">
+<h2>搜索全部内容</h2>
+<p class="muted small">输入任意概念，例如「市场惰性」「外包线」「等距运动」「二次入场」「止损」。搜的是全书 26 章正文，不只是标题。</p>
+<div class="searchbox">
+<input id="q" type="search" placeholder="搜索概念、术语或句子…" autocomplete="off" aria-label="搜索全部内容">
+<button id="qclear" type="button" hidden>清空</button>
+</div>
+<div id="qhint" class="muted small">支持中文任意片段匹配。按 <kbd>/</kbd> 快速聚焦，<kbd>Esc</kbd> 清空。</div>
+<div id="qresults" class="qresults" aria-live="polite"></div>
+</section>
+
+<section id="quick">
+<h2>按问题找章节</h2>
+<p class="muted small">如果你带着一个具体问题来，从这里开始最快。</p>
+<div class="qa">
+<a href="price_action_chapter1_notes.html#spectrum"><b>现在是趋势还是区间？</b><span>第 1 章 · 连续谱与两个定位指针</span></a>
+<a href="price_action_chapter2_notes.html#classify"><b>怎么快速判断一根 K 线的性质？</b><span>第 2 章 · 趋势 K 线与十字星</span></a>
+<a href="price_action_chapter4_notes.html#asymmetry"><b>信号 K 线要多强才算合格？</b><span>第 4 章 · 顺势与逆势的不对称</span></a>
+<a href="price_action_chapter5_notes.html#anatomy"><b>反转 K 线的强弱怎么打分？</b><span>第 5 章 · 五条特征</span></a>
+<a href="price_action_chapter15_notes.html#flag"><b>上涨通道该做多还是做空？</b><span>第 15 章 · 上升通道即熊旗</span></a>
+<a href="price_action_chapter18_notes.html#math"><b>止损太远时仓位怎么算？</b><span>第 18 章 · 交易者等式与仓位换算</span></a>
+<a href="price_action_chapter8_notes.html#math"><b>为什么不能提前入场？</b><span>第 8 章 · 负期望值算术</span></a>
+<a href="price_action_chapter10_notes.html#price"><b>二次入场点价格更好，能做吗？</b><span>第 10 章 · 好价格等于坏交易</span></a>
+<a href="price_action_chapter22_notes.html#open"><b>开盘半小时后怎么判断今天什么类型？</b><span>第 22 章 · 开盘区间</span></a>
+<a href="price_action_chapter23_notes.html#appearance"><b>信号都很差，是不是趋势弱？</b><span>第 23 章 · 弱信号＝强趋势</span></a>
+</div>
 </section>
 
 <section id="part1">
-<h2>第一篇 价格行为（第 1–12 章）</h2>
-<table><thead><tr><th>章</th><th>标题</th><th>核心命题</th></tr></thead><tbody>
-<tr><td>1</td><td><a href="price_action_chapter1_notes.html">价格行为的谱系：从极端趋势到极端交易区间</a></td><td>市场惰性：趋势中反转多半失败，区间中突破多半失败。附数 K 线（高 1/低 1）体系。</td></tr>
-<tr><td>2</td><td><a href="price_action_chapter2_notes.html">趋势K线、十字星K线与高潮</a></td><td>每根 K 线要么是趋势 K 线要么是十字星；买压/卖压是累积的；趋势 K 线的四重身份。</td></tr>
-<tr><td>3</td><td><a href="price_action_chapter3_notes.html">突破、交易区间、测试与反转</a></td><td>急速与通道结构；通道即旗形；大部分反转只是转入区间的过渡。</td></tr>
-<tr><td>4</td><td><a href="price_action_chapter4_notes.html">K线基础：信号K线、入场K线、建仓形态与K线形态</a></td><td>每根 K 线都是双向建仓形态；趋势越强信号外观越不重要。</td></tr>
-<tr><td>5</td><td><a href="price_action_chapter5_notes.html">信号K线之反转K线</a></td><td>强反转 K 线的五条特征；过度重叠即区间；完美的反转 K 线若没套住人也不会有跟随。</td></tr>
-<tr><td>6</td><td><a href="price_action_chapter6_notes.html">信号K线之其他类型</a></td><td>按「掌控 / 均衡 / 收窄」三类理解信号；可靠形态也有约 40% 失败率。</td></tr>
-<tr><td>7</td><td><a href="price_action_chapter7_notes.html">外包K线</a></td><td>所有外包 K 线都是交易区间的一部分；方向只看收盘；顺势外包线可等同于强趋势 K 线。</td></tr>
-<tr><td>8</td><td><a href="price_action_chapter8_notes.html">K线收盘价的重要性</a></td><td>提前入场是负期望值交易（赚 1 个单位、亏 8 个单位）；收盘质量决定持仓比例。</td></tr>
-<tr><td>9</td><td><a href="price_action_chapter9_notes.html">ETF与反向ETF</a></td><td>用反向 ETF 的镜像图复核判断；SPY 与 Emini 的关系；三重魔力日的缺口。</td></tr>
-<tr><td>10</td><td><a href="price_action_chapter10_notes.html">二次入场点</a></td><td>二次入场几乎总是更可靠；但若价格更好则是陷阱——好价格等于坏交易。</td></tr>
-<tr><td>11</td><td><a href="price_action_chapter11_notes.html">迟到的与错过的入场点</a></td><td>如果早入场现在仍持有摆动头寸，就按那部分规模以市价入场。</td></tr>
-<tr><td>12</td><td><a href="price_action_chapter12_notes.html">形态的演变</a></td><td>形态是动词；失败产生反向动能；失败后横盘则旧形态作废。</td></tr>
-</tbody></table>
+<h2>第一篇　价格行为</h2>
+<p class="partdesc">建立坐标系与建仓语法：什么是趋势与区间、K 线的两种身份、突破与测试、信号 K 线与入场 K 线。这一篇是后面所有内容的地基。</p>
+<div class="chapters">
+<article class="ch"><a class="chmain" href="price_action_chapter1_notes.html"><span class="chnum">01</span><span class="chbody"><span class="chtitle">价格行为的谱系：从极端趋势到极端交易区间</span><span class="chblurb">市场惰性、趋势与区间的嵌套、数 K 线（高 1/低 1）、两段式行情</span><span class="chmeta">11 小节 · 1 图 · 5 表 · 5 题 · 约 9 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter1_notes.html#spectrum">连续谱</a><a class="ks" href="price_action_chapter1_notes.html#inertia">市场惰性</a><a class="ks" href="price_action_chapter1_notes.html#counting">数 K 线</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter2_notes.html"><span class="chnum">02</span><span class="chbody"><span class="chtitle">趋势 K 线、十字星 K 线与高潮</span><span class="chblurb">趋势 K 线与十字星、买压卖压的累积、趋势 K 线的四重身份、高潮反转</span><span class="chmeta">11 小节 · 2 图 · 9 表 · 5 题 · 约 13 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter2_notes.html#classify">分类法</a><a class="ks" href="price_action_chapter2_notes.html#pressure">买压卖压</a><a class="ks" href="price_action_chapter2_notes.html#climax">高潮</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter3_notes.html"><span class="chnum">03</span><span class="chbody"><span class="chtitle">突破、交易区间、测试与反转</span><span class="chblurb">突破与失败突破、急速与通道、测试、反转的真相</span><span class="chmeta">10 小节 · 1 图 · 6 表 · 5 题 · 约 10 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter3_notes.html#spike">急速与通道</a><a class="ks" href="price_action_chapter3_notes.html#test">测试</a><a class="ks" href="price_action_chapter3_notes.html#reversal">反转的真相</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter4_notes.html"><span class="chnum">04</span><span class="chbody"><span class="chtitle">K 线基础：信号 K 线、入场 K 线、建仓形态与 K 线形态</span><span class="chblurb">建仓形态与信号 K 线、顺势逆势的不对称、1 单位陷阱</span><span class="chmeta">11 小节 · 1 图 · 5 表 · 5 题 · 约 12 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter4_notes.html#asymmetry">不对称规律</a><a class="ks" href="price_action_chapter4_notes.html#catalog">建仓清单</a><a class="ks" href="price_action_chapter4_notes.html#order">1 单位陷阱</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter5_notes.html"><span class="chnum">05</span><span class="chbody"><span class="chtitle">信号 K 线之反转 K 线</span><span class="chblurb">强反转 K 线的五条特征、过度重叠即区间、套住谁才有关注</span><span class="chmeta">11 小节 · 1 图 · 5 表 · 5 题 · 约 24 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter5_notes.html#anatomy">五条特征</a><a class="ks" href="price_action_chapter5_notes.html#context">过度重叠与陷阱</a><a class="ks" href="price_action_chapter5_notes.html#entry">止损与仓位</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter6_notes.html"><span class="chnum">06</span><span class="chbody"><span class="chtitle">信号 K 线之其他类型</span><span class="chblurb">掌控 / 均衡 / 收窄三类信号、弱信号的价值、40% 失败率</span><span class="chmeta">11 小节 · 1 图 · 6 表 · 5 题 · 约 13 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter6_notes.html#trendbar">趋势K线作信号</a><a class="ks" href="price_action_chapter6_notes.html#inside">内包线/ii</a><a class="ks" href="price_action_chapter6_notes.html#weak">弱信号的价值</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter7_notes.html"><span class="chnum">07</span><span class="chbody"><span class="chtitle">外包 K 线</span><span class="chblurb">外包线即交易区间、收盘定方向、顺势外包线等于强趋势 K 线</span><span class="chmeta">11 小节 · 1 图 · 6 表 · 5 题 · 约 14 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter7_notes.html#define">结构与定义</a><a class="ks" href="price_action_chapter7_notes.html#context">背景决定含义</a><a class="ks" href="price_action_chapter7_notes.html#entry">仓位纪律</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter8_notes.html"><span class="chnum">08</span><span class="chbody"><span class="chtitle">K 线收盘价的重要性</span><span class="chblurb">提前入场的负期望值、收盘质量决定持仓比例、小级别的代价</span><span class="chmeta">11 小节 · 1 图 · 5 表 · 5 题 · 约 9 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter8_notes.html#math">负期望值</a><a class="ks" href="price_action_chapter8_notes.html#following">收盘质量</a><a class="ks" href="price_action_chapter8_notes.html#institution">机构看收盘价</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter9_notes.html"><span class="chnum">09</span><span class="chbody"><span class="chtitle">ETF 与反向 ETF</span><span class="chblurb">反向 ETF 镜像复核、SPY 与 Emini、三重魔力日缺口</span><span class="chmeta">9 小节 · 1 图 · 4 表 · 5 题 · 约 8 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter9_notes.html#mirror">镜像检验法</a><a class="ks" href="price_action_chapter9_notes.html#spy">SPY 与 Emini</a><a class="ks" href="price_action_chapter9_notes.html#witching">三重魔力日</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter10_notes.html"><span class="chnum">10</span><span class="chbody"><span class="chtitle">二次入场点</span><span class="chblurb">二次入场更可靠、好价格等于坏交易、强动能不逆势</span><span class="chmeta">10 小节 · 1 图 · 4 表 · 5 题 · 约 8 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter10_notes.html#price">好价格=坏交易</a><a class="ks" href="price_action_chapter10_notes.html#momentum">强动能等待</a><a class="ks" href="price_action_chapter10_notes.html#micro">微型双顶底</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter11_notes.html"><span class="chnum">11</span><span class="chbody"><span class="chtitle">迟到的与错过的入场点</span><span class="chblurb">迟到入场按剩余摆动头寸下单、浮盈不是别人的钱</span><span class="chmeta">10 小节 · 1 图 · 5 表 · 5 题 · 约 8 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter11_notes.html#rule">核心规则</a><a class="ks" href="price_action_chapter11_notes.html#sizing">仓位换算</a><a class="ks" href="price_action_chapter11_notes.html#add">加仓与跟踪止损</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter12_notes.html"><span class="chnum">12</span><span class="chbody"><span class="chtitle">形态的演变</span><span class="chblurb">形态是动词、失败产生反向动能、旧形态何时作废</span><span class="chmeta">10 小节 · 1 图 · 6 表 · 5 题 · 约 8 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter12_notes.html#fail">失败即机会</a><a class="ks" href="price_action_chapter12_notes.html#independent">何时忽略旧形态</a><a class="ks" href="price_action_chapter12_notes.html#firsthour">第一小时</a></span></article>
+</div>
 </section>
 
 <section id="part2">
-<h2>第二篇 趋势线与通道（第 13–17 章）</h2>
-<table><thead><tr><th>章</th><th>标题</th><th>核心命题</th></tr></thead><tbody>
-<tr><td>13</td><td><a href="price_action_chapter13_notes.html">趋势线</a></td><td>突破趋势线 ≠ 反转，只说明进入双向交易；趋势线斜率逐次降低；线只活几秒钟。</td></tr>
-<tr><td>14</td><td><a href="price_action_chapter14_notes.html">趋势通道线</a></td><td>趋势通道线过靶 = 楔形；不要预测反转；不断重画通道线说明方向错了。</td></tr>
-<tr><td>15</td><td><a href="price_action_chapter15_notes.html">通道</a></td><td>通道 = 倾斜的交易区间；所有上升通道即熊旗；三波推动；等距运动目标。</td></tr>
-<tr><td>16</td><td><a href="price_action_chapter16_notes.html">微型通道</a></td><td>微型趋势线假突破的顺势入场；微型趋势线只用于顺势；不要交易 1 分钟图。</td></tr>
-<tr><td>17</td><td><a href="price_action_chapter17_notes.html">水平线：摆动点与其他关键价位</a></td><td>大部分交易日是区间日；水平线是障碍；二次信号（更极端价位）成功率更高。</td></tr>
-</tbody></table>
+<h2>第二篇　趋势线与通道</h2>
+<p class="partdesc">把趋势「画」出来：趋势线的作用与突破的含义、趋势通道线过靶与楔形、通道作为倾斜的交易区间、微型通道、摆动点水平线。</p>
+<div class="chapters">
+<article class="ch"><a class="chmain" href="price_action_chapter13_notes.html"><span class="chnum">13</span><span class="chbody"><span class="chtitle">趋势线</span><span class="chblurb">突破趋势线不等于反转、斜率递减、线只活几秒钟</span><span class="chmeta">11 小节 · 1 图 · 4 表 · 5 题 · 约 10 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter13_notes.html#break">突破的含义</a><a class="ks" href="price_action_chapter13_notes.html#slope">斜率递减</a><a class="ks" href="price_action_chapter13_notes.html#discipline">用线纪律</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter14_notes.html"><span class="chnum">14</span><span class="chbody"><span class="chtitle">趋势通道线</span><span class="chblurb">趋势通道线过靶即楔形、机构心理、不要预测反转</span><span class="chmeta">11 小节 · 1 图 · 4 表 · 5 题 · 约 12 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter14_notes.html#wedge">过靶=楔形</a><a class="ks" href="price_action_chapter14_notes.html#why">为什么在过靶后反转</a><a class="ks" href="price_action_chapter14_notes.html#discipline">不要预测反转</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter15_notes.html"><span class="chnum">15</span><span class="chbody"><span class="chtitle">通道</span><span class="chblurb">通道是倾斜的交易区间、上升通道即熊旗、三波推动、等距目标</span><span class="chmeta">12 小节 · 2 图 · 9 表 · 5 题 · 约 19 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter15_notes.html#three">三波推动</a><a class="ks" href="price_action_chapter15_notes.html#flag">上升通道即熊旗</a><a class="ks" href="price_action_chapter15_notes.html#target">等距运动目标</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter16_notes.html"><span class="chnum">16</span><span class="chbody"><span class="chtitle">微型通道</span><span class="chblurb">微型趋势线假突破、只做顺势、不要交易 1 分钟图</span><span class="chmeta">12 小节 · 2 图 · 5 表 · 5 题 · 约 17 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter16_notes.html#how">假突破入场</a><a class="ks" href="price_action_chapter16_notes.html#firsttest">首次回撤</a><a class="ks" href="price_action_chapter16_notes.html#discipline">只做顺势</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter17_notes.html"><span class="chnum">17</span><span class="chbody"><span class="chtitle">水平线：摆动点与其他关键价位</span><span class="chblurb">大部分交易日是区间日、水平线是障碍、二次信号更优</span><span class="chmeta">10 小节 · 2 图 · 4 表 · 5 题 · 约 8 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter17_notes.html#range">水平线是障碍</a><a class="ks" href="price_action_chapter17_notes.html#second">二次信号</a><a class="ks" href="price_action_chapter17_notes.html#trend">趋势日的用法</a></span></article>
+</div>
 </section>
 
 <section id="part3">
-<h2>第三篇 趋势（第 18–20 章）</h2>
-<table><thead><tr><th>章</th><th>标题</th><th>核心命题</th></tr></thead><tbody>
-<tr><td>18</td><td><a href="price_action_chapter18_notes.html">如何交易趋势举例</a></td><td>趋势中只有两个选项（顺势或空仓）；交易者等式与仓位换算；计划不一致是最常见的亏损来源。</td></tr>
-<tr><td>19</td><td><a href="price_action_chapter19_notes.html">趋势强度的特征</a></td><td>24 条强度清单；最漂亮的反转 K 线往往逆势；建仓形态的唯一目的是控制风险。</td></tr>
-<tr><td>20</td><td><a href="price_action_chapter20_notes.html">两段式行情</a></td><td>市场喜欢做两次尝试；第二次失败则反向、成功则延续；只看自己交易级别的图。</td></tr>
-</tbody></table>
+<h2>第三篇　趋势</h2>
+<p class="partdesc">从「识别」走向「操作」：趋势中到底该怎么入场与加仓管理、如何评估趋势强度、以及贯穿全书的两次尝试规律。</p>
+<div class="chapters">
+<article class="ch"><a class="chmain" href="price_action_chapter18_notes.html"><span class="chnum">18</span><span class="chbody"><span class="chtitle">如何交易趋势举例</span><span class="chblurb">趋势中只有两个选项、交易者等式、止损更远就减仓</span><span class="chmeta">12 小节 · 1 图 · 6 表 · 5 题 · 约 21 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter18_notes.html#two">两个选项</a><a class="ks" href="price_action_chapter18_notes.html#math">交易者等式</a><a class="ks" href="price_action_chapter18_notes.html#mistake">最常见的亏钱方式</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter19_notes.html"><span class="chnum">19</span><span class="chbody"><span class="chtitle">趋势强度的特征</span><span class="chblurb">24 条趋势强度清单、三种缺口、最漂亮的 K 线往往逆势</span><span class="chmeta">11 小节 · 1 图 · 4 表 · 5 题 · 约 13 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter19_notes.html#list">强度清单</a><a class="ks" href="price_action_chapter19_notes.html#pretty">漂亮K线往往逆势</a><a class="ks" href="price_action_chapter19_notes.html#weaksignal">弱信号=强趋势</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter20_notes.html"><span class="chnum">20</span><span class="chbody"><span class="chtitle">两段式行情</span><span class="chblurb">市场做两次尝试、ABC 与两段式的统一、只看自己级别</span><span class="chmeta">11 小节 · 1 图 · 4 表 · 5 题 · 约 8 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter20_notes.html#two">为什么分两段</a><a class="ks" href="price_action_chapter20_notes.html#abc">ABC 与两段式</a><a class="ks" href="price_action_chapter20_notes.html#tf">看自己的级别</a></span></article>
+</div>
 </section>
 
 <section id="part4">
-<h2>第四篇 常见趋势形态（第 21–26 章）</h2>
-<table><thead><tr><th>章</th><th>标题</th><th>核心命题</th></tr></thead><tbody>
-<tr><td>21</td><td><a href="price_action_chapter21_notes.html">急速与通道趋势</a></td><td>最常见的趋势形态；急速＝迫切/突破缺口，通道＝焦虑/「忧虑之墙」；通道起点必被测试。</td></tr>
-<tr><td>22</td><td><a href="price_action_chapter22_notes.html">趋势性交易区间交易日</a></td><td>开盘区间 1/3–1/2；双向机会；不要收紧止损；大部分反转日从这里开始。</td></tr>
-<tr><td>23</td><td><a href="price_action_chapter23_notes.html">始于开盘的趋势与小幅回撤趋势</a></td><td>最强劲的趋势类型（仅约 20% 交易日）；弱信号＝强趋势；不要收紧到盈亏平衡止损。</td></tr>
-<tr><td>24</td><td><a href="price_action_chapter24_notes.html">反转交易日</a></td><td>大部分反转日始于趋势性交易区间日；尾盘强力反转常延续到次日甚至数天。</td></tr>
-<tr><td>25</td><td><a href="price_action_chapter25_notes.html">趋势恢复交易日</a></td><td>午盘横盘是机会而非收工信号；尾盘第二波幅度≈第一波；尾盘假突破陷阱。</td></tr>
-<tr><td>26</td><td><a href="price_action_chapter26_notes.html">楼梯形态：宽幅趋势通道</a></td><td>宽幅趋势通道；每次突破都被回撤超越；缩梯＝动能减弱；用幅度测量来交易。</td></tr>
-</tbody></table>
+<h2>第四篇　常见趋势形态</h2>
+<p class="partdesc">按交易日类型分类：急速与通道、趋势性交易区间、始于开盘与小幅回撤、反转、趋势恢复、楼梯形态。这一篇最贴近盘中决策。</p>
+<div class="chapters">
+<article class="ch"><a class="chmain" href="price_action_chapter21_notes.html"><span class="chnum">21</span><span class="chbody"><span class="chtitle">急速与通道趋势</span><span class="chblurb">急速＝迫切、通道＝忧虑之墙、通道起点必被测试</span><span class="chmeta">12 小节 · 1 图 · 5 表 · 5 题 · 约 20 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter21_notes.html#features">十三条特征</a><a class="ks" href="price_action_chapter21_notes.html#origin">通道起点</a><a class="ks" href="price_action_chapter21_notes.html#target">等距目标</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter22_notes.html"><span class="chnum">22</span><span class="chbody"><span class="chtitle">趋势性交易区间交易日</span><span class="chblurb">开盘区间 1/3–1/2、双向机会、不要收紧止损</span><span class="chmeta">11 小节 · 1 图 · 4 表 · 5 题 · 约 11 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter22_notes.html#open">开盘区间</a><a class="ks" href="price_action_chapter22_notes.html#manage">不要收紧止损</a><a class="ks" href="price_action_chapter22_notes.html#reversal">尾盘反转</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter23_notes.html"><span class="chnum">23</span><span class="chbody"><span class="chtitle">始于开盘的趋势与小幅回撤趋势</span><span class="chblurb">最强劲的趋势类型、弱信号＝强趋势、不收紧到盈亏平衡</span><span class="chmeta">12 小节 · 1 图 · 5 表 · 5 题 · 约 17 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter23_notes.html#appearance">弱信号=强趋势</a><a class="ks" href="price_action_chapter23_notes.html#manage">不收紧到盈亏平衡</a><a class="ks" href="price_action_chapter23_notes.html#strong">小幅回撤</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter24_notes.html"><span class="chnum">24</span><span class="chbody"><span class="chtitle">反转交易日</span><span class="chblurb">反转日始于趋势性交易区间日、尾盘强力反转延续数天</span><span class="chmeta">8 小节 · 1 图 · 4 表 · 5 题 · 约 8 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter24_notes.html#origin">为什么从区间开始</a><a class="ks" href="price_action_chapter24_notes.html#trade">怎么交易</a><a class="ks" href="price_action_chapter24_notes.html#contrast">与趋势恢复对照</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter25_notes.html"><span class="chnum">25</span><span class="chbody"><span class="chtitle">趋势恢复交易日</span><span class="chblurb">午盘横盘是机会、尾盘第二波≈第一波、假突破陷阱</span><span class="chmeta">9 小节 · 1 图 · 4 表 · 5 题 · 约 9 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter25_notes.html#trap">尾盘假突破</a><a class="ks" href="price_action_chapter25_notes.html#midday">午盘三种形态</a><a class="ks" href="price_action_chapter25_notes.html#multi">跨日恢复</a></span></article>
+<article class="ch"><a class="chmain" href="price_action_chapter26_notes.html"><span class="chnum">26</span><span class="chbody"><span class="chtitle">楼梯形态：宽幅趋势通道</span><span class="chblurb">宽幅趋势通道、突破被回撤超越、缩梯＝动能减弱</span><span class="chmeta">10 小节 · 1 图 · 5 表 · 5 题 · 约 9 分钟</span></span></a><span class="chkeys"><a class="ks" href="price_action_chapter26_notes.html#measure">用幅度测量</a><a class="ks" href="price_action_chapter26_notes.html#shrink">缩梯预警</a><a class="ks" href="price_action_chapter26_notes.html#accel">加速与等距</a></span></article>
+</div>
 </section>
 
 <section id="map">
-<h2>概念地图：贯穿全书的八条主线</h2>
+<h2>八条主线：贯穿全书的核心思想</h2>
+<p class="muted small">如果只记八件事，记这些。它们在不同章节反复出现，是这套方法的骨架。</p>
 <div class="grid2">
-<div class="card"><h3>① 两种状态</h3><p>趋势 vs 交易区间——适用于 K 线、一段行情、整个交易日。<strong>第 1、2、3 章</strong></p></div>
-<div class="card"><h3>② 位置优先于形状</h3><p>同一形态在不同位置含义相反。<strong>贯穿全部章节</strong></p></div>
-<div class="card"><h3>③ 市场惰性</h3><p>趋势中反转多半失败；区间中突破多半失败。<strong>第 1、3、17 章</strong></p></div>
-<div class="card"><h3>④ 谁被套住了</h3><p>反转与失败的动能来自做错方向者的被迫平仓。<strong>第 5、7、12、19 章</strong></p></div>
-<div class="card"><h3>⑤ 收盘价是裁判</h3><p>方向由收盘决定，不由颜色或盘中形态决定。<strong>第 5、7、8 章</strong></p></div>
-<div class="card"><h3>⑥ 风险决定仓位</h3><p>止损太远就减仓或不做，绝不把止损挪近。<strong>第 5、7、10、11、18 章</strong></p></div>
-<div class="card"><h3>⑦ 弱信号＝强趋势</h3><p>最难看的信号 K 线往往出现在最强的趋势里。<strong>第 16、19、23 章</strong></p></div>
-<div class="card"><h3>⑧ 只看一张图</h3><p>跨级别找完美信号会拖慢决策、错过本级别的机会。<strong>第 8、9、16、19、20 章</strong></p></div>
+<div class="card"><h3>① 两种状态</h3><p>趋势 vs 交易区间——适用于单根 K 线、一段行情、整个交易日。</p><p class="src">第 1、2、3 章</p></div>
+<div class="card"><h3>② 位置优先于形状</h3><p>同一个形态在不同位置含义相反。先判断位置，再谈形态。</p><p class="src">贯穿全书</p></div>
+<div class="card"><h3>③ 市场惰性</h3><p>趋势中反转多半失败；区间中突破多半失败。</p><p class="src">第 1、3、17 章</p></div>
+<div class="card"><h3>④ 谁被套住了</h3><p>反转与失败的动能，来自做错方向者的被迫平仓。</p><p class="src">第 5、7、12、19 章</p></div>
+<div class="card"><h3>⑤ 收盘价是裁判</h3><p>方向由收盘决定，不由 K 线颜色或盘中形态决定。</p><p class="src">第 5、7、8 章</p></div>
+<div class="card"><h3>⑥ 风险决定仓位</h3><p>止损太远就减仓或不做，绝不把止损挪近。</p><p class="src">第 5、7、10、11、18 章</p></div>
+<div class="card"><h3>⑦ 弱信号＝强趋势</h3><p>最难看的信号 K 线，往往出现在最强的趋势里。</p><p class="src">第 16、19、23 章</p></div>
+<div class="card"><h3>⑧ 只看一张图</h3><p>跨级别找完美信号会拖慢决策，反而错过本级别的机会。</p><p class="src">第 8、9、16、19、20 章</p></div>
 </div>
-<div class="callout good"><strong>八条主线的交集：</strong>先定位（①）→ 判断位置是否合格（②）→ 假设当前状态延续（③）→ 问谁会被套住（④）→ 等收盘确认（⑤）→ 用结构止损反推仓位（⑥）→ 不被难看的信号吓退（⑦）→ 在单一时间级别上执行（⑧）。<strong>这八步就是这套笔记的完整操作链。</strong></div>
+<div class="callout good"><strong>八条主线的操作链：</strong>先定位（①）→ 判断位置是否合格（②）→ 假设当前状态延续（③）→ 问谁会被套住（④）→ 等收盘确认（⑤）→ 用结构止损反推仓位（⑥）→ 不被难看的信号吓退（⑦）→ 在单一时间级别上执行（⑧）。</div>
 </section>
 
 <section id="howto">
 <h2>怎么用这套笔记</h2>
 <div class="steps">
-<div class="step" data-n="1"><div><strong>每章先看「一页总览」</strong><br>用三张卡片建立这一章的骨架，5 分钟读完。</div></div>
-<div class="step" data-n="2"><div><strong>再看示意图</strong><br>每章的自绘示意图是刻意简化的结构图，不是真实行情。它的作用是让你记住<strong>结构关系</strong>，而不是形态外观。</div></div>
-<div class="step" data-n="3"><div><strong>然后读表格</strong><br>对照表是这套笔记信息密度最高的部分，尤其是「强弱」与「应放弃」两栏。</div></div>
-<div class="step" data-n="4"><div><strong>做自测题</strong><br>每章 5 题、可点击判分（全书共 130 题）。错题会给出对应解释，直接告诉你该复习哪一节。</div></div>
+<div class="step" data-n="1"><div><strong>每章先看「一页总览」</strong><br>用三张卡片建立这一章的骨架，5 分钟读完，先有地图再看细节。</div></div>
+<div class="step" data-n="2"><div><strong>再看示意图</strong><br>示意图是刻意简化的结构图，<strong>不是真实行情</strong>。它的作用是让你记住<strong>结构关系</strong>，而不是形态外观。</div></div>
+<div class="step" data-n="3"><div><strong>然后读表格</strong><br>对照表是信息密度最高的部分，尤其是「强 / 弱」与「应放弃」两栏。</div></div>
+<div class="step" data-n="4"><div><strong>做自测题</strong><br>每章 5 题、可点击判分，全书共 130 题。错题会给出解释，直接告诉你该复习哪一节。</div></div>
 <div class="step" data-n="5"><div><strong>最后用看盘清单</strong><br>在真实图表上逐项核对。清单的价值在于<strong>把「感觉」替换成「可检验的描述」</strong>。</div></div>
-<div class="step" data-n="6"><div><strong>复盘时记录句式</strong><br>各章的「实战记录句式」可以直接套用，让交易记录事后可检验，而不是「感觉要涨」。</div></div>
+<div class="step" data-n="6"><div><strong>复盘时套用记录句式</strong><br>各章的「实战记录句式」可直接套用，让交易记录事后可检验，而不是「感觉要涨」。</div></div>
 </div>
-<div class="callout warn"><strong>关于打印：</strong>每页右上角都有「打印 / 保存为 PDF」按钮，打印样式已经优化（自动隐藏导航与测验区、避免分页切断表格）。可以整章打印，也可以按需打印某一章。</div>
-<div class="callout"><strong>资料说明：</strong>本套笔记依据用户提供的《高级趋势技术分析：价格行为交易系统之趋势分析》（舵手经典）整理，<strong>是对原书内容的归纳、重新组织与教学化改写，并加入自绘示意图、对照表、操作流程与练习题</strong>；不是原文转录，也不是逐页摘要。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</div>
-</section>
+<div class="grid2">
+<div class="card"><h3>🖨 打印单章</h3><p>每页右上角有「打印 / 保存为 PDF」。打印样式已优化：自动隐藏导航与测验区、避免表格被分页切断。</p></div>
+<div class="card"><h3>📱 手机阅读</h3><p>响应式布局，窄屏自动切换单列；配色跟随系统深浅色模式。</p></div>
+</div>
 <div class="callout warn"><strong>使用前请阅读：</strong>这套笔记的内容框架来源于阿尔·布鲁克斯的价格行为交易著作，是<strong>个人学习整理与重新表述</strong>，非原文转录、也不构成投资建议。完整说明见 <a href="disclaimer.html">免责声明</a>。</div>
+</section>
 <div class="footer">PRICE ACTION STUDY NOTES · 总目录 · 全 26 章</div>
 </main></div></div>
+<script src="search-index.js" defer></script>
+<script>
+(function(){
+  var box=document.getElementById('q'), out=document.getElementById('qresults'),
+      hint=document.getElementById('qhint'), clearBtn=document.getElementById('qclear');
+  var DATA=null, loaded=false;
+
+  function load(){
+    if(loaded) return Promise.resolve(DATA);
+    return new Promise(function(res){
+      var t=setInterval(function(){
+        if(window.PA_INDEX){clearInterval(t);DATA=window.PA_INDEX;loaded=true;res(DATA);}
+      },40);
+      setTimeout(function(){clearInterval(t);res(window.PA_INDEX||null);},6000);
+    });
+  }
+  function score(r,q){
+    var s=0, t=r.title||'', l=r.lead||'', b=r.body||'';
+    if(t.indexOf(q)>=0) s+=100;
+    for(var i=0;i<r.secs.length;i++){ if(r.secs[i].indexOf(q)>=0){ s+=40; break; } }
+    if(l.indexOf(q)>=0) s+=20;
+    var n=0, idx=0;
+    while((idx=b.indexOf(q,idx))>=0 && n<8){ n++; idx+=q.length; }
+    s+=n*3;
+    return s;
+  }
+  function snippet(b,q){
+    var i=b.indexOf(q); if(i<0) return '';
+    var a=Math.max(0,i-34), z=Math.min(b.length,i+q.length+52);
+    return (a>0?'…':'')+b.slice(a,z)+(z<b.length?'…':'');
+  }
+  function esc(x){ return x.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function hi(x,q){
+    var i=x.indexOf(q); if(i<0) return esc(x);
+    return esc(x.slice(0,i))+'<mark>'+esc(x.slice(i,i+q.length))+'</mark>'+esc(x.slice(i+q.length));
+  }
+  function render(res,q){
+    if(!res.length){ out.innerHTML='<div class="noresult">没有找到匹配的内容。换个关键词试试，例如「通道」「止损」「高潮」。</div>'; return; }
+    var h='<div class="qcount">找到 '+res.length+' 章相关内容</div>';
+    for(var i=0;i<res.length;i++){
+      var r=res[i][1], sn=res[i][2];
+      h+='<a class="qitem" href="'+r.file+'">'
+       + '<div class="qhead"><span class="qb">'+r.partName+'</span>'
+       + '<span class="qt">第 '+r.n+' 章 · '+hi(r.title,q)+'</span></div>'
+       + (sn?'<div class="qsnip">'+hi(sn,q)+'</div>':'')
+       + '<div class="qmeta">'+r.secs.length+' 小节 · '+r.svg+' 图 · '+r.tbl+' 表 · '+r.quiz+' 题</div>'
+       + '</a>';
+    }
+    out.innerHTML=h;
+  }
+  var timer=null;
+  function run(){
+    var q=(box.value||'').trim();
+    clearBtn.hidden=!q;
+    if(!q){ out.innerHTML=''; hint.hidden=false; return; }
+    hint.hidden=true;
+    if(q.length<1) return;
+    load().then(function(D){
+      if(!D){ out.innerHTML='<div class="noresult">搜索索引未加载。</div>'; return; }
+      var res=[];
+      for(var i=0;i<D.length;i++){
+        var s=score(D[i],q);
+        if(s>0) res.push([s,D[i],snippet(D[i].body,q)]);
+      }
+      res.sort(function(a,b){return b[0]-a[0];});
+      render(res.slice(0,12),q);
+    });
+  }
+  box.addEventListener('input',function(){ clearTimeout(timer); timer=setTimeout(run,140); });
+  box.addEventListener('focus',load);
+  clearBtn.addEventListener('click',function(){ box.value=''; run(); box.focus(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='/' && document.activeElement!==box){ e.preventDefault(); box.focus(); box.select(); }
+    if(e.key==='Escape' && document.activeElement===box){ box.value=''; run(); box.blur(); }
+  });
+})();
+</script>
 </body>
 </html>
