@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 14 章 趋势通道线｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 14 章</div>
+<h1>趋势通道线</h1>
+<p class="lead">趋势通道线在趋势的<strong>另一侧</strong>。本章给出一个极其实用的等价关系：<strong>趋势通道线过靶与楔形应视为一物</strong>。同时它也回答了那个总让人困惑的问题——既然大家都知道过靶会导致反转，为什么反转还是发生在那里？答案指向<strong>机构交易心理</strong>，而不是散户的恐慌。</p>
+<div class="tags"><span class="tag">趋势通道线</span><span class="tag">过靶假突破</span><span class="tag">楔形＝过靶</span><span class="tag">收敛通道</span><span class="tag">通道即旗形</span><span class="tag">不要预测反转</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#what">1. 位置与用途</a><a href="#wedge">2. 过靶 = 楔形</a><a href="#draw">3. 怎么画</a><a href="#why">4. 为什么反转发生在过靶之后</a><a href="#channel">5. 通道的两种倾斜方向</a><a href="#discipline">6. 纪律：不要预测反转</a><a href="#myths">7. 关键逻辑与误区</a><a href="#workflow">8. 看图分析流程</a><a href="#practice">9. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：</strong>趋势通道线处在与趋势线<strong>相反的一侧</strong>，斜率大致相同。在上升趋势中，趋势线在低点下方，趋势通道线在<strong>高点上方</strong>。对于<strong>涨幅过大、上涨过快</strong>的趋势，它是有用的<strong>逆势交易工具</strong>——尤其当价格<strong>第二次刺穿</strong>它之后反转时。</div>
+<div class="grid3">
+<div class="card"><h3>它是什么</h3><p>与趋势线平行、位于另一侧的线，用来界定趋势的「上边界」（上升趋势中）。</p><p class="small muted">由趋势线平移，或连接另一侧摆动点而成。</p></div>
+<div class="card"><h3>它的信号</h3><p><strong>过靶后反转</strong>——价格刺穿通道线后无法继续，反转回来。</p><p class="small muted">第二次刺穿后的反转更值得关注。</p></div>
+<div class="card"><h3>它的等价物</h3><p><strong>趋势通道线过靶 = 楔形</strong>，两者应视为一物、同等对待。</p><p class="small muted">大部分楔形都以过靶假突破触发反转。</p></div>
+</div>
+<div class="callout warn"><strong>本章最有价值的一条纪律：</strong><strong>如果你发现自己不断地在重画趋势通道线，通常说明你处在错误的市场方向。</strong>因为你一直在期待反转，而趋势反而越来越强——这与第 13 章「不要被当前 K 线力度迷惑」是同一个错误的两种表现。</div>
+</section>
+
+<section id="what">
+<h2>1. 位置与用途</h2>
+<table><thead><tr><th>趋势方向</th><th>趋势线位置</th><th>趋势通道线位置</th></tr></thead><tbody>
+<tr><td>上升趋势</td><td>低点下方</td><td><strong>高点上方</strong>，向右上倾斜</td></tr>
+<tr><td>下降趋势</td><td>高点上方</td><td><strong>低点下方</strong>，向右下倾斜</td></tr>
+</tbody></table>
+<div class="callout good"><strong>什么时候它最有用：</strong>对于<strong>涨幅过大、上涨过快</strong>的上升趋势，趋势通道线是有用的<strong>逆势交易工具</strong>。如果价格对趋势通道线<strong>过靶之后反转</strong>，尤其是<strong>第二次刺穿</strong>之后反转，可能带来逆势入场机会。</div>
+<p class="muted small">用法上很简单：把通道线向右延长，看价格<strong>击穿之后如何表现</strong>——是反转，还是趋势加速？这一个问题就决定了你该逆势还是顺势。</p>
+</section>
+
+<section id="wedge">
+<h2>2. 过靶 = 楔形：本章最重要的等价关系</h2>
+<div class="callout good"><strong>原文的明确结论：趋势通道线过靶与楔形密切相关，我们应该把它们视为一物，在实际操作中同等对待。</strong>大部分楔形都会以<strong>对趋势通道线的假突破</strong>来触发行情反转；而大部分趋势通道线过靶和反转都<strong>同时是楔形反转</strong>——尽管该楔形可能不明显、或并非完美的楔形形状。</div>
+<div class="chart">
+<svg viewBox="0 0 680 330" role="img" aria-label="示意图：趋势通道线过靶与楔形是同一件事">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">过靶与楔形：同一现象的两个名字</text>
+
+<path d="M50 240 L110 150 L155 195 L215 118 L258 168 L318 96 L356 140" fill="none" stroke="#4788d8" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="40" y1="272" x2="400" y2="182" stroke="#16845b" stroke-width="1.8" stroke-dasharray="7 5"/>
+<line x1="60" y1="212" x2="380" y2="128" stroke="#c74747" stroke-width="1.8" stroke-dasharray="7 5"/>
+<circle cx="318" cy="96" r="6" fill="#c74747"/>
+<text x="326" y="92" fill="#c74747" font-size="11.5" font-weight="700">第二次刺穿通道线 → 过靶</text>
+<text x="44" y="292" fill="#16845b" font-size="11.5">趋势线（低点下方）</text>
+<text x="176" y="120" fill="#c74747" font-size="11.5">趋势通道线（高点上方）</text>
+<text x="150" y="252" fill="currentColor" font-size="11.5" opacity=".85">三次推升、每次回撤更浅 → 收敛 = 楔形</text>
+
+<line x1="420" y1="40" x2="420" y2="310" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".25"/>
+
+<text x="446" y="58" fill="currentColor" font-size="12" font-weight="700">为什么会走成楔形？</text>
+<text x="446" y="86" fill="currentColor" font-size="11.5" opacity=".9">楔形顶部：趋势线斜率 &gt; 通道线斜率</text>
+<text x="446" y="110" fill="currentColor" font-size="11.5" opacity=".9">→ 多头在更小的回撤中就买入</text>
+<text x="446" y="130" fill="currentColor" font-size="11.5" opacity=".9">→ 空头在更小的下跌中就退出</text>
+<text x="446" y="156" fill="currentColor" font-size="11.5" opacity=".9">双方都有一种<strong>迫切感</strong>：担心</text>
+<text x="446" y="176" fill="currentColor" font-size="11.5" opacity=".9">市场不会跌到那个支撑位。</text>
+<text x="446" y="206" fill="#d6a747" font-size="11.5" font-weight="700">于是趋势线斜率需要上升</text>
+<text x="446" y="226" fill="#d6a747" font-size="11.5" font-weight="700">= 上升趋势在加速</text>
+<text x="446" y="258" fill="currentColor" font-size="11.5" opacity=".85">加速到极致 → 没有更多买盘 → 反转</text>
+<text x="446" y="286" fill="currentColor" font-size="11.5" opacity=".72">两个名字，一个机制</text>
+</svg>
+</div>
+<h3>楔形的形成机制（原文的解释）</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>先有平行通道</strong><br>画一根趋势通道线，再画它的平行线，把平行线拖到第一波回调的底部，就得到一根趋势线与一个趋势通道。它告诉多空双方<strong>支撑在哪里</strong>。</div></div>
+<div class="step" data-n="2"><div><strong>买盘变得迫切</strong><br>如果多头在这一位置<strong>上方</strong>就买入，而空头也提早回补，市场将会<strong>在到达该趋势线之前就转升</strong>。</div></div>
+<div class="step" data-n="3"><div><strong>趋势线需要变陡</strong><br>双方之所以都这么做，是出于迫切感——担心市场不会跌到那个支撑位。这意味着<strong>趋势线斜率需要上升，上升趋势在加速</strong>。</div></div>
+<div class="step" data-n="4"><div><strong>形成楔形</strong><br>重画趋势线（连接头两波回调的低点）后，会发现它<strong>比上方的趋势通道线更陡</strong>——这就是楔形，而楔形多半属于<strong>反转形态</strong>。</div></div>
+<div class="step" data-n="5"><div><strong>验证与失望</strong><br>观察涨势是被<strong>最初的通道线</strong>压制，还是能触及<strong>更陡的那根线</strong>。若被最初的线压制、市场转跌，说明迫切感未能延续到第三波推动。</div></div>
+<div class="step" data-n="6"><div><strong>角色互换</strong><br>多头在最初那根斜率较低的通道线锁定利润（比原计划提早退出）；空头担心到不了更陡的线，开始在最初那根线做空。<strong>现在迫不及待的是空头、担惊受怕的是多头。</strong></div></div>
+</div>
+<div class="callout"><strong>楔形之后：</strong>交易者会预计市场从楔形顶部回落，<strong>大部分至少等待出现两波下跌</strong>之后才开始寻找下一个买点或卖点。第一波下跌通常会跌破楔形下轨；随后多头想让这个楔形顶部失败、空头再次卖空；若多头也开始锁定利润（说明他们自认为无力让市场超越前高），且这批多头加上新入场空头<strong>超过剩余多头</strong>的力量，市场就会进入<strong>第二轮下跌</strong>。之后多头重返、空头锁定利润，双方都认为<strong>经过两段式回调之后多头趋势可能会恢复</strong>——此时楔形使命已完成。</div>
+</section>
+
+<section id="draw">
+<h2>3. 怎么画趋势通道线</h2>
+<table><thead><tr><th>方法</th><th>操作</th><th>要点</th></tr></thead><tbody>
+<tr><td><strong>趋势线的平行线</strong></td><td>先画趋势线，再画平行线，拖到趋势另一侧与某根 K 线单独接触的高点</td><td>让平行线把趋势线两点之间的<strong>所有价格行为都包含在内</strong></td></tr>
+<tr><td><strong>连接另一侧摆动点</strong></td><td>撇开趋势线，直接连接另一侧的两个摆动点</td><td>通道线若能<strong>涵括所有 K 线</strong>效果更好</td></tr>
+<tr><td>线性回归等最佳适配 / 目测</td><td>画吻合度最高的线</td><td>对实际交易通常帮助不大</td></tr>
+</tbody></table>
+<div class="callout good"><strong>一条原则：我们应该想尽一切办法对趋势作最佳界定。</strong>个别情况下，把平行线固定在趋势线所连接那两根 K 线<strong>之外</strong>的某根 K 线，反而能更好地理解趋势。</div>
+<h3>两种特殊情况</h3>
+<div class="grid2">
+<div class="card"><h3>一根大阳线跑到通道外</h3><p>如果市场原本处于很窄的上升通道，但有一根大阳线跑到通道之外，<strong>通常最好的办法是忽略这根 K 线</strong>，用其他 K 线作为连接点。</p><p class="small muted">但也不要忽略<strong>通道上轨变轨、趋势加速</strong>的可能性——若后续摆动的高点都落在那根大阳线为固定点的通道线上，就该用这个更宽的通道。</p></div>
+<div class="card"><h3>通道线固定点不在两点之间</h3><p>有时候趋势通道线的固定点（例如某根 K 线）<strong>并不处于用来连成趋势线的那两根 K 线之间</strong>——但交易者应该了解各种可能性。</p><p class="small muted">只要市场测试该通道线后反转，那么随后出现两段式走势的概率应有所提升。</p></div>
+</div>
+<div class="callout"><strong>关于"第三波"的经验：</strong>一般来讲，被<strong>第三波行情</strong>所测试的趋势线效果最好。但如果用来连线的那两点<strong>距离太远</strong>、而第二点到当前行情<strong>距离太近</strong>（例如三点基本属于同一波行情），这根线就不理想。不过原文也指出，此时交易依然可能值得一做——<strong>因为信号 K 线很小，收益风险比不错</strong>。</div>
+</section>
+
+<section id="why">
+<h2>4. 为什么反转总是发生在过靶之后</h2>
+<p>这是一个看似矛盾的问题：<strong>既然所有人都知道趋势通道线过靶通常会造成反转，为何如此多的反转仍以这种方式发生？难道不会有人提早入场、让市场无法达到这根线？</strong></p>
+<h3>通常的解释（以及原文对它的态度）</h3>
+<div class="callout"><strong>一般解释：</strong>站错队的交易新手一直持有亏损头寸，直到承受能力到达极限。突然之间他们全部止损，制造出一波高潮性上涨或下跌。在上升通道内，市场涨到某个阻力位并击穿，导致<strong>最后一批空头忍无可忍、举手投降</strong>；就在他们集体投降时，<strong>易于激动、经验不足的多头</strong>被拉升行情诱惑、慌忙入场，进一步推动行情突破通道线。这使更多残余空头回补，又有更多幼稚多头进场——一个<strong>自我强化</strong>的过程。最后市场中没有足够的空头回补来推动行情走高；当市场突然不再加速、横盘然后掉头，那些被情绪左右而非凭逻辑买入的多头将会恐慌，想要立即抽身。<strong>此时已没有新多头加入，只有被套的新多头夺路而逃，市场突然进入单向模式。</strong></div>
+<div class="callout warn"><strong>原文对这个解释的态度很清醒：</strong>"这就是一般的解释，<strong>我们不去管它是否正确</strong>。"事实上，在 Emini 这种盘子很大的市场中，基本上是<strong>机构在主导</strong>，大部分交易可能由计算机完成，所以散户很难说能在行情反转中起到多大作用。</div>
+<h3>真正的机制：机构交易心理</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>聪明钱持续买入直到通道线上方</strong><br>在上升趋势中，聪明钱会持续买入，直到把价格推升到上升趋势通道线上方，然后他们将会<strong>锁定利润</strong>。</div></div>
+<div class="step" data-n="2"><div><strong>可能会有几次失败的反转尝试</strong><br>市场继续加速上涨，导致趋势通道线<strong>越来越陡</strong>。这正是"不断重画通道线"所对应的现象。</div></div>
+<div class="step" data-n="3"><div><strong>策略本身就有 30%~70% 的时间在亏钱</strong><br>每家机构的策略都经过缜密测试并被证明可获利，但这些策略<strong>都有 30%~70% 的时间是亏钱的</strong>。那些在最低点卖出的机构，实际上是<strong>沿着下跌趋势一路卖出</strong>的——前面很多入场点都已获利，只是会继续执行策略直到趋势明确反转。</div></div>
+<div class="step" data-n="4"><div><strong>高频与对冲也在那里成交</strong><br>许多高频交易机构会在支撑位上方 1~2 个单位处卖出，旨在攫取最后 1 个单位的利润；其他机构卖出可能是为了<strong>对冲另一个市场</strong>的风险。</div></div>
+<div class="step" data-n="5"><div><strong>散户贡献极小</strong><br>散户的卖出基本可以忽略——他们在市场重大转折点贡献的成交量<strong>还不足 5%</strong>。</div></div>
+</div>
+<div class="callout good"><strong>本章的结论性表述：反转之所以经常在过靶之后发生，因为它是机构交易心理的固有特征，只能如此发生。</strong>即便有些机构根本不看图形，他们也会用其他标准判断市场涨跌过头、该出场或反手——这不可避免地与价格行为交易者所看到的相吻合。<strong>价格行为是当庞大数量相互独立的聪明人都试图从市场中赚取最大利润时，在价格上所留下的无法掩盖的足迹。</strong></div>
+</section>
+
+<section id="channel">
+<h2>5. 通道的两种倾斜方向</h2>
+<table><thead><tr><th>通道类型</th><th>视为</th><th>可能结局</th></tr></thead><tbody>
+<tr><td><strong>向右上倾斜</strong></td><td><strong>熊旗</strong></td><td>可能突破通道下轨；带来趋势反转，或进入交易区间后向上/向下突破</td></tr>
+<tr><td><strong>向右下倾斜</strong></td><td><strong>牛旗</strong></td><td>可能突破通道上轨；成为趋势反转或交易区间的起点</td></tr>
+</tbody></table>
+<h3>突破上轨 / 下轨的两种命运</h3>
+<div class="grid2">
+<div class="card"><h3>上升通道突破上轨</h3><p>通常属于<strong>高潮性上涨</strong>，最终会反转进入通道，且<strong>往往进一步击穿通道下轨</strong>。</p><p class="small muted">但有时候也可能成为<strong>新一轮上涨</strong>的开始，进入更加强劲的上升趋势。</p></div>
+<div class="card"><h3>下降通道击穿下轨</h3><p>通常突破会在<strong>大约 5 根 K 线以内失败</strong>，然后进入反转。</p><p class="small muted">但也可能成为<strong>新一轮更强劲下跌</strong>的开始。</p></div>
+</div>
+<div class="callout warn"><strong>注意这两个"但"。</strong>通道被突破之后的方向并非单向确定——这是本章与第 3 章共同的谨慎态度：<strong>突破可能延续，也可能失败，必须看之后的实际表现。</strong></div>
+<h3>收敛与发散</h3>
+<p>趋势通道可以大致平行，也可以呈<strong>收敛或发散</strong>状。当其<strong>收敛</strong>且通道为上升或下降状态时，这种通道属于<strong>楔形</strong>，往往是反转交易形态。</p>
+<div class="callout"><strong>一个小发现（原文自称价值有限）：</strong>一轮趋势的<strong>末端旗形的斜率，往往是新趋势斜率的近似</strong>。原文明确说这一点对交易价值有限，因为做决策时还有很多重要得多的因素。<strong>把它当作一个有趣的观察，而不是一个交易依据。</strong></div>
+</section>
+
+<section id="discipline">
+<h2>6. 纪律：不要预测反转</h2>
+<div class="callout warn"><strong>本章最实用的一条操作纪律：一般来讲，如果你发现自己不断地在重画趋势通道线，通常说明你处在错误的市场方向。</strong>因为你一直在期待反转，而趋势反而越来越强。<strong>我们应该顺势交易，不要不停地去预测反转。</strong></div>
+<h3>什么时候才是可靠的反转</h3>
+<div class="callout good"><strong>最终市场会一致同意某根趋势通道线是最后一根，此时你才会看到可靠的反转。</strong>要有耐心：<strong>在市场有效反转之前，只能顺势交易，绝对不要逆势而为。</strong></div>
+<h3>聪明钱转向之后的行为</h3>
+<p>一旦认定顶部已经出现，聪明钱将不再寻求买入，而是开始做空——而且<strong>即便市场创出新高、造成浮亏，大部分交易者也会继续持有</strong>，因为他们相信顶部已经出现或至少非常接近。</p>
+<ul>
+<li>很多聪明钱会在<strong>高点上方加空</strong>：一是摊低空单成本，二是帮助推动市场下跌。</li>
+<li>大资金此时只考虑做空，<strong>根本不会被吓出去</strong>，除非发生较为罕见的二次入场点失败或重大失败。</li>
+<li><strong>没有多头买入，所以市场只有下跌这一条路。</strong></li>
+</ul>
+<div class="callout"><strong>与第 13 章的呼应：</strong>第 13 章说"被当前 K 线的力度迷惑"是新手错误；本章说"不断重画通道线"是同一错误的另一种表现。两章的结论一致——<strong>在市场证明反转之前，顺势才是默认选项。</strong></div>
+</section>
+
+<section id="myths">
+<h2>7. 关键逻辑与六种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>趋势通道线</td><td>趋势的上边界在哪？</td><td>"价格一到就该反手"</td></tr>
+<tr><td>过靶</td><td>涨势是否过头？</td><td>"必定反转"</td></tr>
+<tr><td>楔形</td><td>通道是否在收敛？</td><td>"一个独立的、必须形状完美的形态"</td></tr>
+<tr><td>通道突破</td><td>趋势加速还是终结？</td><td>"突破即反转"</td></tr>
+</tbody></table>
+<h3>尤其需要避免的六种误区</h3>
+<ul>
+<li><strong>以为价格触及通道线就该反手：</strong>需要<strong>过靶后反转</strong>，且第二次刺穿更值得关注。</li>
+<li><strong>把楔形当成需要形状完美的独立形态：</strong>它与过靶<strong>是同一件事</strong>，楔形常常并不明显。</li>
+<li><strong>不断重画通道线去迎合反转预期：</strong>这通常说明你处在错误的市场方向。</li>
+<li><strong>以为通道突破的方向是确定的：</strong>上升通道突破上轨通常是高潮，但也可能开启更强趋势。</li>
+<li><strong>忽略"第三次推升"之后的角色互换：</strong>迫切感会从一方转移到另一方。</li>
+<li><strong>用末端旗形斜率去预测新趋势：</strong>原文明确说这价值有限。</li>
+</ul>
+</section>
+
+<section id="workflow">
+<h2>8. 看图分析流程</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>先画趋势线，再定通道线</strong><br>用平行线拖到另一侧，或直接连接另一侧的摆动点。目标是<strong>把所有价格行为都涵括在内</strong>。</div></div>
+<div class="step" data-n="2"><div><strong>观察是否发生刺穿</strong><br>价格是触及即反转，还是过靶？是第一次刺穿还是第二次？（第二次更值得关注。）</div></div>
+<div class="step" data-n="3"><div><strong>判断是否在走楔形</strong><br>回撤是否越来越浅、趋势线斜率是否在上升？若趋势线比上方的通道线更陡，就是在走楔形。</div></div>
+<div class="step" data-n="4"><div><strong>过靶后等反转确认</strong><br>不要仅凭刺穿就逆势。等真正的反转证据出现，例如两波下跌的结构。</div></div>
+<div class="step" data-n="5"><div><strong>自我检查</strong><br>问一句：我是不是在反复重画通道线？如果是，<strong>说明我可能站在错误的方向</strong>。</div></div>
+<div class="step" data-n="6"><div><strong>反转未确认前只做顺势</strong><br>要有耐心，在市场有效反转之前绝对不要逆势而为。</div></div>
+</div>
+<div class="callout good"><strong>实战记录句式：</strong>"上升趋势处于通道中，价格<strong>第二次</strong>刺穿通道线后反转 → 视为过靶/楔形候选；但需等反转确认，不凭刺穿入场。若通道线不断需要重画，则放弃逆势想法，回到顺势。作废条件：价格再次站上更高斜率的通道线并延续。"</div>
+</section>
+
+<section id="practice">
+<h2>9. 自测与清单</h2>
+<div class="quiz">
+<p><strong>问题 1：</strong>关于趋势通道线过靶与楔形的关系，原文的结论是？</p>
+<label><input type="radio" name="q1" value="a"> A. 两者完全无关</label>
+<label><input type="radio" name="q1" value="b"> B. 应视为一物、同等对待——大部分楔形以对趋势通道线的假突破触发反转</label>
+<label><input type="radio" name="q1" value="c"> C. 楔形只在日线上出现</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>如果你发现自己不断地在重画趋势通道线，通常说明？</p>
+<label><input type="radio" name="q2" value="a"> A. 你的画法越来越精确</label>
+<label><input type="radio" name="q2" value="b"> B. 你处在错误的市场方向——一直期待反转，而趋势越来越强</label>
+<label><input type="radio" name="q2" value="c"> C. 市场即将反转</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>上升通道突破上轨（加速上攻）通常意味着？</p>
+<label><input type="radio" name="q3" value="a"> A. 一定开启更强的新趋势</label>
+<label><input type="radio" name="q3" value="b"> B. 通常属于高潮性上涨，最终反转进入通道并往往击穿下轨——但有时也可能开启更强的上升趋势</label>
+<label><input type="radio" name="q3" value="c"> C. 与后续走势无关</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>下降通道击穿下轨之后，通常？</p>
+<label><input type="radio" name="q4" value="a"> A. 突破会在大约 5 根 K 线以内失败，然后反转</label>
+<label><input type="radio" name="q4" value="b"> B. 必然开启新一轮下跌</label>
+<label><input type="radio" name="q4" value="c"> C. 通道形态立即失效</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>关于散户在市场重大转折点的作用，原文的观点是？</p>
+<label><input type="radio" name="q5" value="a"> A. 散户的恐慌是反转的主要动力</label>
+<label><input type="radio" name="q5" value="b"> B. 散户贡献的成交量不足 5%，基本可以忽略；Emini 这类大市场基本由机构主导</label>
+<label><input type="radio" name="q5" value="c"> C. 散户决定趋势通道线的位置</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我先画了趋势线，再用平行线或摆动点定出通道线。</label>
+<label><input type="checkbox"> 我确认了通道线是否把所有价格行为涵括在内。</label>
+<label><input type="checkbox"> 我区分了"触及"与"过靶"，并留意是否第二次刺穿。</label>
+<label><input type="checkbox"> 我把过靶与楔形当作同一现象来理解。</label>
+<label><input type="checkbox"> 我没有仅凭刺穿就逆势入场，而是等反转确认。</label>
+<label><input type="checkbox"> 我检查了自己是否在反复重画通道线（这提示方向可能错了）。</label>
+<label><input type="checkbox"> 在有效反转前，我保持顺势交易，没有逆势而为。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：七条核心结论</h2>
+<ol>
+<li><strong>趋势通道线在趋势线的另一侧、斜率大致相同；对涨速过快的趋势，它是有用的逆势工具。</strong></li>
+<li><strong>过靶之后（尤其第二次刺穿）的反转，才可能带来逆势入场机会。</strong></li>
+<li><strong>趋势通道线过靶与楔形是同一件事，应同等对待；楔形常常并不明显。</strong></li>
+<li><strong>楔形的成因是迫切感：多头在更小的回撤中买入、空头在更小的下跌中退出，迫使趋势线斜率上升。</strong></li>
+<li><strong>反转之所以发生在过靶之后，源于机构交易心理——策略本身就有 30%~70% 时间是亏钱的。</strong></li>
+<li><strong>不断重画通道线通常说明你处在错误的市场方向；反转未确认前只做顺势。</strong></li>
+<li><strong>上升通道突破上轨通常是高潮；下降通道击穿下轨的突破常在大约 5 根 K 线内失败。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>每次想在通道线上逆势时，先检查一件事——<strong>"这根通道线我是不是已经画了第三遍了？"</strong>如果是，你大概率站在错误的方向。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 14 章内容整理、归纳并重新表述，加入示意图、表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 14 章 趋势通道线</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"b",q2:"b",q3:"b",q4:"a",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：原文明确把趋势通道线过靶与楔形视为一物——大部分楔形都以对通道线的假突破触发反转。",
+  "第 2 题：不断重画通道线说明你一直期待反转而趋势越来越强，通常意味着你处在错误的市场方向。",
+  "第 3 题：上升通道突破上轨通常属高潮性上涨，最终反转进入通道并常击穿下轨，但也可能开启更强趋势。",
+  "第 4 题：下降通道击穿下轨后，突破通常会在大约 5 根 K 线以内失败然后反转，不过也可能开启更强下跌。",
+  "第 5 题：散户在市场重大转折点贡献的成交量不足 5%，大市场基本由机构与计算机主导。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+" "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

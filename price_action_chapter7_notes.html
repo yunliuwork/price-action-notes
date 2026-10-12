@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 7 章 外包K线｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 7 章</div>
+<h1>外包 K 线</h1>
+<p class="lead">外包线（Outside Bar）是全书被单独列成一章讨论的少数形态之一，因为它同时具备两个特性：<strong>结构极其显眼</strong>（高低点都包住了前一根），又<strong>极易被误读</strong>（包住了不等于反转）。本章要解决的问题是：一根外包线到底在说什么，以及它什么时候值得交易。</p>
+<div class="tags"><span class="tag">外包线 Outside Bar</span><span class="tag">吞没 Engulfing</span><span class="tag">收盘位置定方向</span><span class="tag">失败突破</span><span class="tag">单根双边交易</span><span class="tag">ii 与外包</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#define">1. 结构与定义</a><a href="#strength">2. 强弱与成色</a><a href="#context">3. 背景决定含义</a><a href="#entry">4. 入场、止损与仓位</a><a href="#fail">5. 失败模式</a><a href="#myths">6. 关键逻辑与误区</a><a href="#workflow">7. 看图分析流程</a><a href="#cases">8. 情境案例</a><a href="#practice">9. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：</strong>一根外包线意味着<strong>在这一根 K 线之内，价格先朝一个方向突破了前一根的极值，然后又反向突破了前一根的另一侧极值</strong>。换句话说，它把“一次失败的突破”和“一次成功的反向突破”压缩进了同一根 K 线。它是最直白的<strong>双边争夺</strong>证据——但方向<strong>只由收盘位置决定</strong>。</div>
+<div class="grid3">
+<div class="card"><h3>它是什么</h3><p>高点高于前一根高点、低点低于前一根低点的 K 线。</p><p class="small muted">等于“先冲高、再破低”或“先破低、再冲高”。</p></div>
+<div class="card"><h3>方向看哪里</h3><p>只看<strong>收盘价</strong>：收在上端 → 多方赢；收在下端 → 空方赢；收在中部 → 没有结论。</p><p class="small muted">颜色、形状都不能替代收盘位置。</p></div>
+<div class="card"><h3>为什么重要</h3><p>它同时给出了触发价与止损位，是止损距离常常很明确的一类结构。</p><p class="small muted">但代价是：它往往比普通信号 K 线更大。</p></div>
+</div>
+<div class="flow">
+<div class="flowbox"><strong>前一根</strong><br><span class="muted small">基准区间</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>外包线</strong><br><span class="muted small">两侧极值都被越过</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>收盘选边</strong><br><span class="muted small">决定方向</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>背景批准</strong><br><span class="muted small">决定是否可交易</span></div>
+</div>
+<div class="callout"><strong>一个定义上的推论（原文特别指出）：</strong>既然外包 K 线完全包含前一根 K 线，那么<strong>所有外包 K 线都是一个交易区间（两根或以上 K 线大致重叠）的一部分</strong>。在其他时候，它们也可以表现出<strong>反转 K 线或趋势 K 线</strong>的特征。所以交易者必须注意它们所发生的背景——这句话就是本章的骨架。</div>
+<div class="callout warn"><strong>因此原文明确不推荐对 5 分钟外包 K 线做双向突破交易。</strong>传统技术分析常说「在外包 K 线上下同时挂单，一边成交后另一边变成止损兼反手」——但原文指出，在<strong>突破一根 5 分钟外包 K 线时入场一定是不明智的做法</strong>，尤其在它很长的情况下，因为<strong>止损距离太远意味着风险很大</strong>。由于它是单 K 线交易区间，而在交易区间中我们最好不要在其顶部买入或在其底部卖出，<strong>所以通常情况下都不建议在突破外包 K 线时入场</strong>。</div>
+
+<div class="callout warn"><strong>最需要记住的一句：</strong>“外包”描述的是<strong>范围关系</strong>，不是方向。一根包住前一根的 K 线，收在中部时几乎没有任何交易价值——它只是告诉你“双向波动变大了”。</div>
+</section>
+
+<section id="define">
+<h2>1. 结构与定义：一次被压缩的双向突破</h2>
+<p>外包线的判定标准只有一条：<strong>当前 K 线的高点 &gt; 前一根的高点，且当前 K 线的低点 &lt; 前一根的低点</strong>。在这个基础上，它的交易含义完全取决于收盘落在哪里。</p>
+<div class="chart">
+<svg viewBox="0 0 680 320" role="img" aria-label="示意图：外包线的结构，以及收盘位置决定方向">
+<text x="26" y="26" fill="currentColor" font-size="13" font-weight="700">外包线的结构：两侧极值都被越过</text>
+
+<rect x="96" y="96" width="24" height="76" fill="#8ab4ff" opacity=".5"/>
+<line x1="108" y1="84" x2="108" y2="186" stroke="#8ab4ff" stroke-width="2"/>
+<text x="108" y="212" fill="currentColor" font-size="11.5" opacity=".85" text-anchor="middle">前一根</text>
+<text x="108" y="228" fill="currentColor" font-size="11.5" opacity=".85" text-anchor="middle">（基准区间）</text>
+
+<line x1="60" y1="84" x2="256" y2="84" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4" opacity=".6"/>
+<line x1="60" y1="186" x2="256" y2="186" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4" opacity=".6"/>
+<rect x="196" y="66" width="24" height="140" fill="#16845b" opacity=".8"/>
+<line x1="208" y1="54" x2="208" y2="222" stroke="#16845b" stroke-width="2"/>
+<text x="264" y="80" fill="currentColor" font-size="11.5" opacity=".85">高点更高</text>
+<text x="264" y="196" fill="currentColor" font-size="11.5" opacity=".85">低点更低</text>
+<text x="208" y="246" fill="#16845b" font-size="11.5" font-weight="700" text-anchor="middle">外包线 · 收在上端</text>
+<text x="208" y="262" fill="#16845b" font-size="11.5" text-anchor="middle">→ 看多（多方最终掌控）</text>
+
+<line x1="420" y1="34" x2="420" y2="286" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".25"/>
+
+<text x="560" y="26" fill="#c74747" font-size="13" font-weight="700" text-anchor="middle">收在下端 → 看空</text>
+<rect x="546" y="66" width="24" height="140" fill="#c74747" opacity=".8"/>
+<line x1="558" y1="54" x2="558" y2="222" stroke="#c74747" stroke-width="2"/>
+<line x1="470" y1="54" x2="650" y2="54" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4" opacity=".6"/>
+<line x1="470" y1="206" x2="650" y2="206" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4" opacity=".6"/>
+<text x="560" y="246" fill="#c74747" font-size="11.5" font-weight="700" text-anchor="middle">同一形态 · 收盘在下端</text>
+<text x="560" y="262" fill="#c74747" font-size="11.5" text-anchor="middle">→ 看空（空方最终掌控）</text>
+
+<text x="340" y="304" fill="currentColor" opacity=".72" font-size="11.5" text-anchor="middle">示意图：结构完全相同，方向完全由收盘位置决定；收在中部则无结论</text>
+</svg>
+</div>
+<h3>三种收盘，三种结论</h3>
+<table><thead><tr><th>收盘位置</th><th>含义</th><th>处理倾向</th></tr></thead><tbody>
+<tr><td><strong>收在上端附近</strong></td><td>先破低、后冲高，多方在最后阶段完全掌控</td><td>偏多：等待越过其高点做多，或作为回调结束的信号</td></tr>
+<tr><td><strong>收在下端附近</strong></td><td>先冲高、后破低，空方在最后阶段完全掌控</td><td>偏空：等待跌破其低点做空，或作为反弹结束的信号</td></tr>
+<tr><td><strong>收在中部</strong></td><td>双向都曾获胜，谁也没能收住</td><td><strong>无结论</strong>：通常不放进候选，除非背景极强</td></tr>
+</tbody></table>
+<div class="callout"><strong>为什么收盘位置具有一票否决权：</strong>外包线的过程是双向的，只有<strong>收盘</strong>能告诉我们“最终谁付得起这个价格”。影线记录的是一次进攻的结果，收盘记录的是这场战斗的最终归属。这与第 5 章反转 K 线的逻辑完全一致。</div>
+<h3>与相邻概念的关系</h3>
+<table><thead><tr><th>概念</th><th>关系</th><th>区别要点</th></tr></thead><tbody>
+<tr><td>内包线（第 6 章）</td><td>正好相反的范围关系</td><td>内包是<strong>收窄</strong>（等突破），外包是<strong>扩张</strong>（已发生双向突破）</td></tr>
+<tr><td>吞没形态</td><td>常被混用</td><td>吞没通常强调<strong>实体</strong>包住前一根实体；外包强调<strong>高低点</strong>都包住。实体小但影线长的外包线，不是吞没</td></tr>
+<tr><td>反转 K 线（第 5 章）</td><td>外包线可充当反转信号</td><td>反转 K 线只要求“创新极值后收回”；外包线要求<strong>两侧极值都越过</strong>，条件更严</td></tr>
+<tr><td>趋势 K 线（第 2 章）</td><td>可能重合</td><td>若外包线同时实体巨大且收在极值，它既是外包线也是趋势 K 线，分量更重</td></tr>
+</tbody></table>
+</section>
+
+<section id="strength">
+<h2>2. 强弱与成色：同一根外包线的五档</h2>
+<p>外包线的质量同样不是二元的。下面六个维度决定了它值不值得交易。</p>
+<table><thead><tr><th>维度</th><th>强（加分）</th><th>弱（减分）</th></tr></thead><tbody>
+<tr><td><strong>收盘位置</strong></td><td>收在自身区间上端 / 下端 1/4 以内</td><td>收在中部——最重要的减分项</td></tr>
+<tr><td><strong>实体大小</strong></td><td>实体大，占据整根 K 线的主要部分</td><td>实体很小、几乎全是影线</td></tr>
+<tr><td><strong>被反转方</strong></td><td>反向吞掉了前一根<strong>多根</strong> K 线的推进</td><td>只勉强越过前一根极值一点点</td></tr>
+<tr><td><strong>位置</strong></td><td>出现在区间边界、通道过冲、摆动点等关键位</td><td>出现在区间中部或趋势中段的随机位置</td></tr>
+<tr><td><strong>绝对幅度</strong></td><td>幅度适中，止损可控</td><td>幅度过大，止损太远，仓位被迫极小</td></tr>
+<tr><td><strong>后续跟随</strong></td><td>下一根同向推进，且未回破外包线的反向极值</td><td>下一根立刻反向吞回，形成二次反转</td></tr>
+</tbody></table>
+<div class="callout warn"><strong>外包线独有的两难：</strong>它的优势是“结构清晰、止损位明确”，劣势是<strong>它通常比普通信号 K 线更大</strong>——止损距离更远，盈亏比更差。因此外包线交易尤其需要<strong>先减仓</strong>，并且必须检查到目标的剩余空间是否仍大于约两倍风险。<strong>看到外包线就兴奋、直接按常规仓位入场，是这一章最典型的亏损路径。</strong></div>
+<h3>两种特殊的高质量外包线</h3>
+<div class="grid2">
+<div class="card"><h3>收在极值 + 实体大</h3><p>这种外包线同时满足“趋势 K 线”与“外包线”两个条件，是分量最重的一种。它常常标志着一次真正的方向交接。</p><p class="small muted">用法：可在收盘附近参与，或等越过其极值触发。</p></div>
+<div class="card"><h3>边界处的失败突破外包线</h3><p>在区间边界，价格先突破边界（制造假突破），随后反向吞掉并收在反方向极值——这是<strong>失败突破</strong>的教科书形态，也是区间交易中最可靠的信号之一。</p><p class="small muted">用法：跌破外包线反向极值即认错。</p></div>
+</div>
+</section>
+
+<section id="context">
+<h2>3. 背景决定含义：同一根外包线，四种命运</h2>
+<p>这是本章最需要记牢的一节。外包线的含义<strong>几乎完全由它出现的位置决定</strong>。</p>
+<div class="grid2">
+<div class="card"><h3>✅ 值得考虑</h3><ul>
+<li><strong>区间边界：</strong>边界处的失败突破 + 外包线 = 反手信号</li>
+<li><strong>趋势末端的高潮之后：</strong>加速推进被外包线吞掉，可能是转折的起点</li>
+<li><strong>通道线过冲后：</strong>破线又收回，配合外包线分量更重</li>
+<li><strong>重要摆动点：</strong>位置本身赋予结构意义</li>
+<li><strong>强趋势中的回调结束：</strong>顺势方向的外包线可视为回调完成的证据</li>
+</ul></div>
+<div class="card"><h3>⛔ 应该放过</h3><ul>
+<li><strong>区间中部：</strong>方向优势最弱，形状再标准也难有期望值</li>
+<li><strong>强趋势推进的内部：</strong>逆势的外包线通常只带来几根 K 线的回调</li>
+<li><strong>收在中部的外包线：</strong>没有方向结论</li>
+<li><strong>幅度过大：</strong>止损太远，盈亏比不成立</li>
+<li><strong>到目标位空间不足：</strong>前方就是强阻力 / 支撑</li>
+<li><strong>连续出现的外包线：</strong>说明双向波动失控，市场状态混乱</li>
+</ul></div>
+</div>
+<div class="callout warn"><strong>强趋势里的默认解读：</strong>与反转 K 线一样，<strong>强趋势中逆势的外包线默认被读作顺势的入场机会</strong>，而不是反转信号。空头强趋势里一根收在高端的外包线，首先应被理解为“空头的又一次卖出机会即将出现”，直到趋势线被打破、前一个摆动点被有效突破。</div>
+<h3>关键补充：外包线也可以是「延续」形态</h3>
+<div class="callout good"><strong>这是原文最重要的一节，容易被忽略。</strong>当一根<strong>顺势</strong>外包 K 线发生在一轮趋势反转行情的<strong>第一波</strong>，而且前期趋势非常强劲，那么它在功能上<strong>等同于一根强趋势 K 线</strong>，而不是交易区间特征的 K 线。</div>
+<p>机制是这样的：在一轮下跌趋势中如果出现强势反转，交易者会期待涨幅继续扩大。许多交易者寻求在<strong>低点抬升 K 线的高点上方</strong>买入，越来越少的人在前一根 K 线低点下方卖空。如果多头更激进，他们会<strong>直接在前一根 K 线低点下方买入</strong>，而非等待价格站上其高点，并且接下来几分钟持续买入。这种持续买盘会让当前 K 线超越前一根的高点——一旦站上，它就变成了<strong>一根外包 K 线</strong>。</p>
+<div class="callout warn"><strong>为什么这会带来强劲上涨：</strong>那些在前一根 K 线低点下方做空（以为只是一个熊旗）的空头被套；他们的入场 K 线迅速反转为一根外包阳线，造成<strong>空头被套、多头踏空</strong>。于是市场会继续强劲上涨多根 K 线，所有人都意识到市场已经反转而必须重新调整头寸。</div>
+<div class="callout"><strong>一个精确的推论：这波上涨的起点应该从「低点抬升」算起，而不是从最低点算起。</strong>因为多空双方是在低点抬升位置才突然一致认为下一波应该是上涨。因此<strong>通常从外包 K 线底部会出现两波上涨</strong>——虽然从图上最低点算起可以看到 3 波，但第一波可以不算。</div>
+<p class="muted small">附带一条行为观察：当所有人想法一致、都期待一次下探好让自己加仓或减亏时，<strong>期望中的事情反而不会发生</strong>——多空双方都在市场刚出现哪怕 2–3 个最小报价单位回撤时就开始买入，使市场无法出现 2–3 根 K 线的回调，直到趋势运行过头。</p>
+
+<h3>外包线之后的两条路</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>跟随（延续）</strong><br>下一根同向推进 → 说明外包线标记的方向被市场接受。此时可持有，并把止损移动到外包线的反向极值之外。</div></div>
+<div class="step" data-n="2"><div><strong>反向吞回（二次反转）</strong><br>下一根又反向吞掉外包线 → 说明双向波动仍在继续，市场大概率转入区间。<strong>此时应立即降低预期</strong>，而不是继续等待原方向。</div></div>
+</div>
+<p class="muted small">这两条路的分岔点通常在<strong>触发后的 1–3 根 K 线</strong>内就能看出。外包线交易的一个优点是：它要么很快证明自己，要么很快否定自己——拖久了本身就是一个负面信号。</p>
+</section>
+
+<section id="entry">
+<h2>4. 入场、止损与仓位</h2>
+<h3>触发：越过哪一端</h3>
+<div class="grid2">
+<div class="card"><h3>做多</h3><p>外包线<strong>收在上端</strong>时，在其<strong>高点上方</strong>挂买入止损单。若价格先跌破低点，则形态作废。</p></div>
+<div class="card"><h3>做空</h3><p>外包线<strong>收在下端</strong>时，在其<strong>低点下方</strong>挂卖出止损单。若价格先越过高点，则形态作废。</p></div>
+</div>
+<h3>止损与仓位：外包线交易的专用纪律</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>结构止损</strong><br>放在外包线的<strong>另一端之外</strong>（做多 → 低点下方；做空 → 高点上方）。也可用外包线之前那根 K 线的极值作为更保守的参考。</div></div>
+<div class="step" data-n="2"><div><strong>量出风险</strong><br>外包线普遍偏大，因此这个距离通常明显大于普通信号。<strong>先接受这个事实，再谈仓位。</strong></div></div>
+<div class="step" data-n="3"><div><strong>反推仓位（关键）</strong><br>用可承受的单笔风险 ÷ 止损距离算仓位。<strong>外包线交易的默认动作是减仓</strong>——不是把止损挪近。</div></div>
+<div class="step" data-n="4"><div><strong>检查空间</strong><br>到最近阻力 / 支撑的空间是否仍大于约两倍风险。若不足，直接放弃——这是外包线交易中最常见的否决理由。</div></div>
+</div>
+<div class="callout warn"><strong>两种替代入场方式：</strong>如果外包线太大，可以考虑——① <strong>等回测</strong>：价格回到外包线中部或前一根 K 线附近再进，止损更近；② <strong>降周期寻找结构</strong>：在外包线内部的更小周期上寻找一个更小的建仓形态。两者都比“硬扛一个巨大的止损”更合理。</div>
+<h3>离场逻辑</h3>
+<table><thead><tr><th>情形</th><th>含义</th><th>处理倾向</th></tr></thead><tbody>
+<tr><td>触发后出现同向强跟随</td><td>方向被接受</td><td>按计划持有，止损移至外包线反向极值之外</td></tr>
+<tr><td>触发后立刻回到外包线中部</td><td>争夺仍在继续，可能转为区间</td><td>降低预期，考虑减仓</td></tr>
+<tr><td>被反向吞回（二次反转）</td><td>外包线失效</td><td>认错离场，不要等待“再回来”</td></tr>
+<tr><td>抵达前一个摆动点 / 密集成交区</td><td>空间可能已经不多</td><td>分批止盈，不期待一次成为新趋势</td></tr>
+</tbody></table>
+</section>
+
+<section id="fail">
+<h2>5. 失败模式清单</h2>
+<table><thead><tr><th>失败模式</th><th>发生了什么</th><th>正确的应对</th></tr></thead><tbody>
+<tr><td><strong>收在中部却当作方向</strong></td><td>把“双向波动”误读成“某一方获胜”</td><td>收在中部就是无结论，直接跳过</td></tr>
+<tr><td><strong>止损太远、仓位照旧</strong></td><td>外包线偏大，单笔风险远超计划</td><td>减仓、等回测或降低周期找结构</td></tr>
+<tr><td><strong>在区间中部使用</strong></td><td>方向优势最弱，被两边反复打</td><td>只在边界与关键位使用</td></tr>
+<tr><td><strong>逆强趋势使用</strong></td><td>外包线只带来几根回调，趋势继续</td><td>先读成顺势机会，等趋势被打破的证据</td></tr>
+<tr><td><strong>空间不足仍入场</strong></td><td>前方就是强阻力 / 支撑，盈亏比小于 2:1</td><td>放弃——最常见的可避免亏损</td></tr>
+<tr><td><strong>忽略二次反转</strong></td><td>被反向吞回后仍等待回本</td><td>二次反转是明确的失效信号，立即认错</td></tr>
+<tr><td><strong>连续外包线中交易</strong></td><td>双向波动失控，结构失去意义</td><td>暂停交易，等待状态重新稳定</td></tr>
+</tbody></table>
+<div class="callout"><strong>把“大小”当成筛选条件：</strong>外包线是少数<strong>幅度本身就是风险</strong>的形态。遇到一根很大的外包线，第一反应应该是“我的止损会有多远、还剩多少空间”，而不是“这个形态好漂亮”。</div>
+</section>
+
+<section id="myths">
+<h2>6. 关键逻辑与六种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>外包线</td><td>双向波动是否加剧？</td><td>“一定会反转”</td></tr>
+<tr><td>收盘位置</td><td>最终谁付得起这个价格？</td><td>可选项，可以忽略</td></tr>
+<tr><td>吞没</td><td>实体是否被包住？</td><td>与外包线完全同义</td></tr>
+<tr><td>失败突破</td><td>边界进攻是否失效？</td><td>必然导致趋势反转</td></tr>
+</tbody></table>
+<h3>尤其需要避免的六种错误</h3>
+<ul>
+<li><strong>把“包住”当方向：</strong>外包描述范围，方向只看收盘。</li>
+<li><strong>忽略 K 线绝对幅度：</strong>幅度决定止损距离，进而决定这笔交易是否值得做。</li>
+<li><strong>在区间中部交易外包线：</strong>位置最差，形状最容易被高估。</li>
+<li><strong>把外包线与吞没混为一谈：</strong>影线外包 ≠ 实体吞没，强度不同。</li>
+<li><strong>在强趋势里逆势用外包线：</strong>第一根反向结构通常只是回调的开始。</li>
+<li><strong>忘记检查前方空间：</strong>外包线信号再标准，空间不足也不能做。</li>
+</ul>
+</section>
+
+<section id="workflow">
+<h2>7. 看图分析流程</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>先定位（第 1 章）</strong><br>趋势端还是区间端？方向偏好是顺势、边界反手，还是观望？</div></div>
+<div class="step" data-n="2"><div><strong>确认“外包”的判定</strong><br>高点更高<strong>且</strong>低点更低。只满足一侧的不是外包线。</div></div>
+<div class="step" data-n="3"><div><strong>读收盘位置定方向</strong><br>收在上端 → 偏多；收在下端 → 偏空；收在中部 → 跳过。</div></div>
+<div class="step" data-n="4"><div><strong>检查位置与背景</strong><br>是否在边界、摆动点、通道过冲、高潮之后？这些位置才赋予外包线分量。</div></div>
+<div class="step" data-n="5"><div><strong>量出止损距离，检查空间</strong><br>止损放反向极值之外；确认到目标的空间大于约两倍风险。不满足就放弃。</div></div>
+<div class="step" data-n="6"><div><strong>减仓入场，观察跟随</strong><br>越过高点 / 跌破低点触发；1–3 根 K 线内看是否被反向吞回。</div></div>
+</div>
+<div class="callout good"><strong>实战记录句式：</strong>“定位：交易区间上沿；结构：外包线，收在低端 1/4；触发：跌破 X 做空；作废：越过 Y；风险 Y−X；到区间下沿空间约 2.5 倍风险；仓位：常规的 60%（外包线偏大）。”——位置、方向、触发、作废、空间、仓位，六件事齐全。</div>
+</section>
+
+<section id="cases">
+<h2>8. 四个典型情境</h2>
+<details open><summary>案例 A：区间上沿，价格先突破边界后收回，形成收在低端的外包线</summary>
+<p><strong>判断：</strong>这是<strong>失败突破 + 外包线</strong>的组合，是区间交易中最被认可的信号之一。背景与结构互相印证。</p>
+<p><strong>接下来的观察：</strong>入场后是否出现空头跟随；跌向区间中部的过程是否顺畅；是否在区间下沿出现止跌结构。</p>
+<p><strong>不能确定：</strong>这次可能是真正的向上突破在回测。因此止损必须放在外包线高点之外，并接受它可能失败。</p>
+</details>
+<details><summary>案例 B：强上涨趋势中出现一根收在低端的大外包线</summary>
+<p><strong>判断：</strong>形状强，但位置在强趋势中——默认应读作<strong>回调的开始</strong>，而不是趋势反转。</p>
+<p><strong>接下来的观察：</strong>是否出现空头跟随；回调结束后是否出现顺势买点（更优的交易机会）。</p>
+<p><strong>不能确定：</strong>强趋势中第一次反向结构往往只是回调，逆势做空的门槛应显著更高。</p>
+</details>
+<details><summary>案例 C：一根幅度极大的外包线，收盘在上端但离止损位很远</summary>
+<p><strong>判断：</strong>方向明确（收在上端），但止损距离过大，常规仓位下单笔风险超标。</p>
+<p><strong>接下来的观察：</strong>是否回测到中部给出更近的入场结构；更小周期上是否形成独立的小形态。</p>
+<p><strong>不能确定：</strong>这不是“该不该看多”的问题，而是<strong>这笔交易是否值得做</strong>的问题。正确动作是减仓、等回测，或放弃。</p>
+</details>
+<details><summary>案例 D：连续出现三根外包线，价格来回大幅摆动</summary>
+<p><strong>判断：</strong>双向波动失控，市场状态混乱，结构已失去参考意义。</p>
+<p><strong>接下来的观察：</strong>波动是否收窄并形成新的区间边界；是否出现明确的突破与跟随。</p>
+<p><strong>不能确定：</strong>这种环境下任何形态的期望值都会下降。正确动作通常是<strong>暂停交易</strong>，而不是加大仓位博取波动。</p>
+</details>
+</section>
+
+<section id="practice">
+<h2>9. 自测：检查你对外包线的理解</h2>
+<p class="muted">选择最合理的回答。重点是方向判定与仓位纪律。</p>
+<div class="quiz">
+<p><strong>问题 1：</strong>判定一根 K 线是否为外包线，标准是？</p>
+<label><input type="radio" name="q1" value="a"> A. 实体包住前一根实体</label>
+<label><input type="radio" name="q1" value="b"> B. 高点高于前一根高点，且低点低于前一根低点</label>
+<label><input type="radio" name="q1" value="c"> C. 收盘价高于前一根收盘价</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>一根外包线的收盘价落在自身区间中部，最合理的处理是？</p>
+<label><input type="radio" name="q2" value="a"> A. 按 K 线颜色决定方向</label>
+<label><input type="radio" name="q2" value="b"> B. 没有方向结论，通常跳过；除非背景极强才考虑小仓位参与</label>
+<label><input type="radio" name="q2" value="c"> C. 双向挂单，一定能抓到一边</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>外包线通常比普通信号 K 线更大，正确的应对是？</p>
+<label><input type="radio" name="q3" value="a"> A. 把止损挪近以适应常规仓位</label>
+<label><input type="radio" name="q3" value="b"> B. 减小仓位、等回测入场，或在更小周期找结构</label>
+<label><input type="radio" name="q3" value="c"> C. 加大仓位摊薄成本</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>在强上涨趋势中出现一根收在低端的外包线，默认解读是？</p>
+<label><input type="radio" name="q4" value="a"> A. 立即做空，趋势已反转</label>
+<label><input type="radio" name="q4" value="b"> B. 更可能是回调的开始；等趋势被打破的证据，顺势买点可能更优</label>
+<label><input type="radio" name="q4" value="c"> C. 加大多头仓位</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>外包线入场后，下一根立刻反向吞掉了它，说明？</p>
+<label><input type="radio" name="q5" value="a"> A. 只是噪音，应继续等待</label>
+<label><input type="radio" name="q5" value="b"> B. 出现二次反转，外包线失效，应认错离场</label>
+<label><input type="radio" name="q5" value="c"> C. 应加倍仓位等回本</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我先完成了定位（趋势端 / 区间端）再看外包线。</label>
+<label><input type="checkbox"> 我确认了高点更高<strong>且</strong>低点更低，而不只是包住了实体。</label>
+<label><input type="checkbox"> 我用收盘位置判定方向，没有用 K 线颜色。</label>
+<label><input type="checkbox"> 我确认了它出现在边界 / 摆动点 / 高潮之后，而不是随机位置。</label>
+<label><input type="checkbox"> 我量出了止损距离，并为外包线偏大而主动减仓。</label>
+<label><input type="checkbox"> 我检查了到目标的空间是否大于约两倍风险。</label>
+<label><input type="checkbox"> 我准备好在外包线被反向吞回时立即认错。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：七条核心结论</h2>
+<ol>
+<li><strong>外包线 = 两侧极值都被越过的 K 线，它把“失败突破 + 反向突破”压缩进一根 K 线。</strong></li>
+<li><strong>“外包”只描述范围关系，方向完全由收盘位置决定；收在中部就是没有结论。</strong></li>
+<li><strong>位置决定含义：</strong>区间边界的失败突破最有价值，区间中部与强趋势中段最容易亏钱。</li>
+<li><strong>强趋势中逆势的外包线默认是回调的开始</strong>，而不是反转信号。</li>
+<li><strong>外包线通常比普通信号更大，所以止损更远——默认动作是减仓，而不是挪近止损。</strong></li>
+<li><strong>入场前必须检查：到最近阻力 / 支撑的空间是否仍大于约两倍风险。</strong></li>
+<li><strong>触发后 1–3 根 K 线的跟随是最终裁决；被反向吞回（二次反转）就立即认错。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>看到外包线，先问三句话——<strong>“它收盘在哪？”、“它站在什么位置？”、“我的止损会有多远？”</strong>三个问题都过了，它才配进入候选名单。</div>
+<p class="muted small">资料说明：本页面依据《高级趋势技术分析》第 7 章标题「外包K线」，结合价格行为交易框架的公开资料整理为学习笔记与练习材料；<strong>不是书中原文、逐页摘要或对作者具体段落的复述</strong>。不同版本的章节编排与术语翻译可能不同，请以你手中的译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 7 章 外包K线</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"b",q2:"b",q3:"b",q4:"b",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：外包线的判定只看高低点——高点更高且低点更低；实体吞没是另一个概念。",
+  "第 2 题：收在中部说明双方都没能收住，没有方向结论，通常跳过；只有背景极强时才考虑小仓位。",
+  "第 3 题：外包线偏大意味着止损更远，正确应对是减仓、等回测，或在更小周期寻找更近的结构。",
+  "第 4 题：强趋势中第一次反向结构通常只是回调的开始；等趋势被打破的证据，顺势买点往往更优。",
+  "第 5 题：被立刻反向吞回构成二次反转，说明外包线已失效，应立即认错离场而不是等待回本。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+ " "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

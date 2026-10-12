@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 23 章 始于开盘的趋势与小幅回撤趋势｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 23 章</div>
+<h1>始于开盘的趋势与小幅回撤趋势</h1>
+<p class="lead">本章讲<strong>最强劲的一类趋势交易日</strong>：低点（或高点）出现在头几根 K 线，然后全天趋势性运动。它的困难之处极具讽刺意味——<strong>趋势在形成过程中看起来并不强劲</strong>：大量反向趋势 K 线、糟糕的买入信号、回撤小到让人以为"还没回调"。而理解这一点，正是拿住这类行情的关键。</p>
+<div class="tags"><span class="tag">始于开盘的趋势</span><span class="tag">小幅回撤趋势</span><span class="tag">开盘区间<25%</span><span class="tag">弱信号=强趋势</span><span class="tag">第一次突破趋势线</span><span class="tag">不收紧止损</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#features">1. 主要特征</a><a href="#prob">2. 概率：多少交易日会这样</a><a href="#strong">3. 最强劲的变体：小幅回撤趋势</a><a href="#appearance">4. 为什么它看起来不强</a><a href="#entry">5. 入场方法</a><a href="#manage">6. 止损管理：不要收紧到盈亏平衡</a><a href="#firstbreak">7. 第一次突破趋势线通常失败</a><a href="#data">8. 经济数据与第一根 K 线</a><a href="#myths">9. 关键逻辑与误区</a><a href="#practice">10. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心定义：</strong>始于开盘趋势交易日的<strong>上升趋势日低点</strong>（或下跌趋势日高点）出现在<strong>当天头几根 K 线</strong>，然后市场全天作趋势性运动，往往收于最低点或最高点附近。</div>
+<div class="grid3">
+<div class="card"><h3>最强劲但少见</h3><p>始于开盘的趋势通常是最强劲的趋势类型，<strong>但只发生在大约 20% 的交易日中</strong>。</p><p class="small muted">因此"开盘第一根 K 线做多/做空期待大趋势"属于低概率交易。</p></div>
+<div class="card"><h3>更强的小变体</h3><p><strong>小幅回撤趋势日</strong>——开盘区间很窄、全天伴随小幅回撤持续趋势运动。</p><p class="small muted">最强劲的类型，每月只有 1–2 天。</p></div>
+<div class="card"><h3>它的伪装</h3><p>过程中大量反向趋势 K 线、糟糕的信号 K 线，让新手不敢顺势，反而不断找逆势点。</p><p class="small muted">弱信号恰恰说明趋势强。</p></div>
+</div>
+<div class="chart">
+<svg viewBox="0 0 680 340" role="img" aria-label="示意图：始于开盘的上升趋势与小幅回撤，以及尾盘的较大回调">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">始于开盘的上升趋势：全天小幅回撤 + 尾盘较大回调</text>
+
+<path d="M60 250 L96 224 L124 238 L152 206 L182 220 L212 186 L242 200 L276 164 L306 178 L340 142 L370 156 L404 118 L434 132 L470 96 L500 110 L536 74 L566 88 L600 56 L632 68" fill="none" stroke="#16845b" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+
+<text x="70" y="70" fill="#16845b" font-size="11.5" font-weight="700">低点出现在头几根 K 线</text>
+<line x1="60" y1="268" x2="640" y2="268" stroke="currentColor" stroke-width="1" opacity=".3"/>
+<text x="70" y="288" fill="currentColor" font-size="11.5" opacity=".85">全天回撤极小（例如仅占日均波幅 10%~30%）——这是它最强的标志</text>
+
+<circle cx="600" cy="56" r="6" fill="#c74747"/>
+<path d="M600 56 L616 96 L588 128 L560 112 L540 142" fill="none" stroke="#c74747" stroke-width="2.4" stroke-dasharray="6 4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="470" y="56" fill="#c74747" font-size="11.5" font-weight="700">尾盘回调 ≈ 前期最大回撤的 150%~200%</text>
+
+<text x="70" y="314" fill="currentColor" opacity=".75" font-size="11.5">注意：这轮尾盘回调通常伴随 1~2 根较长的顺势趋势 K 线（动能耗竭），常在上午 11 点后出现</text>
+<text x="70" y="332" fill="currentColor" opacity=".75" font-size="11.5">它更可能是耗竭性高潮，而不是新一轮上涨的起点</text>
+</svg>
+</div>
+</section>
+
+<section id="features">
+<h2>1. 主要特征</h2>
+<table><thead><tr><th>#</th><th>特征</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>上升趋势日的低点或下跌趋势日的高点出现在当天头几根 K 线</strong></td></tr>
+<tr><td>2</td><td>如果交易日<strong>开盘区间低于近期日均波幅的 25%</strong>，上升趋势日可能出现<strong>双底</strong>、下跌趋势日可能出现<strong>双顶</strong>（若开盘区间约为日均波幅的 <strong>50%</strong>，则突破更可能造成<strong>趋势性交易区间交易日</strong>）</td></tr>
+<tr><td>3</td><td>交易日可能始于一轮<strong>持续多根 K 线的急速行情</strong>，也可能始于<strong>窄幅开盘区间</strong></td></tr>
+<tr><td>4</td><td>如果市场从第一根 K 线左右就走出趋势，而且最初的急速行情<strong>持续 3 根或以上 K 线</strong>，那么在<strong>首次回撤时入场</strong>通常至少是不错的刮头皮机会</td></tr>
+<tr><td>5</td><td>如果一开盘就出现一波<strong>持续多根 K 线、幅度较大的强劲急速行情</strong>，交易日通常会成为<strong>急速与通道趋势交易日</strong></td></tr>
+<tr><td>6</td><td><strong>开盘大幅跳空</strong>通常会造成始于开盘的趋势交易日，<strong>方向可以是任意的</strong>。跳空高开时约 <strong>60% 概率为上升趋势日、40% 为下跌趋势</strong>；<strong>缺口越大，越可能成为趋势日，且越可能同向</strong></td></tr>
+<tr><td>7</td><td>始于开盘的趋势交易日<strong>从一开始就具有迫切性和确定性</strong>，通常属于最强劲的趋势，<strong>回撤幅度最小</strong></td></tr>
+<tr><td>8</td><td>趋势后期往往会出现<strong>20 根均线缺口 K 线建仓形态</strong></td></tr>
+<tr><td>9</td><td>最强劲类型是<strong>开盘区间很窄、全天伴随小幅回撤</strong>的行情（小幅回撤趋势交易日）</td></tr>
+<tr><td>10</td><td>这种行情通常会在<strong>最后两个小时出现幅度约为前期回撤 150%–200% 的回调</strong>，然后恢复原趋势直到收盘</td></tr>
+<tr><td>11</td><td>对老练交易者而言，摆动交易建仓形态具有 <strong>70% 或更高的成功率</strong>，但初学者完全感觉不到这么高的确定性——<strong>许多信号 K 线看起来很糟糕</strong></td></tr>
+<tr><td>12</td><td>往往出现<strong>许多相反方向的趋势 K 线</strong>——这是逆势压力的信号，诱使新手不停找逆势入场点</td></tr>
+<tr><td>13</td><td>趋势通常处于<strong>相对较窄的通道</strong>，回撤走势往往会<strong>扫掉盈亏平衡止损</strong>，将交易者震仓出局</td></tr>
+</tbody></table>
+<div class="callout good"><strong>第 12 条值得完整理解（原文描述）：</strong>在上升趋势中市场可能出现许多空头趋势 K 线，甚至不少于 2–3 根 K 线的急速下跌。<strong>新手反复入场做空并反复亏钱。急速下跌演变成牛旗，但形态看起来非常弱，新手不敢买入。</strong>他们只是退出亏损空头却不敢做多，因为害怕再次亏损。<strong>所有难看的牛旗都成功了，然后跟着再出现一个很漂亮的但失败的做空形态。</strong>——这正是"弱信号 = 强趋势"最生动的写照。</div>
+</section>
+
+<section id="prob">
+<h2>2. 概率：别把低概率当常态</h2>
+<div class="callout warn"><strong>始于开盘的趋势交易日通常是最强劲的趋势类型，但只发生在大约 20% 的交易日中。这意味着在开盘第一根 K 线上方做多或下方做空、期待其成为一轮强劲趋势的起点，属于低概率的交易。</strong>市场在第一个小时行情中反转要常见得多。</div>
+<h3>一些可用的统计</h3>
+<table><thead><tr><th>观察</th><th>概率</th></tr></thead><tbody>
+<tr><td>大幅跳空且第一根 K 线是大阳线或大阴线时，这根 K 线成为当天最高点或最低点</td><td><strong>50% 或更高</strong></td></tr>
+<tr><td>一天的最高点或最低点出现在<strong>头 5 根 K 线</strong>内</td><td>约 <strong>50%</strong> 的交易日</td></tr>
+<tr><td>但这根 K 线<strong>形成于开盘区间之内</strong>（而区间行情可以持续几个小时）</td><td><strong>90%</strong> 的情况</td></tr>
+</tbody></table>
+<div class="callout"><strong>这三条统计合起来说明一件事：极值常在开盘附近形成，但它通常只是"区间内的一根 K 线"，并不意味着趋势立刻展开。</strong>这是对"看到第一根 K 线就下重注"的直接反驳。</div>
+<div class="callout good"><strong>两种情况下建仓形态的可靠性会更高：</strong>① 当它形成于像<strong>趋势通道线这样的强磁力位</strong>（例如形成楔形反转形态）；② 当它属于一个<strong>反转形态的一部分</strong>（例如从昨天收盘前的末端旗形反转）。</div>
+<h3>跨日延续</h3>
+<div class="callout">这种趋势可以非常强劲，<strong>一直持续到第二天头 1–2 个小时</strong>，因此交易者在第二天开盘后应该寻求<strong>在回调中顺势入场</strong>。很多时候回调力度很强、让人怀疑是否在反转，<strong>然而通常情况下，表面上的强势回调在较高时间级别上只是正常的两段式调整</strong>（比如回调到 15 分钟图上的均线）。</div>
+</section>
+
+<section id="strong">
+<h2>3. 最强劲的变体：小幅回撤趋势交易日</h2>
+<div class="callout good"><strong>无论对于始于开盘的趋势交易日，还是所有的趋势交易日，最强劲类型的趋势都属于<u>开盘区间很窄、然后整个交易日伴随小幅回撤持续做趋势性运动</u>的行情。我们将这种行情称之为小幅回撤趋势交易日。</strong>这是最强劲的趋势交易日类型，<strong>每个月只有 1–2 天</strong>。</div>
+<table><thead><tr><th>维度</th><th>特征</th></tr></thead><tbody>
+<tr><td>回撤幅度</td><td>例如 Emini 回撤可能仅为 <strong>10–12 个最小报价单位（日均波幅的 10%–30%）</strong></td></tr>
+<tr><td>尾盘回调</td><td>通常会在最后两个小时出现幅度约为<strong>前期回撤 150%–200%</strong> 的回调，然后恢复原趋势直到收盘</td></tr>
+<tr><td>发生时间</td><td>大约 <strong>2/3 情况</strong>下会在<strong>上午 11 点之后</strong>出现较大回撤</td></tr>
+<tr><td>回撤幅度的参照</td><td>往往大约是<strong>趋势从头一个小时开始之后所发生的最大回撤的两倍</strong></td></tr>
+<tr><td>前置信号</td><td>在其发生之前，通常会出现 <strong>1–2 根朝趋势方向的相对较长的强劲趋势 K 线</strong>，代表<strong>动能耗竭</strong></td></tr>
+</tbody></table>
+<div class="callout warn"><strong>如何解读那 1–2 根长趋势 K 线：</strong>如果市场一直呈通道性上涨、最大回撤很小，然后在上午 11 点到中午之间连续出现两根相对较长的多头趋势 K 线突破至盘中新高，<strong>那么这种走势更可能属于耗竭性买入高潮，而非新一轮上涨的起点</strong>。当一轮趋势已经持续很长时间，此时行情突然加速，<strong>通常意味着行情暂时告一段落，开始进入至少持续 10 根 K 线左右的两段式回调</strong>。</div>
+<h3>老练交易者在那种时刻怎么做</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>退出多头锁定利润</strong><br>预计市场将出现 3–5 个点的调整。</div></div>
+<div class="step" data-n="2"><div><strong>部分交易者直接做空</strong><br>在第二根多头趋势 K 线<strong>收盘时</strong>做空，或在其<strong>高点上方 1–2 个单位</strong>处做空。</div></div>
+<div class="step" data-n="3"><div><strong>或者等下一根 K 线</strong><br>如果这根 K 线收于振幅中位附近，就在<strong>其收盘时做空</strong>；如果它是空头反转 K 线，可能<strong>在其低点下方做空</strong>。</div></div>
+<div class="step" data-n="4"><div><strong>止损设置</strong><br>若在空头反转 K 线下方入场，<strong>保护性止损设在其高点上方</strong>；若在急速拉升 K 线收盘时以市价入场，可用 3–4 个点的止损，并在其上方 1–2 个点加空。</div></div>
+</div>
+<div class="callout good"><strong>即便判断失误、市场并未出现数点跌幅，也有可能进入交易区间，让他们可以在最后一个小时锁定小幅利润出场。</strong>——这句"退路"的说明很实用：这个位置的做空即使错了，也往往有平价离场的机会。</div>
+<h3>怎么判断"回撤真的很小"</h3>
+<div class="callout"><strong>在趋势开始之前，市场在第一个小时可能出现幅度稍大的回调，但只有趋势开始之后的回调才是重要的。观察回调的幅度，如果回调都非常小、后面每一次都与第一次幅度相当或更小，就说明交易日处于强劲趋势之中。</strong></div>
+<p class="muted small">原文举了一个 Emini 的例子：日均波幅约 12 点，当天所有回撤可能仅 <strong>2–3 个点</strong>。</p>
+</section>
+
+<section id="appearance">
+<h2>4. 为什么它看起来不强：本章最重要的心理机制</h2>
+<div class="callout warn"><strong>在这些极强趋势交易日，交易的困难之处主要在于：趋势在形成过程中看起来并不是特别强劲。</strong>通常市场并<strong>不会</strong>出现可观的急速运动，或者回踩均线的高概率入场点。相反，市场往往<strong>每隔几根 K 线就出现回撤</strong>，而且出现<strong>大量朝相反方向的趋势 K 线</strong>。市场往往处于一个<strong>看起来很弱的通道</strong>之中。</div>
+<h3>新手没看到的是什么</h3>
+<div class="callout good"><strong>交易新手所没有看到的是：市场回撤幅度都很小，价格完全没有向均线靠拢的意思，而是缓慢地不断远离开盘价位。</strong>交易老手知道这些都是表明上升趋势非常强劲的信号，所以有把握进行摆动交易。<strong>他们明白，虽然这些 K 线看起来处于弱势通道（表面上属于低概率建仓形态），然而当它们发生在小幅回撤上升趋势交易日，所构成的却是高概率的摆动交易建仓形态。</strong></div>
+<h3>一个很精准的对照</h3>
+<div class="callout"><strong>回撤走势通常会出现很弱的信号 K 线，以及很多反方向的趋势 K 线。</strong>例如在强劲上升趋势中，大部分做多的信号 K 线可能是<strong>小阴线或十字星</strong>，部分入场 K 线可能是<strong>实体很短的外包阳线</strong>。它们往往出现在 2–3 根连续空头趋势 K 线或微型下跌通道之后。</div>
+<p>这种持续的抛压让很多交易者上当，过早卖出多头、转而寻找做空信号。原文对这群交易者的描述很到位：</p>
+<ul>
+<li>他们看到几乎每个买入信号之后市场都会回撤并打到盈亏平衡止损，<strong>认为这说明多头趋势很弱</strong>。</li>
+<li>他们也知道市场处于上升趋势、想要做多，<strong>却不知道怎么做</strong>——因为所有买入信号看起来都很糟糕，回撤太小、形态太弱。</li>
+<li>由于这种交易日<strong>每个月只发生几次</strong>，他们习惯了"卖压往往带来可交易做空机会"的市况，所以<strong>不断在不太恰当的做空点卖出</strong>——而这些位置<strong>其实只是牛旗的起点</strong>。</li>
+</ul>
+<div class="callout good"><strong>交易老手的视角：他们看到上升趋势仅出现小幅回撤、未能跌破均线，同时出现许多空头趋势 K 线和弱买入信号，明白市场正在发生什么。他们看到交易者被震出多头仓位、不停地在高位做空，知道这种情况属于非常强劲的上升趋势。</strong>老手知道大批交易者将会被迫回补亏损的空头，接下来将追高买入，<strong>从而给市场造成持续的向上的张力</strong>。</div>
+<div class="callout"><strong>原文对这幅图景的总结：这就造成一种鲜明的对照——一边是大量交易者想买但未买，一边是交易老手持续买入并获得丰厚利润。</strong></div>
+</section>
+
+<section id="entry">
+<h2>5. 入场方法</h2>
+<div class="callout good"><strong>在始于开盘的趋势交易日，所有回撤都是极佳的顺势入场点，哪怕建仓形态看起来几乎总是很弱。</strong>即便在回撤最终突破一根重要趋势线之后，交易者仍可继续顺势入场。</div>
+<h3>上升趋势中的具体买点</h3>
+<ul>
+<li><strong>前一根 K 线的低点</strong>，或其下方 1–2 个最小报价单位</li>
+<li><strong>高 1 和高 2 形态上方 1 个单位</strong></li>
+<li>用回撤幅度挂限价单：例如在某轮小幅回撤上升趋势中，如果过去几个小时最大回撤仅 <strong>8 个单位</strong>，<strong>可以在盘中高点下方 5–7 个单位处挂限价买单</strong></li>
+</ul>
+<p class="muted small">下跌趋势中刚好相反：在前一根 K 线高点或其上方 1–2 个单位做空，或在低 1、低 2 信号 K 线下方 1 单位做空，以及<strong>在任何相对于近期 K 线平均长度的反弹中做空</strong>。</p>
+<h3>关于"首次回撤"的一个细节</h3>
+<div class="callout"><strong>在第一波强劲走势的首次回撤中入场，属于利用"强劲走势具有测试极端位置倾向性"这一特点。大部分强劲行情都至少有两波走势，因此在第一次回撤时入场获利概率很高。</strong>尤其在始于开盘的趋势交易日，如果你错过了初始入场点，这一入场点就显得尤其重要。</div>
+<div class="callout warn"><strong>但要注意：在强劲趋势中，所谓"首次回撤"并非总是那么一目了然</strong>，因为趋势中经常会出现 2–3 根横向运行的 K 线，<strong>并未突破某根重要的趋势线</strong>，因此其力度似乎不足以构成一次"回撤"。<strong>然而即便并未真正出现对价格的回撤，走势暂停属于横向调整，也是回撤的一种。</strong></div>
+<h3>趋势初期的急速运动：三种后续</h3>
+<table><thead><tr><th>#</th><th>后续</th><th>特征</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>耗竭性高潮</strong></td><td>市场可能已经运行过快过远。急速之后出现休整或回撤（如内包 K 线或小楔形旗），<strong>可能成为末端旗形并在小幅突破之后反转</strong>，反转走势可以持续数小时</td></tr>
+<tr><td>2</td><td><strong>窄幅区间后趋势恢复</strong></td><td>市场可能在窄幅交易区间横盘数小时，然后趋势恢复直到收盘，构成<strong>趋势恢复交易日</strong>。在持续 5–10 根 K 线的急速行情之后很常见</td></tr>
+<tr><td>3</td><td><strong>形成趋势通道（最常见）</strong></td><td>当急速运动幅度不足以构成动能耗竭，市场会形成趋势通道，交易日成为<strong>急速与通道趋势交易日</strong></td></tr>
+</tbody></table>
+</section>
+
+<section id="manage">
+<h2>6. 止损管理：一条与强趋势完全一致的建议</h2>
+<div class="callout warn"><strong>此类交易日通常处于较窄的通道。如果交易者打算让交易参与摆动，<u>不应过早将止损收紧到盈亏平衡点</u>。</strong></div>
+<h3>为什么：一个很真实的过程</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>市场在创新高之前往往先回测入场点</strong><br>在强劲上升趋势中，市场往往会在 <strong>5–10 根 K 线内回到信号 K 线高点的入场点</strong>，甚至探破这一位置 1–2 个最小报价单位。</div></div>
+<div class="step" data-n="2"><div><strong>新手从焦虑变成恐慌</strong><br>他们原本已获得足够的刮头皮利润，但因为当天是趋势日而打算做摆动。一个小时之后市场回到入场点——<strong>一笔赚钱的交易即将变成亏损交易</strong>。</div></div>
+<div class="step" data-n="3"><div><strong>忍无可忍，平价或小亏出局</strong><br>几根 K 线后后悔不迭——<strong>市场已经创出新高</strong>，而他们只能眼睁睁看着，只好等待下次回调再买入。</div></div>
+</div>
+<div class="callout good"><strong>正确的时机：只有当市场回撤到信号 K 线高点区域、然后创出新高之后，交易者才应该将保护性止损上移到最近摆动低点下方。</strong>因为趋势倾向于出现趋势性高点和低点，一旦多头趋势创出新高，就把止损上移到最近摆动低点下方——<strong>他们希望下一次回撤在最近低点上方止步</strong>。</div>
+<div class="callout"><strong>什么时候该切换方法：当市场开始进入交易区间，回撤将会跌破上一个抬升低点，此时交易者需要调整为适用于交易区间的交易方法。</strong>这与第 22 章"趋势性交易区间日中不应把止损收紧到最近摆动低点下方"形成完整的分工。</div>
+</section>
+
+<section id="firstbreak">
+<h2>7. 第一次突破趋势线通常失败</h2>
+<div class="callout good"><strong>市场存在惰性，第一次终结趋势的尝试通常会失败。当市场突破趋势线，意味着发生重大回撤，趋势的第一波行情可能已经结束。然而即便如此，第一次突破趋势线也很可能仅仅构成顺势入场点，从而引发第二波趋势行情，并创出新高或者新低。</strong></div>
+<div class="callout warn"><strong>但困难在于：在强劲趋势中，判断哪一次回调将会成为第一次重大回撤是非常困难的。</strong>原文给出一个很反直觉的判断标准：<strong>在这种情况下，你的顺势交易获利的概率非常高，因为<u>回撤很不清晰恰恰说明逆势交易者力量极弱</u>。</strong></div>
+<p class="muted small">这与第 13 章"突破趋势线不等于反转"、第 19 章"第一次回踩均线后往往还要再测高点"共同构成一条完整的链条：<strong>趋势中的第一次结构破坏，通常是延续的信号而不是结束的信号。</strong></p>
+<h3>小幅回撤趋势中的回撤序列（原文例子）</h3>
+<div class="callout">在某轮小幅回撤趋势日中：<strong>K 线 2 和 K 线 3 都是极其微小的回撤，并未突破任何重要趋势线；第一次突破趋势线的回撤是 K 线 4。</strong>而首次突破趋势线往往会跟随新一轮趋势行情，<strong>因此是极佳的入场点</strong>。</div>
+</section>
+
+<section id="data">
+<h2>8. 经济数据与第一根 K 线</h2>
+<div class="callout warn"><strong>经济数据公布时，计算机享有巨大优势。</strong>它们能够以可解读的格式立即获得数据，并据之做出决策和形成交易指令——<strong>所有这一切都是在一秒钟以内完成</strong>。当计算机占据巨大先机，交易者就处于不利地位，<strong>因此交易者应该避免在数据公布时入场</strong>。</div>
+<div class="callout good"><strong>正确的做法：计算机程序往往会在 1–2 根 K 线内指示市场的明确方向，或者造成强势反转。此时交易者将获得较有利的概率，可以朝恰当的方向入场。</strong>作为趋势起点的强势 K 线并非总是出现在数据公布时，也可能形成于公布时间之前或之后数根 K 线，<strong>不过出现在数据公布时的概率比较大，所以交易者应该提前做好准备</strong>。</div>
+<h3>关于第一根 K 线</h3>
+<div class="callout"><strong>如果市场大幅跳空开盘，而且第一根 K 线为强趋势 K 线（影线较短、实体较长），做朝两个方向的突破往往是不错的交易。</strong>每天第一根 K 线都可能是一个始于开盘的上升趋势日或下跌趋势日的信号 K 线，具体要看市场朝哪个方向突破这根 K 线。<strong>如果入场后保护性止损在下一根 K 线被扫掉，可以考虑反手做一笔摆动交易</strong>，因为接下来的行情幅度通常会超过你第一次入场所亏损的点数，而且总存在演变成始于开盘趋势的可能性。</div>
+<div class="callout"><strong>即便开盘没有跳空，如果第一根 K 线为趋势 K 线，也是不错的建仓形态。只不过，在跳空的情况下，交易的成功率更高一些，因为市场状态更为过度，任何走势都倾向于更加强劲。</strong></div>
+<div class="callout warn"><strong>但第一根 K 线也可能是骗人的（原文专门用一图说明）：</strong>当天的第一根 K 线是多头趋势 K 线，许多交易者在其上方挂单做多，然而两根 K 线之后市场跌破其低点，<strong>造成这些多头被套</strong>。<strong>在开盘的时候，你必须保持高度灵活，必须假定市场可能出现与你一分钟之前判断完全相反的走势。你必须在其发生之时立即发现它，以尽早入场。</strong></div>
+<h3>一个务实的提醒</h3>
+<div class="callout good"><strong>如果交易日成为趋势交易日，而你错过了最初的入场点，不要焦虑——全天都会有机会入场。</strong>原文还提醒：<strong>如果你同时还做多，那么在退出多头之后，你必须强迫自己重新回到空头阵营；抓住一个小的做多机会而错过大的做空机会是不划算的。</strong></div>
+<div class="callout warn"><strong>最后一条概率提醒：即便最佳的形态也会有大约 40% 的概率不按你的预期运行。如果开盘之后的走势在第三根或第四根 K 线都没有出现休整，说明行情可能运行过快过远，那么接下来市场反转的概率将大于趋势延续的概率。</strong></div>
+</section>
+
+<section id="myths">
+<h2>9. 关键逻辑与八种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>始于开盘的趋势</td><td>今天会是大趋势日吗？</td><td>"看到第一根 K 线就能确定"——只有约 20% 的日子</td></tr>
+<tr><td>小幅回撤趋势</td><td>回撤小意味着什么？</td><td>"回撤小说明趋势弱"——恰恰相反</td></tr>
+<tr><td>难看的信号 K 线</td><td>该不该买？</td><td>"信号差所以不做"——它往往正是强趋势的标志</td></tr>
+<tr><td>第一次突破趋势线</td><td>趋势结束了吗？</td><td>"突破即反转"——通常是顺势入场点</td></tr>
+</tbody></table>
+<h3>尤其需要避免的八种误区</h3>
+<ul>
+<li><strong>把"始于开盘的趋势"当成常态：</strong>只有约 20% 的交易日，市场在第一个小时反转更常见。</li>
+<li><strong>因为信号 K 线难看而不敢顺势：</strong>小幅回撤趋势中糟糕的买入信号恰恰说明趋势很强。</li>
+<li><strong>不断寻找逆势做空点：</strong>那些"不错的做空点"往往只是牛旗的起点。</li>
+<li><strong>看到大量空头趋势 K 线就以为趋势弱：</strong>要同时看回撤幅度是否很小、价格是否远离均线。</li>
+<li><strong>过早把止损收紧到盈亏平衡点：</strong>市场常在 5–10 根 K 线内回测入场点，然后才创新高。</li>
+<li><strong>把尾盘那 1–2 根长趋势 K 线当成新一波上涨：</strong>它更可能是耗竭性高潮，随后是两段式回调。</li>
+<li><strong>在第一次突破趋势线时反手：</strong>第一次终结趋势的尝试通常会失败，往往只是顺势入场点。</li>
+<li><strong>在经济数据公布那一刻入场：</strong>计算机享有一秒内的速度优势；应等 1–2 根 K 线看清方向。</li>
+</ul>
+</section>
+
+<section id="practice">
+<h2>10. 自测与清单</h2>
+<div class="quiz">
+<p><strong>问题 1：</strong>始于开盘的趋势交易日大约占多少比例的交易日？</p>
+<label><input type="radio" name="q1" value="a"> A. 约 20%</label>
+<label><input type="radio" name="q1" value="b"> B. 约 80%</label>
+<label><input type="radio" name="q1" value="c"> C. 约 50%</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>小幅回撤趋势交易日中，回撤很小说明？</p>
+<label><input type="radio" name="q2" value="a"> A. 趋势很弱，即将反转</label>
+<label><input type="radio" name="q2" value="b"> B. 趋势非常强劲——价格完全没有向均线靠拢的意思</label>
+<label><input type="radio" name="q2" value="c"> C. 与趋势强弱无关</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>在强劲上升趋势中，市场往往会在多少根 K 线内回测入场点？</p>
+<label><input type="radio" name="q3" value="a"> A. 5–10 根 K 线内，甚至探破 1–2 个最小报价单位</label>
+<label><input type="radio" name="q3" value="b"> B. 从不会回测入场点</label>
+<label><input type="radio" name="q3" value="c"> C. 只在收盘时回测</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>关于第一次突破趋势线，正确的是？</p>
+<label><input type="radio" name="q4" value="a"> A. 趋势已经反转</label>
+<label><input type="radio" name="q4" value="b"> B. 由于市场惰性，第一次终结趋势的尝试通常会失败，往往只是顺势入场点</label>
+<label><input type="radio" name="q4" value="c"> C. 应立即清仓</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>关于经济数据公布，原文的建议是？</p>
+<label><input type="radio" name="q5" value="a"> A. 在公布那一刻立即入场抢单</label>
+<label><input type="radio" name="q5" value="b"> B. 避免在数据公布时入场；等 1~2 根 K 线指示明确方向后再入场</label>
+<label><input type="radio" name="q5" value="c"> C. 数据公布日不做交易</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我确认了当天低点/高点是否出现在头几根 K 线。</label>
+<label><input type="checkbox"> 我量了开盘区间，与近期日均波幅比较（&lt;25% 或 ≈50% 含义不同）。</label>
+<label><input type="checkbox"> 我观察了趋势开始之后的回撤幅度是否都很小、且逐次相当或更小。</label>
+<label><input type="checkbox"> 我没有因为信号 K 线难看、或出现大量空头趋势 K 线就放弃顺势。</label>
+<label><input type="checkbox"> 我没有过早把止损收紧到盈亏平衡点（知道市场常在 5~10 根 K 线内回测入场点）。</label>
+<label><input type="checkbox"> 我把尾盘那 1~2 根长趋势 K 线视为可能的耗竭性高潮，并准备两段式回调。</label>
+<label><input type="checkbox"> 第一次突破趋势线时，我优先考虑顺势入场而不是反手。</label>
+<label><input type="checkbox"> 我在经济数据公布时没有入场，而是等 1~2 根 K 线看清方向。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：八条核心结论</h2>
+<ol>
+<li><strong>始于开盘的趋势日：极值出现在头几根 K 线，全天趋势性运动，往往收于极值附近。</strong></li>
+<li><strong>它是最强劲的趋势类型，但只占约 20% 的交易日——第一个小时反转更常见。</strong></li>
+<li><strong>最强的变体是小幅回撤趋势日：开盘区间窄、全天回撤仅占日均波幅的 10%–30%，每月仅 1–2 天。</strong></li>
+<li><strong>它的伪装是"看起来不强"：大量反向趋势 K 线与糟糕的信号 K 线——弱信号恰恰说明趋势强。</strong></li>
+<li><strong>在始于开盘的趋势中，所有回撤都是极佳的顺势入场点，即便形态看起来很弱。</strong></li>
+<li><strong>不要过早把止损收紧到盈亏平衡点：市场常在 5–10 根 K 线内回测入场点，然后才创新高。</strong></li>
+<li><strong>第一次突破趋势线通常会失败，往往只是顺势入场点——回撤不清晰恰恰说明逆势力量极弱。</strong></li>
+<li><strong>尾盘那 1–2 根长趋势 K 线（回调幅度约为前期回撤 150%–200%）更可能是耗竭性高潮。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>当一段上升趋势让你觉得"信号怎么都这么难看、根本不敢买"时，先量一下<strong>回撤幅度</strong>。如果回撤一直很小、价格始终远离均线，那么<strong>难看的信号本身就是在告诉你：这是最强劲的那类趋势。</strong></div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 23 章内容整理、归纳并重新表述，加入示意图、表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 23 章 始于开盘的趋势与小幅回撤趋势</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"a",q2:"b",q3:"a",q4:"b",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：始于开盘的趋势交易日通常是最强劲的类型，但只发生在大约 20% 的交易日中。",
+  "第 2 题：小幅回撤意味着趋势非常强劲——市场回撤幅度小、价格完全没有向均线靠拢的意思。",
+  "第 3 题：在强劲上升趋势中，市场往往在 5~10 根 K 线内回到信号 K 线高点的入场点，甚至探破 1~2 个单位。",
+  "第 4 题：由于市场惰性，第一次终结趋势的尝试通常会失败，首次突破趋势线往往只是顺势入场点。",
+  "第 5 题：应避免在数据公布那一刻入场，等 1~2 根 K 线指示明确方向后再入场，因为计算机有速度优势。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+" "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

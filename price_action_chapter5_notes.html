@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 5 章 信号K线之反转K线｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 5 章</div>
+<h1>信号 K 线之反转 K 线</h1>
+<p class="lead">承接第 4 章的“信号 K 线 / 入场 K 线”框架，本章专门看一类信号：<strong>反转 K 线</strong>。它最容易被误用——因为它看起来最像“抄底摸顶”的邀请函。这一页要解决的核心问题是：什么样的反转 K 线值得做，什么样的必须放过。</p>
+<div class="tags"><span class="tag">反转 K 线 Reversal Bar</span><span class="tag">看涨 / 看跌反转</span><span class="tag">锤子线 · 射击之星</span><span class="tag">外包线 · ii 形态</span><span class="tag">第二次信号</span><span class="tag">背景 > 形状</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#define">1. 什么算反转 K 线</a><a href="#anatomy">2. 解剖与强弱标准</a><a href="#types">3. 常见类型图谱</a><a href="#context">4. 背景决定生死</a><a href="#entry">5. 入场、止损与仓位</a><a href="#fail">6. 失败模式清单</a><a href="#workflow">7. 看图分析流程</a><a href="#cases">8. 情境案例</a><a href="#practice">9. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章的核心问题</h2>
+<div class="callout"><strong>核心思想：</strong>反转 K 线不是“预测工具”，而是一根<strong>把双边争夺写在脸上的 K 线</strong>。它记录的是“一方在这一根 K 线里先赢了、随后又把优势交了出去”。它只说明<strong>这一根 K 线里发生了什么</strong>，不说明接下来一定会反转。所以布鲁克斯框架里，反转 K 线的地位是：<strong>一个需要背景批准的入场候选人</strong>。</div>
+<div class="grid3">
+<div class="card"><h3>它是什么</h3><p>一根在极值处出现、收盘明显偏离该极值的 K 线。表示原先占优的一方在本周期内被反击。</p><p class="small muted">看涨：收在上端。看跌：收在下端。</p></div>
+<div class="card"><h3>它不是什么</h3><p>不是“见底 / 见顶信号”。绝大多数反转尝试只会变成几根 K 线的回调，然后原趋势继续。</p><p class="small muted">形状合格 ≠ 值得交易。</p></div>
+<div class="card"><h3>它需要什么</h3><p>需要一个允许反转的背景：强趋势之后的高潮、区间边缘、通道线过冲、测量移动目标位。</p><p class="small muted">背景不合格时，反转 K 线通常只是顺势的入场机会（反向）。</p></div>
+</div>
+<div class="flow">
+<div class="flowbox"><strong>背景</strong><br><span class="muted small">允许反转吗？</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>位置</strong><br><span class="muted small">在极值处吗？</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>反转 K 线</strong><br><span class="muted small">收盘偏离极值</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>触发 / 二次信号</strong><br><span class="muted small">价格越过极值</span></div>
+</div>
+<p class="muted small">注意流程的方向：<strong>先判断背景是否允许反转，再去找反转 K 线</strong>。反过来做——先在图上找到一根漂亮的反转 K 线，再去找理由支持它——是最典型的确认偏误，也是本章要重点防的错误。</p>
+<div class="callout warn"><strong>一句话记住本章的张力：</strong>反转 K 线是全书里“看起来最有说服力、实际胜率最需要打折”的信号。它的价值不来自形状漂亮，而来自<strong>它出现的位置正好是别人被迫平仓的地方</strong>。</div>
+</section>
+
+<section id="define">
+<h2>1. 什么算反转 K 线：从“信号 K 线”到“反转信号”</h2>
+<p>第 4 章已经建立：信号 K 线是形态的最后一根，负责给出可定义的触发价与止损位。反转 K 线是信号 K 线的一种特殊用法——它<strong>出现在一段推进的末端</strong>，并且它的<strong>收盘价回到了推进方向的反面</strong>。</p>
+<h3>三个必须同时成立的要素</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>有“被反转的对象”</strong><br>前面必须存在一段可辨识的推进（趋势 K 线、连续同向 K 线、一段急速运动）。没有可反转的东西，就谈不上反转 K 线。孤零零的一根长影线不构成任何事。</div></div>
+<div class="step" data-n="2"><div><strong>极值被测试并失败</strong><br>K 线在某个方向创出极值（或至少逼近前高 / 前低），但<strong>没能守住</strong>：价格从极值处被推回。影线通常记录了这个失败。</div></div>
+<div class="step" data-n="3"><div><strong>收盘选边</strong><br>收盘价必须明显地偏向反方向的一端。反转 K 线的本质是“这根 K 线最终由谁说了算”，答案写在收盘价上——<strong>不是写在 K 线颜色上</strong>。</div></div>
+</div>
+<div class="callout"><strong>为什么强调“双边性”：</strong>一根反转 K 线其实可以理解成一个<strong>压缩到单根 K 线里的交易区间</strong>——先有一方向前突破，然后突破失败，价格回到区间另一边。这正是布鲁克斯把它看作“单根 K 线级别的双边交易”的原因。它提供的不是预测，而是<strong>两个可交易的边界</strong>：上端和下端。</div>
+<h3>与相邻概念的边界</h3>
+<table><thead><tr><th>概念</th><th>关系</th><th>区别要点</th></tr></thead><tbody>
+<tr><td>趋势 K 线（第 2 章）</td><td>两者都可能有实体与收盘位置的优势</td><td>趋势 K 线表达<strong>一方持续掌控</strong>，用于顺势建仓；反转 K 线表达<strong>掌控易手</strong>，用于逆势试探。同一根 K 线在不同背景下可能同时被两边引用——这正是背景优先的原因。</td></tr>
+<tr><td>十字星 / 小实体（第 2 章）</td><td>都属于“方向未定”的信号</td><td>十字星是<strong>均衡</strong>（谁也没赢），反转 K 线是<strong>易手</strong>（原来的一方输了）。十字星通常需要下一根确认；反转 K 线自带一个可定义的触发价。</td></tr>
+<tr><td>信号 K 线（第 4 章）</td><td>反转 K 线是信号 K 线的一个子集</td><td>信号 K 线可以是顺势的（趋势回调结束），也可以是反转的。反转 K 线特指<strong>逆着前一段推进</strong>的那一类。</td></tr>
+<tr><td>高潮（第 2 章）</td><td>反转 K 线常见于高潮之后</td><td>高潮是<strong>背景</strong>（一段不可持续的加速），反转 K 线是<strong>时机</strong>。没有高潮、没有区间边缘，反转 K 线的分量会很轻。</td></tr>
+</tbody></table>
+<div class="callout good"><strong>可检验的定义句式：</strong>“在【某段推进 / 某个位置】之后，出现一根 K 线，它在【方向】创出极值但收回到【另一端】，因此我预期【条件】成立时向【方向】试探，若跌破 / 突破【价位】则判断失败。”——写得出这句话，才算识别出了一个反转信号；只说出“这是锤子线”，还没有。</div>
+</section>
+
+<section id="anatomy">
+<h2>2. 解剖与强弱标准：同一形状，五档成色</h2>
+<p>反转 K 线的质量不是二元的。布鲁克斯的做法是同时看几个维度，然后给一个综合的成色判断。下面这张图是本章最需要看熟的一张。</p>
+<div class="chart">
+<svg viewBox="0 0 660 450" role="img" aria-label="示意图：看涨反转K线与看跌反转K线的结构解剖">
+<line x1="20" y1="228" x2="640" y2="228" stroke="currentColor" stroke-width="1" stroke-dasharray="5 6" opacity=".28"/>
+
+<text x="20" y="24" fill="#16845b" font-size="13" font-weight="700">看涨反转 K 线（做多的信号 K 线）</text>
+<rect x="140" y="68" width="26" height="86" fill="#16845b" opacity=".85"/>
+<line x1="153" y1="44" x2="153" y2="188" stroke="#16845b" stroke-width="2"/>
+<line x1="112" y1="44" x2="430" y2="44" stroke="#c74747" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="436" y="40" fill="#c74747" font-size="12">上影线越短越强</text>
+<text x="436" y="58" fill="#c74747" font-size="12">（理想情况几乎无上影）</text>
+<line x1="112" y1="68" x2="430" y2="68" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4" opacity=".45"/>
+<line x1="112" y1="188" x2="430" y2="188" stroke="#16845b" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="436" y="184" fill="#16845b" font-size="12">低点 = 止损参考位</text>
+<text x="436" y="202" fill="#16845b" font-size="12">下影线 = 被挡回的痕迹</text>
+<text x="20" y="64" fill="currentColor" font-size="12" opacity=".85">收盘价在</text>
+<text x="20" y="82" fill="currentColor" font-size="12" opacity=".85">自身区间</text>
+<text x="20" y="100" fill="currentColor" font-size="12" opacity=".85">上端 →</text>
+<text x="20" y="118" fill="#16845b" font-size="12" font-weight="700">买方说了算</text>
+
+<text x="20" y="262" fill="#c74747" font-size="13" font-weight="700">看跌反转 K 线（做空的信号 K 线）</text>
+<rect x="480" y="312" width="26" height="86" fill="#c74747" opacity=".85"/>
+<line x1="493" y1="282" x2="493" y2="426" stroke="#c74747" stroke-width="2"/>
+<line x1="220" y1="282" x2="538" y2="282" stroke="#c74747" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="20" y="278" fill="#c74747" font-size="12">高点 = 止损参考位（触发价在其上方）</text>
+<line x1="220" y1="312" x2="538" y2="312" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4" opacity=".45"/>
+<line x1="220" y1="426" x2="510" y2="426" stroke="#16845b" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="20" y="452" fill="#16845b" font-size="12">下影线越短越强</text>
+<text x="552" y="330" fill="currentColor" font-size="12" opacity=".85">收盘价在自身</text>
+<text x="552" y="348" fill="currentColor" font-size="12" opacity=".85">区间下端 →</text>
+<text x="552" y="366" fill="#c74747" font-size="12" font-weight="700">卖方说了算</text>
+<text x="20" y="410" fill="currentColor" font-size="12" opacity=".85">开盘常在前一根收盘之上</text>
+</svg>
+</div>
+<h3>最强的多头反转 K 线：原文给出的五条特征</h3>
+<p>原文先给出<strong>最低要求</strong>：一根多头反转 K 线的最低要求是<strong>收盘高于开盘（即阳线）或收盘高于 K 线中位</strong>。也就是说，<strong>颜色不是必要条件</strong>，收盘位置才是。在此基础上，<strong>最强的多头反转 K 线应该具有一个以上的下述特征</strong>：</p>
+<table><thead><tr><th>#</th><th>特征</th><th>含义</th></tr></thead><tbody>
+<tr><td>1</td><td>开盘接近或低于前一根 K 线的收盘；收盘高于<strong>自身开盘以及前一根 K 线的收盘</strong></td><td>把前一根的进展全部收回</td></tr>
+<tr><td>2</td><td>下影线达到 K 线高度的约 <strong>1/3~1/2</strong>，<strong>没有上影线或很短</strong></td><td>低位抛压被挡回，且高位没有承接卖压</td></tr>
+<tr><td>3</td><td>与前一根或数根 K 线<strong>没有太多重叠</strong></td><td>说明这是趋势中的转折，而非区间内的震荡</td></tr>
+<tr><td>4</td><td>信号 K 线的后一根<strong>不是十字星内包 K 线，而是强入场 K 线</strong>（多头趋势 K 线，实体相对较长、影线较短）</td><td>跟随确认——这是最常见的缺失项</td></tr>
+<tr><td>5</td><td>收盘<strong>反转了一根以上 K 线的收盘和高点</strong>（即收于其上方）</td><td>反转幅度越大，分量越重</td></tr>
+</tbody></table>
+<div class="callout good"><strong>第 5 条值得单独强调。</strong>原文举了一个对比：在一波下跌行情的底部，如果出现一根多头反转 K 线，<strong>收盘高于此前 8 根 K 线的收盘、高点高于此前 5 根 K 线的高点</strong>，那么相比收盘仅高于前一根收盘、高点未超越任何近期 K 线高点的反转 K 线，显然要<strong>更为强势</strong>。你可以把"反转了几根 K 线的收盘与高点"当成一个粗略的强度计分。</div>
+<div class="callout warn"><strong>第 4 条（后一根 K 线）是本章最容易被忽略、也最常导致亏损的一条。</strong>如果反转 K 线之后跟着的是一根十字星内包 K 线，这个反转信号就打了折扣——因为它说明市场并没有形成迫切性。</div>
+
+<h3>看跌反转 K 线：把上表的镜像反过来</h3>
+<p>最低要求是<strong>收盘低于开盘（阴线）或收盘低于 K 线中位</strong>。最强的空头反转 K 线应具有一个以上的下述特征：开盘接近或高于前一根 K 线收盘、收盘大幅低于前一根 K 线收盘；<strong>上影线达到 K 线高度的约 1/3~1/2，没有下影线或很短</strong>；与前一根或数根 K 线没有太多重叠；后一根 K 线是强入场 K 线（空头趋势 K 线）而非十字星内包 K 线；<strong>收盘反转了一根以上 K 线的收盘和低点</strong>（收于其下方）。</p>
+<div class="callout"><strong>最后这条特征适用于任何强趋势 K 线</strong>——无论是强突破 K 线、信号 K 线还是入场 K 线。它是判断"强势"的通用标尺。</div>
+
+<h3>看跌反转 K 线：把上表的镜像反过来</h3>
+<p>开盘在前一根收盘之上、收盘远低于前一根收盘、<strong>下影线越短越强</strong>、上影线占 1/3 到 1/2 且实体够大、收盘低于前面多根 K 线的收盘、后一根继续下跌且<strong>没有创出高于信号 K 线的新高</strong>（形成微型双顶）。</p>
+<div class="callout warn"><strong>最重要的成色警告：</strong>不要追求“满分”信号 K 线。布鲁克斯反复提醒，<strong>等到所有条件都完美的信号出现时，盈亏比往往已经变差</strong>——因为价格已经离极值太远、离止损太远。目标是<strong>足够好 + 背景支持</strong>，而不是无可挑剔。反过来说，在背景足够强的地方，<strong>弱信号也值得做</strong>；背景不够强的地方，强信号也不该重仓。</div>
+<h3>为什么“弱信号”也重要</h3>
+<ul>
+<li><strong>算法与支撑阻力交易：</strong>很多程序按支撑 / 阻力位执行，会制造出大量形状不完美的反转 K 线；形状弱不代表位置差。</li>
+<li><strong>多周期互补：</strong>当前周期（例如 5 分钟）没有强信号，不代表更大周期上同样没有——你的信号 K 线可能只是更大周期的一根 K 线的一部分。</li>
+<li><strong>背景 > 信号：</strong>如果背景（趋势末端、区间边缘、通道过冲）本身已经足够极端，信号 K 线的任务就只是<strong>提供一个可定义的触发价</strong>，不需要它承担全部说服力。</li>
+</ul>
+
+<h3>过度重叠：什么时候反转 K 线应该被弃用</h3>
+<div class="callout warn"><strong>一条具体的量化判据：</strong>一般来讲，在潜在<strong>多头</strong>反转的情况下，如果多头反转 K 线的<strong>中位高于前一根 K 线的低点</strong>（潜在空头反转时，空头反转 K 线的<strong>中位低于前一根 K 线的高点</strong>），就属于<strong>过度重叠</strong>——意味着市场在形成一个交易区间而非可交易的反转行情。</div>
+<p>如果一根反转 K 线与此前一根或数根 K 线大致重叠，或者仅仅是影线部分略微超越前面的 K 线，那么它可能只是一个<strong>交易区间的一部分</strong>——市场处于震荡而非趋势之中，<strong>实际上没什么可以被反转的</strong>。这种情况下这根 K 线<strong>不应用作信号 K 线</strong>；相反，如果有足够多交易者被套，它甚至可能成为<strong>反方向</strong>交易的建仓形态。</p>
+<div class="callout good"><strong>注意这个判据的重要性不对称：</strong>相比在趋势行情回调结束时顺势入场（此时你<strong>不需要</strong>过分追求完美的入场形态），这一点对于<strong>做趋势反转交易要重要得多</strong>。逆势交易的门槛本来就更高。</div>
+
+<h3>长十字星：本质是单 K 线交易区间</h3>
+<p>如果信号 K 线<strong>实体很短（即十字星）但整根 K 线很长</strong>，通常<strong>不能</strong>用作反转交易的入场信号。长十字星从本质来讲属于<strong>单根 K 线交易区间</strong>——在下跌趋势中的交易区间顶部买入、或在上升趋势中的交易区间底部卖出，都不是明智的做法。<strong>最好等待第二个入场信号。</strong></p>
+<p><strong>同理，实体很短的长多头反转 K 线也必须置于前期价格行为的背景下观察。</strong>长下影线意味着抛盘遭到拦截、多头控制着这根 K 线；然而如果它与前一根或数根 K 线过度重叠，那么它可能仅仅代表较小时间级别上的一个交易区间——收于高点仅仅是收于交易区间顶部附近，<strong>注定要随着小级别的多头锁定利润而遭到进一步抛售</strong>。你显然不愿意在一个熊旗的顶部买入或在一个牛旗的底部卖出。</p>
+
+<h3>为什么「完美的反转 K 线」也可能没有后续</h3>
+<div class="callout warn"><strong>本章最反直觉的一个洞见：反转 K 线的价值，部分来自「它套住了谁」。</strong>即便这是一根完美的多头反转 K 线，<strong>如果由于没有空头被套，也许不会有延续性买盘</strong>（空头被迫回补）。而新入场的多头将会继续持有头寸几根 K 线，希望市场能回到他们的入场价、让他们不赔不赚出场——<strong>这属于暂时被抑制的抛压</strong>。</div>
+<p>换句话说，反转之后的上涨动能，有相当一部分来自<strong>做错方向者的被迫平仓</strong>。如果没有人做错，就没有这股动能。这解释了为什么「形状完美」与「能够延续」并不是同一件事。</p>
+
+<h3>重叠导致的多头陷阱：一个具体数字</h3>
+<p>原文给了一个很实用的场景：市场开盘后一直处于交易区间，然后强势向上突破、小幅站上均线；接下来市场横盘 3 根 K 线并出现一根强多头反转 K 线。此时入场点在牛旗高点下方约 1 个最小报价单位，做多的诱惑很大——<strong>但大约 60% 的情况下这是一个多头陷阱，市场在你入场后将会立即反转。</strong></p>
+<div class="callout"><strong>更普遍的表述：</strong>均线上方不远处形成牛旗、且 <strong>3 根或以上的长 K 线基本重叠</strong>，往往是多头陷阱。同样，均线下方不远处形成熊旗、且 3 根或以上长空头 K 线基本重叠，多半是空头陷阱。<strong>即便信号 K 线是一根强空头趋势 K 线，在其下方做空也很可能导致亏损。</strong></div>
+</section>
+
+<section id="types">
+<h2>3. 常见类型图谱：给形状起名字，然后忘掉名字</h2>
+<p>下面的名字只是<strong>结构描述语言</strong>，方便你和别人说清“价格在这里摆了什么姿势”。名字本身不含任何概率承诺——同一个名字出现在不同位置，期望值可以完全相反。</p>
+<table><thead><tr><th>名称</th><th>结构特征</th><th>常见出现位置</th><th>最容易踩的坑</th></tr></thead><tbody>
+<tr><td>看涨反转 K 线<br><span class="muted small">Bull Reversal Bar</span></td><td>先创更低价，随后收回并收在上端</td><td>卖压高潮之后、区间下沿、多头趋势回调低点</td><td>在强空头趋势中把它当成转折，实际只是一次反弹</td></tr>
+<tr><td>锤子线 / 长下影线<br><span class="muted small">Hammer</span></td><td>下影线长，实体小而靠上端，上影线很短</td><td>下跌末端或回调结束</td><td>形状最标准，因此被最滥用；位置不对时毫无意义</td></tr>
+<tr><td>看跌反转 K 线<br><span class="muted small">Bear Reversal Bar</span></td><td>先创更高价，随后收回并收在下端</td><td>买压高潮之后、区间上沿、通道上轨过冲</td><td>在强多头趋势中把它当顶，实际只是第一个小回调</td></tr>
+<tr><td>射击之星 / 倒锤<br><span class="muted small">Shooting Star / Inverted Hammer</span></td><td>上影线长，实体小而靠下端</td><td>上涨末端或反弹结束</td><td>倒锤出现在下跌末端需要<strong>后续多头确认</strong>，不能直接当买点</td></tr>
+<tr><td>外包线 / 吞没线<br><span class="muted small">Outside Bar / Engulfing</span></td><td>高点与低点同时包住前一根</td><td>转折附近、波动加剧处</td><td>外包线方向<strong>由收盘位置决定</strong>；包住了不等于反转</td></tr>
+<tr><td>内包线 / ii 形态<br><span class="muted small">Inside Bar / ii</span></td><td>完全在前一根范围内；两根连续内包为 ii</td><td>突破失败处、昨日区间内</td><td>内包本身只是收窄，需要突破它的一端才成立</td></tr>
+<tr><td>两根 K 线反转<br><span class="muted small">Two-Bar Reversal</span></td><td>一根趋势 K 线 + 一根反向反转 K 线</td><td>急速推进后立刻被反向吞没</td><td>第二根太大时，止损太远，盈亏比会恶化</td></tr>
+<tr><td>微型双底 / 微型双顶<br><span class="muted small">Micro Double Bottom / Top</span></td><td>相邻两三根 K 线两次测试同一极值</td><td>区间边缘、趋势通道线附近</td><td>把“第二次测试”当成必然成功；第二次失败也是信息</td></tr>
+</tbody></table>
+<div class="callout"><strong>关于 ii 形态的实务提示：</strong>连续两根内包线（ii）常出现在突破昨日区间失败的位置，是一种常见的反转结构。它本身没有方向，必须<strong>由突破哪一端来决定</strong>——按第 4 章的语法，触发价就是它的上端或下端，止损放在另一端之外。</div>
+<div class="callout warn"><strong>最需要避免的一件事：</strong>把形态名称当作结论。“这是锤子线所以会涨”是<strong>识别</strong>；“这是锤子线，且出现在区间下沿第三推之后，若价格越过其高点我考虑做多，跌破其低点则判断作废，止损距离约 X，到区间上沿空间约 2X 以上”才是<strong>可执行的建仓形态</strong>。</div>
+</section>
+
+<section id="context">
+<h2>4. 背景决定生死：哪里能信，哪里必须放过</h2>
+<p>这是全章最重要的一节。反转 K 线的胜率<strong>几乎完全由位置决定</strong>，而不是由形状决定。请按“可以做”和“应该放过”两栏对照记忆。</p>
+<div class="grid2">
+<div class="card"><h3>✅ 值得考虑的位置</h3><ul>
+<li><strong>强空头高潮之后：</strong>连续多根大阴线、跌破通道下轨（过冲）之后出现看涨反转 K 线</li>
+<li><strong>交易区间下沿：</strong>区间边界本身就有反手做多的统计优势</li>
+<li><strong>多头趋势的回调低点：</strong>回调结束、出现第二次尝试（例如高 2 / 二次信号）</li>
+<li><strong>测量移动目标位：</strong>价格刚好走完一段等价距离</li>
+<li><strong>趋势通道线过冲后回落：</strong>先破线再收回，是典型的衰竭结构</li>
+<li><strong>空头通道的第一次有效突破回测：</strong>空头趋势被打破后，回踩不破</li>
+<li><strong>更高周期的支撑 / 阻力位：</strong>位置由大周期给定，小周期找信号</li>
+</ul></div>
+<div class="card"><h3>⛔ 应该放过的位置</h3><ul>
+<li><strong>强趋势的第一根反向 K 线：</strong>强趋势里第一次反转尝试通常只带来几根 K 线的回调</li>
+<li><strong>区间中部：</strong>方向优势最弱，漂亮的形状在这里期望值最低</li>
+<li><strong>趋势 K 线 / 急速推进的内部：</strong>逆着刚刚出现的大实体趋势 K 线做反转</li>
+<li><strong>还没有第二次信号的位置：</strong>第一次尝试失败率明显偏高</li>
+<li><strong>通道的第三次推升之后立刻逆势：</strong>楔形 / 三角形有时还会再走一段</li>
+<li><strong>到前一个摆动点的空间已经很小：</strong>止损远、空间近，盈亏比不成立</li>
+<li><strong>日终 / 数据公布前：</strong>背景被事件接管，K 线结构暂时失效</li>
+</ul></div>
+</div>
+<div class="callout warn"><strong>强趋势里的一条硬规则：</strong>在<strong>明确的强趋势</strong>中，反转 K 线默认被当作<strong>顺势的入场机会</strong>，而不是反转信号。空头强趋势里的看涨反转 K 线，首先应该被读作“空头的又一次做空机会（低 2 之类的第二次卖出信号）”，直到市场用<strong>趋势线被打破 + 反向极值被突破 / 前高被越过</strong>证明自己已经改变。逆势交易的门槛必须明显更高。</div>
+<h3>“第二次信号”为什么关键</h3>
+<p>布鲁克斯框架里，反转的可靠性很大程度上取决于<strong>尝试的次数</strong>。逻辑很直白：第一次尝试反转时，原趋势的动量和持仓还没被消化完，被继续推动的概率高；当市场<strong>第二次</strong>回到同一极值区域并再次失败（对原趋势而言是“第二次尝试失败”），说明压力确实在减弱。</p>
+<div class="grid3">
+<div class="card"><h3>第一次信号</h3><p>通常是<strong>试探性</strong>的。可以小仓位参与，或者干脆跳过，把它当作观察对象。</p></div>
+<div class="card"><h3>第二次信号</h3><p>同一位置再次出现反转结构（例如微型双底、低 2 / 高 2、ii 后的突破），可靠性明显提升。</p></div>
+<div class="card"><h3>失败也是信号</h3><p>反转尝试失败并跌破信号 K 线另一端，往往给原趋势方提供更好的顺势入场点。</p></div>
+</div>
+<div class="callout good"><strong>概率思维提醒：</strong>反转型交易的胜率可以低到 40% 左右仍然成立——前提是<strong>盈亏比足够</strong>。这不是“随便做都行”，而是说：评估反转 K 线时，要同时问两个问题——“我错的时候在哪认错（止损多远）”“我对的时候能走多远（空间多大）”。只看形状不看这两个问题，就是在赌。</div>
+</section>
+
+<section id="entry">
+<h2>5. 入场、止损与仓位：反转交易的专用语法</h2>
+<p>反转 K 线的入场语法与第 4 章一致，但有几处需要特别强调，因为反转交易的<strong>止损天然更远</strong>。</p>
+<h3>触发：越过哪一端</h3>
+<div class="grid2">
+<div class="card"><h3>做多（看涨反转 K 线）</h3><p>在信号 K 线<strong>高点上方</strong>挂买入止损单。价格越过即成交；不越过则形态保持待命。</p></div>
+<div class="card"><h3>做空（看跌反转 K 线）</h3><p>在信号 K 线<strong>低点下方</strong>挂卖出止损单。价格越过即成交；不越过则形态保持待命。</p></div>
+</div>
+<h3>止损与仓位：这里最容易出错</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>结构止损位</strong><br>做多放在信号 K 线低点下方（保守一点可放在信号 K 线<strong>之前</strong>那根的低点下方）。价格走到那里，说明引发这次交易的那个判断已经失败。</div></div>
+<div class="step" data-n="2"><div><strong>量出风险</strong><br>触发价到止损位的距离 = 单笔风险。这个距离在反转交易里通常<strong>明显大于</strong>顺势交易，因为反转 K 线的极值往往离得远。</div></div>
+<div class="step" data-n="3"><div><strong>反推仓位</strong><br>用“账户可承受的单笔风险 ÷ 止损距离”算仓位。<strong>止损太远时，正确动作是减仓或不做，而不是把止损挪近。</strong></div></div>
+<div class="step" data-n="4"><div><strong>检查空间</strong><br>到最近的阻力（做多）/ 支撑（做空）还有多少空间。若空间小于约两倍风险，这笔反转交易通常不值得做。</div></div>
+</div>
+<div class="callout warn"><strong>反转交易的核心权衡：</strong>它的默认形态是<strong>低胜率、高盈亏比</strong>；顺势交易的默认形态是<strong>高胜率、中低盈亏比</strong>。很多人在反转交易上亏钱，不是因为看错了方向，而是因为<strong>用顺势交易的仓位和止损纪律去做反转交易</strong>——止损被正常波动扫掉，或者被扫掉之后行情真的反转了，于是产生“明明看对了却亏钱”的挫败感。解法只有一个：<strong>先减仓，再入场</strong>。</div>
+<h3>反转交易的离场逻辑</h3>
+<table><thead><tr><th>情形</th><th>含义</th><th>处理倾向</th></tr></thead><tbody>
+<tr><td>触发后出现强跟随（大实体顺势 K 线）</td><td>反转被市场接受</td><td>可按计划持有，把止损上移到成本或结构位</td></tr>
+<tr><td>触发后立刻反向收回信号 K 线内部</td><td>可能是假突破</td><td>收紧条件；跌破信号 K 线另一端则认错离场</td></tr>
+<tr><td>连续几根 K 线横盘、无法推进</td><td>反转缺乏动力，可能只是转为区间</td><td>反转型交易通常需要<strong>较快</strong>验证；拖久了考虑减仓或离场</td></tr>
+<tr><td>反转成功但抵达前期密集成交区</td><td>空间可能已经不多</td><td>分批止盈，而不是期待一次性反转成新趋势</td></tr>
+<tr><td>反转失败、原趋势恢复推进</td><td>“反转”其实只是回调</td><td>接受它是正常形态，考虑顺势方向的反向机会</td></tr>
+</tbody></table>
+<div class="callout"><strong>关于“扩展仓位”的提醒：</strong>在反转交易中分批加仓是常见做法（价格走对时加、走错时在更低价位补），但它的前提是<strong>你已经有明确的止盈 / 止损与总量上限</strong>。没有这个前提，分批加仓就只是“越亏越买”。交易管理才是获利交易的关键组成部分，而不是入场那一瞬间。</div>
+</section>
+
+<section id="fail">
+<h2>6. 失败模式清单：反转 K 线为什么会失效</h2>
+<p>这一节建议直接做成检查表。反转 K 线失败的原因高度集中，绝大多数亏损可以归到下面几条。</p>
+<table><thead><tr><th>失败模式</th><th>发生了什么</th><th>正确的应对</th></tr></thead><tbody>
+<tr><td><strong>逆强趋势使用</strong></td><td>强趋势中第一根反转 K 线只带来 1–3 根 K 线的回调，随后趋势继续</td><td>把强趋势中的反转 K 线读成顺势信号；等趋势线被打破 + 极值被突破再谈反转</td></tr>
+<tr><td><strong>区间中部使用</strong></td><td>形状标准但方向优势弱，两边都容易被打</td><td>只在区间边缘找反转；中部只做顺势或不做</td></tr>
+<tr><td><strong>缺少第二次信号</strong></td><td>第一次尝试被原趋势吸收，止损被扫后行情才真正反转</td><td>优先等待第二次信号；第一次只用小仓位或纯观察</td></tr>
+<tr><td><strong>信号 K 线太大</strong></td><td>触发价到止损位距离过远，仓位被迫极小或盈亏比不成立</td><td>放弃或改用更小周期寻找更近的结构止损；或等回测再进</td></tr>
+<tr><td><strong>到目标位空间不足</strong></td><td>反转方向前方就有强阻力 / 支撑，盈亏比小于 2:1</td><td>放弃这笔交易——这是最常见也最容易避免的亏损来源</td></tr>
+<tr><td><strong>止损放“舒服的位置”</strong></td><td>把止损挪到与结构无关的点数上，被正常波动扫掉</td><td>止损必须与结构绑定；嫌远就减仓</td></tr>
+<tr><td><strong>把回调当成反转</strong></td><td>趋势中的正常回调恰好也以反转 K 线结束</td><td>接受它：顺势方向此时才是更优的入场机会</td></tr>
+<tr><td><strong>反转后立刻期待新趋势</strong></td><td>反转成功但只是把趋势变成区间，随后被反手</td><td>把反转的第一目标设为“回到区间 / 抵达前一摆动点”，而不是“新趋势”</td></tr>
+</tbody></table>
+<div class="callout warn"><strong>心态层面的失败模式：</strong>反转 K 线对人有天然的吸引力，因为它承诺“买在最低、卖在最高”。这种吸引力本身就是风险——它会让人<strong>先爱上某根 K 线，再去找背景</strong>。可操作的解药是把顺序写死：<strong>先写背景结论，再看信号 K 线</strong>；背景不合格时，无论形状多漂亮都不进入候选。</div>
+<h3>三个必须写下来的否定条件</h3>
+<ul>
+<li><strong>形态作废价：</strong>跌破 / 突破哪个价位，说明这次反转判断错误。</li>
+<li><strong>时间作废条件：</strong>触发后多少根 K 线内没有出现有效跟随，就降低仓位或离场。</li>
+<li><strong>空间否决条件：</strong>若到最近阻力 / 支撑的空间不足风险的约两倍，直接不做。</li>
+</ul>
+</section>
+
+<section id="workflow">
+<h2>7. 看图分析流程：六步判断一根反转 K 线</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>先定背景，不急着找 K 线</strong><br>拉远图表：这是强趋势、弱趋势、交易区间，还是刚结束一段高潮？<strong>强趋势默认不允许反转</strong>，区间边缘默认允许。这一步先写下结论，再去右侧看细节。</div></div>
+<div class="step" data-n="2"><div><strong>标出关键位置</strong><br>近期摆动高低点、区间上下沿、趋势通道线、测量移动目标、昨日高低点、整数关口。反转 K 线的价值 = 它出现在这些位置的哪一个。</div></div>
+<div class="step" data-n="3"><div><strong>确认“被反转的对象”</strong><br>前面那段推进是什么？是高潮式加速、普通趋势段，还是区间内的一次摆动？被反转的对象越极端，反转 K 线的分量越重。</div></div>
+<div class="step" data-n="4"><div><strong>评估这根 K 线的成色</strong><br>按第 2 节的六个维度打分：开盘位置、收盘位置、上 / 下影线、实体、反转幅度、是否有 ii 或微型双底配合。</div></div>
+<div class="step" data-n="5"><div><strong>写下触发价、作废价、空间</strong><br>“越过 X 我做多；跌破 Y 则作废；到上方阻力还有 Z。”三个数字必须具体，且要检查 Z 是否明显大于 X 到 Y 的距离。</div></div>
+<div class="step" data-n="6"><div><strong>等触发，再看跟随，最后定仓位</strong><br>触发后评估入场 K 线的跟随质量；用止损距离反推仓位（反转交易默认减仓）；出现失败特征就按第 5 节的处理倾向执行。</div></div>
+</div>
+<div class="callout good"><strong>实战记录句式（可直接套用）：</strong>“背景：【趋势 / 区间 + 阶段】；位置：【区间下沿 / 通道过冲 / 测量移动目标】；被反转对象：【前面那段推进】；信号 K 线：【看涨反转 / 锤子 / ii】，开盘在【…】，收在【…】，下影线占【约 1/2】；触发价【X】，作废价【Y】，到阻力空间【Z ≈ 3×风险】；处理：【小仓位 / 观察第二次信号】。”——这段文字事后可复盘；“感觉要见底了”不能。</div>
+</section>
+
+<section id="cases">
+<h2>8. 四个典型情境</h2>
+<details open><summary>案例 A：连续大阴线跌破通道下轨后，出现收在上端的看涨反转 K 线</summary>
+<p><strong>初步判断：</strong>背景是<strong>卖压高潮 + 通道线过冲</strong>，这是反转 K 线最被认可的环境之一。若价格越过信号 K 线高点，可以小仓位试探。</p>
+<p><strong>接下来的观察：</strong>入场后是否出现强多头跟随；是否形成微型双底（后续没有跌破信号 K 线低点）；反弹到前期密集成交区时是否滞涨。</p>
+<p><strong>不能确定：</strong>即使高潮之后，也可能只是“第一次尝试”—价格反弹几根后再度下探并创出新低。因此止损必须放在信号 K 线低点下方，并接受这只是一次<strong>概率交易</strong>。</p>
+</details>
+<details><summary>案例 B：强空头趋势中段出现一根漂亮的看涨反转 K 线（锤子线）</summary>
+<p><strong>初步判断：</strong>形状合格，但位置<strong>不合格</strong>——强趋势中段的第一根反向 K 线。</p>
+<p><strong>接下来的观察：</strong>更合理的读法是把它当作<strong>空头的机会</strong>：等它反弹后出现第二次卖出信号（例如低 2），在反转向下的结构里做空。</p>
+<p><strong>不能确定：</strong>它也可能就是底。区别在于市场是否给出“趋势被打破”的证据——趋势线被越过、前一个摆动高点被突破。在这些发生之前，不该假设反转。</p>
+</details>
+<details><summary>案例 C：交易区间中部出现标准锤子线</summary>
+<p><strong>初步判断：</strong>形状标准，但区间中部方向优势最弱。</p>
+<p><strong>接下来的观察：</strong>价格是否先到区间下沿再给信号；或者先突破上沿并出现有效跟进。</p>
+<p><strong>不能确定：</strong>这不是一个值得下注的位置。正确动作往往是<strong>等待</strong>，而不是因为“图形标准”就入场——这是初学者最昂贵的错觉之一。</p>
+</details>
+<details><summary>案例 D：强势上涨后出现外包线，收盘在低端</summary>
+<p><strong>初步判断：</strong>该周期内卖方取得主动权（高低点都包住了前一根，且收在下端），原趋势可能进入停顿或反转。</p>
+<p><strong>接下来的观察：</strong>是否出现空头跟随；是否跌破近期重要摆动低点；反弹是否无法回到原高点（形成更低的高点）。</p>
+<p><strong>不能确定：</strong>一根强反向 K 线不等于趋势反转。在强多头趋势中，它常常只是一次快速回调的开始——因此顺多头方向的回调买入可能仍是更优选择。</p>
+</details>
+<div class="callout"><strong>四个案例的共同结构：</strong>它们的分歧从来不在“这根 K 线长什么样”，而在<strong>“它站在什么位置上”</strong>。这也是本章唯一需要背下来的排序：<strong>背景 &gt; 位置 &gt; 信号 K 线形状 &gt; 目标空间</strong>。</div>
+</section>
+
+<section id="practice">
+<h2>9. 自测：检查你是否掌握反转 K 线的判断逻辑</h2>
+<p class="muted">选择最合理的回答。重点是建仓逻辑，不是预测涨跌。</p>
+<div class="quiz">
+<p><strong>问题 1：</strong>一根形状完美的锤子线出现在<strong>强空头趋势的中段</strong>，最合理的处理是？</p>
+<label><input type="radio" name="q1" value="a"> A. 立刻做多，因为锤子线是反转信号</label>
+<label><input type="radio" name="q1" value="b"> B. 优先把它读成空头的顺势机会（等反弹后的第二次卖出信号），直到趋势被打破的证据出现</label>
+<label><input type="radio" name="q1" value="c"> C. 做空，因为锤子线一定失败</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>做多一笔反转 K 线交易时，止损位置最符合结构逻辑的是？</p>
+<label><input type="radio" name="q2" value="a"> A. 固定在入场价下方若干个点，便于计算</label>
+<label><input type="radio" name="q2" value="b"> B. 信号 K 线低点下方——价格到那里说明反转判断已经失败</label>
+<label><input type="radio" name="q2" value="c"> C. 不设止损，等它回来</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>反转 K 线的止损距离通常比顺势交易更远，此时正确的做法是？</p>
+<label><input type="radio" name="q3" value="a"> A. 把止损挪近一点，让仓位能开大</label>
+<label><input type="radio" name="q3" value="b"> B. 减小仓位，或放弃这笔交易；绝不为了仓位把止损挪到结构之外</label>
+<label><input type="radio" name="q3" value="c"> C. 加大仓位摊薄成本</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>为什么布鲁克斯框架特别强调“第二次信号 / 二次入场”？</p>
+<label><input type="radio" name="q4" value="a"> A. 因为第二次的价格总是更好</label>
+<label><input type="radio" name="q4" value="b"> B. 因为第一次反转尝试常被原趋势吸收，第二次回到同区域再失败，说明压力确实在减弱</label>
+<label><input type="radio" name="q4" value="c"> C. 因为它可以让你不用设止损</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>关于“追求完美的信号 K 线”，最符合本章观点的是？</p>
+<label><input type="radio" name="q5" value="a"> A. 必须等到所有条件完美才入场</label>
+<label><input type="radio" name="q5" value="b"> B. 完美信号出现时盈亏比往往已经变差；在背景足够强时，弱信号也值得做</label>
+<label><input type="radio" name="q5" value="c"> C. 信号 K 线的形状比背景更重要</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我在看信号 K 线之前，先写下了背景结论（强趋势 / 弱趋势 / 区间 / 高潮）。</label>
+<label><input type="checkbox"> 我确认了这根反转 K 线出现在关键位置，而不是区间中部或趋势中段。</label>
+<label><input type="checkbox"> 我确认了前面存在一个明确的“被反转对象”（一段可辨识的推进）。</label>
+<label><input type="checkbox"> 我按收盘位置、影线比例、实体、反转幅度评估了成色，而不是只看名称。</label>
+<label><input type="checkbox"> 我检查了是否有第二次信号 / ii / 微型双底 / 微型双顶配合。</label>
+<label><input type="checkbox"> 我写下了具体的触发价、作废价与到目标的空间，并确认空间大于约两倍风险。</label>
+<label><input type="checkbox"> 我用结构止损反推仓位，并为反转交易主动减仓。</label>
+<label><input type="checkbox"> 我等到价格触发才动手，没有在信号 K 线收盘时就下单。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：八条核心结论</h2>
+<ol>
+<li><strong>反转 K 线记录的是“掌控易手”，不是“趋势反转”。它是一根压缩成单根 K 线的双边交易。</strong></li>
+<li><strong>收盘价选边，颜色不重要：</strong>看涨反转收在上端、看跌反转收在下端，这比 K 线是红是绿重要得多。</li>
+<li><strong>背景 &gt; 位置 &gt; 形状 &gt; 空间。</strong>强趋势里第一次反转尝试通常只带来几根 K 线的回调；<strong>80% 的反转尝试以失败告终</strong>。</li>
+<li><strong>大多数反转尝试都会失败并变成回调</strong>——这不是判断错误，而是这类形态的默认统计特征。</li>
+<li><strong>第二次信号比第一次可靠：</strong>同一区域再次反转失败，才说明原趋势的动力确实在减弱。</li>
+<li><strong>不要等完美信号：</strong>满分信号出现时盈亏比往往已变差；背景足够强时，弱信号也值得做。</li>
+<li><strong>反转交易默认低胜率、高盈亏比，所以必须减仓</strong>；止损太远时的正确动作是减仓或不做，而不是挪近止损。</li>
+<li><strong>入场前必须写下触发价、作废价、时间否决条件与空间检查</strong>——写不出来，说明这不是一个建仓形态，只是一次冲动。</li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>把自己从“寻找漂亮反转 K 线的人”变成“等待合格背景的人”。前者在图上到处都能找到机会，后者一周可能只等到几次——但只有后者知道自己在等什么、为什么等、以及什么情况下承认自己错了。</div>
+<p class="muted small">资料说明：本页面依据用户提供的章节标题（《高级趋势技术分析》第 5 章「信号 K 线之反转 K 线」），并结合价格行为交易框架的公开资料整理为学习笔记与练习材料；<strong>不是书中原文、逐页摘要或对作者具体段落的复述</strong>，也未使用受版权保护的原文段落。不同版本的章节编排与术语翻译可能不同，请以你手中的译本为准。内容仅用于学习，不构成投资建议。</p>
+<h3 class="small">主要参考来源</h3>
+<ul class="small muted">
+<li>Brooks Trading Course 官方术语表与教学页：<a href="https://www.brookstradingcourse.com/price-action-trading-terms-glossary/">Price Action Trading Glossary</a></li>
+<li>官方概念页：<a href="https://www.brookstradingcourse.com/price-action/10-best-price-action-trading-patterns/">10 best price action trading patterns</a></li>
+<li>中文整理（Al Brooks 课程章节笔记）：<a href="https://github.com/forecho/hugo-blog/blob/main/content/posts/price-actions-candles-setups-and-signal-bars.md">价格行为学 - K 线、交易机会和信号 K 线</a></li>
+<li>中文访谈实录（含 ii 形态、第二次信号、止损与对等运动的实务讨论）：<a href="https://edu.xzfutures.cn/citic/web/indexMenu/toArticleDetail?id=37">布鲁克斯（Al Brooks）访谈实录（下）</a></li>
+</ul>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 5 章 信号K线之反转K线</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"b",q2:"b",q3:"b",q4:"b",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：强趋势中第一根反向 K 线默认被读作顺势机会；等趋势线被打破、反向极值被突破，才谈反转。",
+  "第 2 题：止损放在信号 K 线低点下方，价格到那里说明反转判断已失败；与结构绑定的止损才有意义。",
+  "第 3 题：反转交易止损天然更远，正确动作是减仓或放弃，而不是把止损挪到会被正常波动扫掉的位置。",
+  "第 4 题：第一次反转尝试常被原趋势吸收，第二次回到同一区域再失败，说明原趋势动力确实在减弱。",
+  "第 5 题：满分信号出现时价格已离极值较远、盈亏比变差；背景足够强时弱信号也值得做，背景优先于形状。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+ " "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

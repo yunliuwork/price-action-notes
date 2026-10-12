@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 18 章 如何交易趋势举例｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 18 章</div>
+<h1>如何交易趋势举例</h1>
+<p class="lead">这是第三篇的开篇，也是全书<strong>最实用</strong>的一章：它把「趋势中该怎么做」落成了一长串具体的入场方法。但真正的重点不在清单，而在三句判断——<strong>趋势存在本身就是持有小仓位的充分理由</strong>；<strong>成功交易者在趋势中只有两个选项（顺势或空仓）</strong>；以及<strong>最常见的亏钱方式，是入场用一套计划、管理头寸却用另一套</strong>。</p>
+<div class="tags"><span class="tag">止损单入场</span><span class="tag">限价单入场</span><span class="tag">两个选项</span><span class="tag">刮头皮 vs 波段</span><span class="tag">交易者等式</span><span class="tag">跟踪止损</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#two">1. 趋势中只有两个选项</a><a href="#stop">2. 止损单入场法</a><a href="#limit">3. 限价单入场法</a><a href="#scalp">4. 刮头皮还是波段</a><a href="#math">5. 交易者等式与仓位换算</a><a href="#mistake">6. 最常见的亏钱方式</a><a href="#manage">7. 跟踪止损与加仓</a><a href="#psych">8. 趋势为什么总把人挡在外面</a><a href="#myths">9. 关键逻辑与误区</a><a href="#practice">10. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：当市场处于趋势之中，交易者应该寻找任何理由入场。单单是趋势存在，就是你至少持有一个小头寸的充分理由。</strong></div>
+<div class="grid3">
+<div class="card"><h3>入场方式</h3><p>止损单（顺势头寸，市场朝你方向走）与限价单（逆着当前方向入场，需要更高的看图水平）。</p><p class="small muted">本章给出了两大清单。</p></div>
+<div class="card"><h3>头寸类型</h3><p>刮头皮（1–3 个点）或波段。必须先决定做哪种，再决定怎么管理。</p><p class="small muted">只有极有经验者才适合刮头皮。</p></div>
+<div class="card"><h3>唯一必须做的事</h3><p>一旦认为当天是趋势行情，<strong>必须至少建立一个小仓位</strong>——这是最难、也最重要的一条。</p><p class="small muted">止损远 → 仓位小，总风险不变。</p></div>
+</div>
+<div class="chart">
+<svg viewBox="0 0 680 320" role="img" aria-label="示意图：趋势中的两个选项，以及仓位换算与交易者等式">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">趋势中只有两个选项</text>
+
+<rect x="40" y="52" width="150" height="42" rx="10" fill="#4788d8" opacity=".25"/>
+<text x="115" y="78" fill="currentColor" font-size="12" text-anchor="middle" font-weight="700">市场状态？</text>
+<path d="M115 94 L115 120" stroke="currentColor" stroke-width="1.6" opacity=".6"/>
+<path d="M115 114 L115 122 M110 116 L115 123 L120 116" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".6"/>
+<path d="M115 122 L60 150 L60 168" stroke="currentColor" stroke-width="1.6" fill="none" opacity=".6"/>
+<path d="M115 122 L200 150 L200 168" stroke="currentColor" stroke-width="1.6" fill="none" opacity=".6"/>
+
+<rect x="10" y="170" width="120" height="40" rx="9" fill="#16845b" opacity=".3"/>
+<text x="70" y="188" fill="currentColor" font-size="11.5" text-anchor="middle" font-weight="700">上升趋势</text>
+<text x="70" y="204" fill="#16845b" font-size="11.5" text-anchor="middle">只做多 / 空仓</text>
+<rect x="146" y="170" width="120" height="40" rx="9" fill="#c74747" opacity=".3"/>
+<text x="206" y="188" fill="currentColor" font-size="11.5" text-anchor="middle" font-weight="700">下跌趋势</text>
+<text x="206" y="204" fill="#c74747" font-size="11.5" text-anchor="middle">只做空 / 空仓</text>
+
+<text x="140" y="238" fill="currentColor" font-size="11.5" opacity=".85" text-anchor="middle">做多、做空、空仓 —— 但趋势中只有两个是对的</text>
+<text x="140" y="258" fill="currentColor" font-size="11.5" opacity=".72" text-anchor="middle">只有极少数人能靠逆势稳定获利，假定你不是他们之一</text>
+
+<line x1="300" y1="40" x2="300" y2="300" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".25"/>
+
+<text x="326" y="24" fill="currentColor" font-size="13" font-weight="700">仓位换算：止损更远 → 仓位更小</text>
+<text x="326" y="58" fill="currentColor" font-size="11.5" opacity=".9">日常情况：风险 2 个点 → 标准仓位</text>
+<rect x="326" y="68" width="240" height="20" rx="5" fill="#8ab4ff" opacity=".45"/>
+<text x="446" y="83" fill="currentColor" font-size="11" text-anchor="middle">标准规模</text>
+<text x="326" y="118" fill="currentColor" font-size="11.5" opacity=".9">急速拉升后：止损 6 个点（3 倍）</text>
+<rect x="326" y="128" width="80" height="20" rx="5" fill="#16845b" opacity=".7"/>
+<text x="366" y="143" fill="white" font-size="11" text-anchor="middle" font-weight="700">1/3</text>
+<text x="414" y="143" fill="currentColor" font-size="11" opacity=".85">→ 总资金风险与日常相同</text>
+
+<line x1="326" y1="176" x2="640" y2="176" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity=".35"/>
+<text x="326" y="200" fill="currentColor" font-size="12" font-weight="700">交易者等式</text>
+<text x="326" y="224" fill="#16845b" font-size="11.5">成功率 × 潜在回报</text>
+<text x="470" y="224" fill="currentColor" font-size="11.5">≫</text>
+<text x="492" y="224" fill="#c74747" font-size="11.5">失败率 × 风险</text>
+<text x="326" y="252" fill="currentColor" font-size="11.5" opacity=".9">例：风险 2 点、胜率 60% → 回报须 ≥ 2 点</text>
+<text x="326" y="272" fill="currentColor" font-size="11.5" opacity=".9">刮头皮需约 70% 胜率；波段常低于 50%</text>
+
+<text x="340" y="308" fill="currentColor" opacity=".72" font-size="11.5" text-anchor="middle">示意图：先选对方向，再用止损距离决定仓位，最后用交易者等式确认这笔值不值得做</text>
+</svg>
+</div>
+<div class="callout warn"><strong>本章最值得抄下来的一句：交易者永远有三种选择：做多、做空或空仓。在趋势中任何时候，只有两种选择属于一个成功交易者的做法。</strong>如果市场处于上升趋势，成功交易者<strong>只会做多或空仓</strong>；下跌趋势则<strong>做空或空仓</strong>。只有很小一部分交易者能靠逆势稳定获利，<strong>而你应该假定你不属于他们中的一分子</strong>。</div>
+</section>
+
+<section id="two">
+<h2>1. 趋势中只有两个选项</h2>
+<table><thead><tr><th>市场状态</th><th>成功交易者的选项</th><th>不是选项</th></tr></thead><tbody>
+<tr><td>上升趋势</td><td>做多、空仓</td><td>做空</td></tr>
+<tr><td>下跌趋势</td><td>做空、空仓</td><td>做多</td></tr>
+</tbody></table>
+<div class="callout"><strong>原文对新手心理的观察：</strong>不幸的是，大部分交易者都会在头几年以为自己能够通过逆势交易获利，<strong>月复一月地出现亏损而不知其所以然</strong>。你现在应该知道答案了。</div>
+<h3>一种铁定亏钱的做法</h3>
+<div class="callout warn"><strong>所有交易者都知道，在趋势交易日有一种方法铁定会亏钱：在每次向下反转时做一笔刮头皮空头，打算回调结束后再反手做多。</strong>初学者往往感到无法抗拒——他们觉得最后一根 K 线总在屏幕最上方，上方空间有限、下方空间很大；而且即便失败，亏损也不大。</div>
+<p>但实际情况是：</p>
+<ul>
+<li>当回撤终于发生，他们<strong>并不会反手做多</strong>——因为此时市场感觉有可能反转进入下跌趋势，买入形态看起来也不够强。</li>
+<li>由于他们在做空、而市场尚未达到刮头皮目标，他们<strong>内心渴望市场再跌一点</strong>——也就是说，他们实际上并不期待回调结束，<strong>反而不希望回调结束</strong>。</li>
+<li>结果是一天下来不断逆势做空、不断产生小亏损，最后惊讶地发现自己居然亏了那么多。</li>
+</ul>
+<div class="callout good"><strong>交易老手的看法刚好相反：他们知道 80% 的反转尝试都会失败并成为牛旗，所以继续持有多头、锁定部分利润，或者在回调过程中加仓。</strong>用原文的表述：<strong>只有停止猜顶测底、不在上升趋势中做空或下跌趋势中做多，初学者才会停止亏钱。再进一步，只有当他们认识到，每个小型顶部都是牛旗的开始，他们才能开始做对。</strong></div>
+</section>
+
+<section id="stop">
+<h2>2. 止损单入场法（顺从趋势）</h2>
+<p>以下是使用<strong>止损单</strong>入场的一些方法（即市场朝你的方向运行、触发你的挂单）：</p>
+<table><thead><tr><th>#</th><th>形态</th><th>入场</th></tr></thead><tbody>
+<tr><td>1</td><td>上升趋势中回踩均线</td><td>在<strong>高 2</strong> 买入</td></tr>
+<tr><td>2</td><td>下跌趋势中回踩均线</td><td>在<strong>低 2</strong> 卖出</td></tr>
+<tr><td>3</td><td>上升趋势中的回调</td><td>在<strong>楔形牛旗</strong>中买入</td></tr>
+<tr><td>4</td><td>下跌趋势中的反弹</td><td>在<strong>楔形熊旗</strong>中卖出</td></tr>
+<tr><td>5</td><td>上升趋势中突破牛旗后</td><td>在<strong>突破回踩</strong>时买入</td></tr>
+<tr><td>6</td><td>下跌趋势中突破熊旗后</td><td>在<strong>突破回踩</strong>时卖出</td></tr>
+<tr><td>7</td><td>急速飙升行情（<strong>但并非买入高潮</strong>）之后</td><td>在<strong>高 1</strong> 回撤时买入</td></tr>
+<tr><td>8</td><td>急速下跌行情（<strong>但并非卖出高潮</strong>）之后</td><td>在<strong>低 1</strong> 回撤时卖出</td></tr>
+<tr><td>9</td><td>上升趋势<strong>非常强劲</strong>时</td><td>在<strong>前期摆动高点上方</strong>挂止损单买入</td></tr>
+<tr><td>10</td><td>下跌趋势<strong>非常强劲</strong>时</td><td>在<strong>前期摆动低点下方</strong>挂止损单卖出</td></tr>
+</tbody></table>
+<div class="callout good"><strong>注意第 7、8 条的限定词："但并非买入/卖出高潮"。</strong>这与第 2 章的高潮概念直接相连——如果那段急速行情已经是高潮（例如连续多根很长的趋势 K 线），那么随后的高 1 / 低 1 就不再是可靠的顺势入场点，反而可能接近反转。而第 9、10 条只在<strong>趋势非常强劲</strong>时才用：因为强趋势中回调可能极浅，等回调会永远等不到，只能主动在极值外挂单。</div>
+</section>
+
+<section id="limit">
+<h2>3. 限价单入场法（需要更高的看图水平）</h2>
+<div class="callout warn"><strong>为什么更难：</strong>使用限价单入场需要更高的看图水平，因为交易者入场的时候，<strong>市场的运行方向与头寸的方向背道而驰</strong>。</div>
+<p>然而老练的交易者在遇到下面这些形态时，可以可靠地利用限价单或市价单入场：</p>
+<h3>急速行情中的入场</h3>
+<ul>
+<li>以<strong>市价</strong>在强势向上突破时买入；或在急速行情中<strong>每根多头趋势 K 线收盘时</strong>买入；或以限价单在<strong>前一根 K 线低点或其下方</strong>买入。<span class="muted small">（原文提醒：急速行情中入场需要比较大的止损，而且运动迅速，这种组合对许多交易者难度太高。）</span></li>
+<li>对称地：以市价在强势向下突破时卖出，或在每根空头趋势 K 线收盘时卖出，或在前一根 K 线高点或其上方挂限价单卖出。</li>
+<li>在急速<strong>上涨</strong>行情中<strong>第一根阴线收盘时买入</strong>。</li>
+<li>在急速<strong>下跌</strong>行情中<strong>第一根阳线收盘时卖出</strong>。</li>
+</ul>
+<h3>趋势线与摆动点</h3>
+<ul>
+<li>上升趋势中，在<strong>上升趋势线或前期摆动低点</strong>买入（潜在的双底牛旗）。</li>
+<li>下跌趋势中，在<strong>下降趋势线或前期摆动高点</strong>卖出（潜在的双顶熊旗）。</li>
+<li>在均线处<strong>波动较小的牛旗</strong>中，以限价单在前一根 K 线低点或其下方买入；熊旗对称处理。</li>
+</ul>
+<h3>弱信号与突破回踩</h3>
+<ul>
+<li>市场出现强势向上反转、可能进入新的多头趋势，或处于<strong>交易区间底部</strong>时，以限价单在<strong>低 1 或低 2 弱信号 K 线</strong>或其下方买入。</li>
+<li>市场出现强势向下反转、可能进入新的空头趋势，或处于<strong>交易区间顶部</strong>时，以限价单在<strong>高 1 或高 2 弱信号 K 线</strong>或其上方卖出。</li>
+<li>一根阳线<strong>向上突破牛旗</strong>之后，在其下方挂限价单买入，<strong>期待它出现突破回踩</strong>；阴线向下突破熊旗则对称处理。</li>
+<li>做波段时，在<strong>突破回踩</strong>时买入或加仓。原文对突破回踩的定义很精炼：<strong>突破回踩是扫掉先前入场多头盈亏平衡止损的尝试。</strong></li>
+</ul>
+<h3>固定幅度回撤 / 反弹</h3>
+<ul>
+<li>上升趋势中，在<strong>高点下方固定数量</strong>的最小报价单位处买入。例如 Emini 日均波幅约 12 点时，在每出现 <strong>2、3 或 4 个点</strong>回撤时买进。另一个变体：如果行情前两个小时最大回撤为 10 个单位，那么后面在大约 <strong>8~12 个单位</strong>回撤时买进。</li>
+<li>下跌趋势中对称处理（例如日均波幅约 2 美元时，每出现 <strong>50 美分</strong>反弹卖出）。</li>
+</ul>
+<h3>逆势分批建仓与均线缺口</h3>
+<ul>
+<li><strong>逆势分批建仓。</strong><span class="muted small">原文警告：分批建仓时一定要提前计划好每一单的手数，确保总风险与平时一般的交易保持一致。<strong>这种手法很容易导致仓位过重、止损过大，需要精细的操作。</strong></span></li>
+<li>当上升趋势已有 <strong>20 根或以上 K 线没有触到均线</strong>，以限价单在均线处买进、逢低加仓（例如在均线上方 1 个单位处挂限价买单，然后往下 1~3 个点加仓）。下跌趋势对称处理。</li>
+<li>强劲上升趋势中，在<strong>第一根收于均线下方的空头趋势 K 线收盘时买进</strong>；强劲下跌趋势中，在<strong>第一根收于均线上方的多头趋势 K 线收盘时卖出</strong>。</li>
+<li>在强劲上升趋势中，回撤是一小段下跌趋势——多头往往预计<strong>在这一小段下跌趋势内突破前期摆动低点的走势将会失败</strong>，因此在这里挂限价买单（下跌趋势对称）。</li>
+</ul>
+</section>
+
+<section id="scalp">
+<h2>4. 刮头皮还是波段：先决定，再管理</h2>
+<div class="callout good"><strong>一旦交易者建立头寸，他们就需要决定如何对头寸进行管理。其中最重要的决定就是：他们到底是做刮头皮还是波段交易。</strong></div>
+<table><thead><tr><th></th><th>刮头皮</th><th>波段</th></tr></thead><tbody>
+<tr><td>目标利润</td><td>通常 1–3 个点（有人认为 1 个点才算刮头皮，2–3 个属于小波段）</td><td>远大于风险</td></tr>
+<tr><td>所需胜率</td><td><strong>大约 70%</strong>——因为风险有时候高于潜在回报</td><td><strong>通常不到 50%</strong></td></tr>
+<tr><td>适合谁</td><td>只有经验非常丰富的交易者</td><td><strong>新手应该做波段</strong></td></tr>
+<tr><td>难点</td><td>需要极高胜率；要连续盯盘几小时并随时快速下单</td><td>入场点往往不清晰或很吓人</td></tr>
+</tbody></table>
+<div class="callout warn"><strong>关于刮头皮的诚实提醒：</strong>虽然每天都有大量机会可以让交易者<strong>冒 2 个点的风险赚 1 个点利润、成功率可达 80%</strong>，但还有许多其他机会看起来类似、<strong>却只有 50% 的成功率</strong>。大部分交易者的问题在于<strong>如何辨别二者</strong>，而一天几次小的错误就可造成赚钱与赔钱的天壤之别。<strong>大部分交易者都无法在实盘中做出区分，所以刮头皮的最终结果是亏钱。</strong></div>
+<div class="callout good"><strong>对新手的具体建议：赚钱更好的方法是做波段交易。</strong>可以一次性入场，也可以在做对方向的情况下逐步加仓；出场可以一次性全部退出，也可以在有浮盈的情况下逐步减仓。原文强调：<strong>新手应该假定自己肯定达不到刮头皮所需的胜率，因为这就是现实。</strong></div>
+</section>
+
+<section id="math">
+<h2>5. 交易者等式与仓位换算</h2>
+<div class="callout"><strong>交易者等式：成功率 × 潜在回报 大大高于 失败概率 × 风险。</strong>只在满足这个条件时交易。</div>
+<h3>一个具体例子</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>设定假设</strong><br>在上升趋势初期买入，初始止损 <strong>2 个点</strong>，并且相信<strong>成功率至少 60%</strong>。</div></div>
+<div class="step" data-n="2"><div><strong>计算门槛</strong><br>因为风险是 2 个点，只有当<strong>回报达到 2 个点或更高</strong>时，交易者等式才开始有利。</div></div>
+<div class="step" data-n="3"><div><strong>推出纪律</strong><br><strong>如果交易者锁定一个较小的利润，从长期来看他将会亏钱</strong>——除非他相信自己的成功率能达到大约 80%，而这种情况非常罕见。</div></div>
+</div>
+<div class="callout warn"><strong>一条给大多数人的底线：大部分交易者坚决不能让风险高于回报。</strong>（能够达到 80% 胜率的老练交易者即便用 2 个点止损、在 1 个点浮盈时锁定部分利润，依然可以赚钱——但你<strong>应该假定自己不属于他们</strong>。）</div>
+<h3>止损位置与仓位</h3>
+<table><thead><tr><th>情形</th><th>止损设置</th><th>仓位</th></tr></thead><tbody>
+<tr><td>Emini 日均波幅 10–15 点时的常规交易</td><td>入场点下方约 <strong>2 个点</strong>（或信号 K 线低点下方 1 个单位，通常也是 2 个点左右）</td><td>标准</td></tr>
+<tr><td>有把握趋势最终会恢复的波段交易</td><td>可以设 <strong>5 个点或以上</strong></td><td><strong>必须相应减小</strong></td></tr>
+<tr><td>逆势分批建仓</td><td>往往不用信号 K 线的一端作为止损位</td><td>必须提前规划每一单手数</td></tr>
+</tbody></table>
+<div class="callout good"><strong>一条关键的换算原则（本章反复出现）：如果止损必须设在急速拉升 K 线的低点下方，风险是日常水平的 3 倍，那么他们只买入日常头寸规模的 1/3，让<u>总资金风险保持在日常水平</u>。</strong>这与第 5、7、11 章"止损更远就减仓"完全一致——它是全书统一的仓位法则。</div>
+<h3>波动幅度决定止损的灵活做法</h3>
+<p>原文给出了一个以波幅为基准的经验法（以 Emini 日均波幅不到 15 点、趋势中回撤基本不超过 7 点为例）：</p>
+<ul>
+<li>有些交易者认为，<strong>只要回撤不超过日均波动区间的 50%~75%，就说明趋势仍在</strong>，可以继续按原先逻辑持仓。</li>
+<li>若在回撤中买入、入场点低于当天高点 3 个点，可能设 <strong>5 个点</strong>的止损——因为相信趋势依然存在，认为市场有 <strong>60% 或更高</strong>的概率出现同等幅度的行情。</li>
+<li>若初始买入信号出现在高点下方 <strong>5 个点</strong>，那么可能只设 <strong>3 个点</strong>止损，并计划在市场测试前高时获利平仓。</li>
+</ul>
+<div class="callout"><strong>注意最后这条的取舍逻辑：回撤幅度较大说明趋势有点弱，从而促使他们在趋势高点下方锁定利润。</strong>止损距离与目标位置是<strong>一起</strong>根据"趋势还剩多强"来决定的。</div>
+</section>
+
+<section id="mistake">
+<h2>6. 最常见的亏钱方式：计划不一致</h2>
+<div class="callout warn"><strong>既然有这么多赚钱的好方法，为什么大部分交易者还会亏钱？这是因为犯错的途径更多。最常见的错误之一就是：交易者开始的时候制订了一个计划，一旦进入交易，却根据另一种计划来管理头寸。</strong></div>
+<h3>两个方向的错误</h3>
+<div class="grid2">
+<div class="card"><h3>波段交易者拿不住</h3><p>做了两笔多头波段交易都失败，第三笔时害怕再次亏损，<strong>赚一点就跑了</strong>，结果眼睁睁看着市场走出一轮大趋势。</p><p class="small muted">波段交易成功率通常不到 50%，<strong>需要这些大机会来弥补其他交易的亏损</strong>。拿不住头寸 → 错过赚大钱的机会 → 总体上必然亏损。</p></div>
+<div class="card"><h3>刮头皮者改做摆动</h3><p>一笔刮头皮成功后，看到市场走出大趋势而自己只赚了一点，心里不好受。于是下一次机会到来时，<strong>到了目标位却不出场，改让头寸变成摆动交易</strong>。几分钟后市场回撤，扫掉止损。</p><p class="small muted">原因：<strong>大部分刮头皮交易都是高概率的，而当先机较大而且显而易见的时候，行情往往小而短暂，不会成为一波大行情的起点。</strong></p></div>
+</div>
+<div class="callout good"><strong>结论：赚钱的最佳方法就是有一套完善的策略，然后严格按计划行事。</strong>对于交易新手而言，他们的计划应该是某种<strong>波段交易</strong>——因为要成为成功的刮头皮交易者需要非常高的胜率，而大部分交易者都很难在长期内保持这样的胜率。</div>
+</section>
+
+<section id="manage">
+<h2>7. 跟踪止损、加仓与减仓</h2>
+<h3>跟踪止损的基本规则</h3>
+<div class="callout"><strong>由于上升趋势形成趋势性的高点和低点，因此每次市场创出新高，交易者应该把保护性止损移到<u>最近低点下方 1 个最小报价单位</u>。这叫跟踪止损。</strong></div>
+<div class="callout warn"><strong>一个必须知道的陷阱：回撤通常会跌破最初的入场点</strong>，缺乏经验的波段交易者不了解这一点，往往把止损收紧到盈亏平衡点，于是被扫掉止损，从而<strong>错过一波很不错的趋势性行情</strong>。</div>
+<p>原文给出的应对：一旦市场测试最初入场点之后再创出新高，<strong>大部分交易者会把止损至少上移到入场点</strong>——因为他们不希望市场第一次测试后创出新高、再回来测试第二次。其他交易者则会把止损放在<strong>第一次回测走势的低点下方</strong>。</p>
+<h3>允许回撤跌到信号 K 线下方的情形</h3>
+<p>只要认为上升趋势依然存在，部分交易者会允许回撤走势跌至信号 K 线下方。例如在上升趋势的<strong>高 2 回撤</strong>中买入，信号 K 线长度 2 个点：</p>
+<table><thead><tr><th>处理</th><th>理由与后续</th></tr></thead><tbody>
+<tr><td>即便跌破信号 K 线低点仍继续持仓</td><td>他们预计回撤走势会演变成<strong>高 3</strong>，也就是<strong>楔形牛旗买入形态</strong></td></tr>
+<tr><td>跌破信号 K 线后止损，等出现强劲高 3 买入信号后再次买入</td><td>部分人甚至会把头寸规模<strong>较第一次加大一倍</strong>，认为第二个强劲买入信号更可靠</td></tr>
+<tr><td>先在可疑信号时<strong>只建半仓</strong>，被扫掉止损即出场；若二次信号很强劲，再全仓入场</td><td>等于已经预先考虑了"高 2 失败并演变成楔形牛旗（更强信号）"的可能性</td></tr>
+</tbody></table>
+<div class="callout good"><strong>一个很实用的分仓思路：很多交易者在建仓信号较为可疑的时候往往会建半仓，扫掉止损即出场；如果二次信号很强劲，再全仓入场。</strong>这把第 10 章"二次入场点"的可靠性转化为具体的仓位安排。</div>
+<h3>一次漂亮的实战头寸管理（原文例子，以高盛股价为例）</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>计划入场</strong><br>在 161.05 美元做多（高点下方 30 美分），止损设在 160.35 美元（K 线 8 低点下方），<strong>风险 70 美分</strong>。</div></div>
+<div class="step" data-n="2"><div><strong>按总风险反推仓位</strong><br>如果通常每笔交易的风险不高于 <strong>500 美元</strong>，那么买入 <strong>600 股</strong>（500 ÷ 0.70 ≈ 714，原文取 600 股量级）。利润目标至少要在入场点上方 70 美分。此时成功率至少 60%。</div></div>
+<div class="step" data-n="3"><div><strong>不急于锁定小利润</strong><br>在强劲上升趋势交易日，最好把利润目标定高一点。市场至少涨到<strong>风险的两倍</strong>（入场点上方 1.4 美元）之前不应急于锁定利润。可在 162.45 美元挂限价卖单，<strong>卖出一半头寸</strong>。</div></div>
+<div class="step" data-n="4"><div><strong>逐步收紧止损</strong><br>强多头趋势 K 线突破楔形牛旗后，把止损收紧到其低点下方（风险降到 20 美分）；再次突破后进一步收紧（风险降到约 1 美分）。</div></div>
+<div class="step" data-n="5"><div><strong>分批了结</strong><br>一半仓位在目标位成交、获利约 420 美元；剩余仓位继续上移止损到最近一轮急速拉升行情的起点下方。若被扫掉，剩余 300 股每股赚 80 美分。</div></div>
+<div class="step" data-n="6"><div><strong>尾盘处理</strong><br>在已获得较大浮盈的情况下，明智的做法通常是<strong>在尾盘最后一个小时出现任何可能导致较大幅度回撤的形态时平仓</strong>，也许还可以在两段式回撤结束之后再买回来。</div></div>
+</div>
+<div class="callout"><strong>原文对"理想状态"的诚实评价：</strong>由于这是一个趋势交易日，理想情况下交易者应该将部分头寸参与摆动、沿途锁定部分利润，然后在每次回调中把仓位加满。<strong>但在实际操作中，这种理想状态很难达到，大部分交易者都无法继续持有那一部分摆动头寸，而且反复对另一部分刮头皮。</strong></div>
+<div class="callout good"><strong>因此更合理的操作手法是：尽早将仓位加满，不再做更多建仓操作，而是随着市场不断走高分批锁定利润。</strong>例如浮盈 1 美元时平 1/4、2 美元时再平 1/4、3 美元时再平 1/4，最后 1/4 持有到出现强劲卖出信号或交易日结束。原文提醒：也许更好的方法是<strong>等市场上涨到初始风险的两倍再锁定部分利润</strong>，因为必须确保利润足以弥补最初承担的风险。<strong>具体怎么做不重要，重要的是在行情上涨过程中要锁定部分利润，以防市场向下反转。</strong></div>
+<div class="callout warn"><strong>但也要抵制另一种诱惑：</strong>由于交易者一入场即冒着风险，<strong>必须抵制"浮盈很小就出场"的诱惑</strong>。只要趋势稳定，在市场运行到至少<strong>两倍于初始风险</strong>的位置之前，最好不要急于锁定利润。</div>
+<h3>不要持续加仓到过大</h3>
+<p>有这么多买入信号，如果交易者持续加仓，可能会最终持有一个<strong>过于庞大的多头头寸</strong>。原文明确说这种做法不对。<strong>正确的做法是持仓，直到趋势可能发生反转，或者在每次新高后出现弱收盘 K 线时平掉部分仓位；然后可以在新的买入信号出现时将仓位补回去，而摆动部分的头寸一直持有到趋势结束。</strong></p>
+</section>
+
+<section id="psych">
+<h2>8. 趋势为什么总把交易者挡在外面</h2>
+<div class="callout warn"><strong>市场中的常态：趋势往往会想尽一切办法将交易者挡在外面，这样才能让交易者不停地追涨或者杀跌。当建仓形态显而易见的时候，意味着属于高概率机会，往往是很小的刮头皮行情。如果市场将出现比较大的行情，入场点往往很不清晰、很难把握。</strong></div>
+<h3>三种典型的犹豫</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>突破时不敢进</strong><br>在突破 K 线形成中或收盘之后入场很困难，因为突破 K 线往往很长，必须快速决定是否要冒比平时大得多的风险。结果是<strong>通常会选择等待回撤</strong>——虽然其实可以通过降低仓位来保持总资金风险相当，但一想到要把止损扩大 2~3 倍，还是有些害怕。</div></div>
+<div class="step" data-n="2"><div><strong>回撤时也不敢进</strong><br>所有回撤都始于一次小型反转，新手担心回撤可能是一轮深度调整的开始，将会扫掉止损。</div></div>
+<div class="step" data-n="3"><div><strong>一等再等</strong><br>最终一等再等，直到交易日几乎要结束。当他们最终认定趋势已经明确时，已经没有时间做单了。</div></div>
+</div>
+<h3>波段入场点的两个特征</h3>
+<div class="callout"><strong>波段交易的建仓点通常要么很不清晰，要么清晰但很吓人。</strong>而且趋势要么始于对交易区间的突破，要么是对当前趋势的反转；<strong>当市场可能反转、出现强信号 K 线时，又往往发生在旧趋势走出最后一波高潮性急速行情之后</strong>——这就让新手误以为旧趋势尚未完结。</div>
+<h3>关于"只做高概率机会"的取舍</h3>
+<div class="callout good"><strong>原文的态度很务实：那些只做高成功率交易的交易者往往只能观望，眼看着趋势又向上运行了多根 K 线，因为市场可能在 20 根或以上 K 线之内都不会出现高概率机会。</strong>结果就是眼看着市场上涨、一直想做多，但最终错过了整波趋势。</div>
+<div class="callout"><strong>但原文并不认为这是错误：</strong>"这是可以接受的，因为<strong>交易者永远应该做自己感到舒服的交易</strong>。如果他们只对高概率的止损入场机会感到舒服，那么等待就是正确的。通道不会永远持续下去，很快他们就会发现可接受的建仓形态。"</div>
+<h3>而对有信心者，原文给出的是行动要求</h3>
+<div class="callout warn"><strong>交易者必须强迫自己做的一件最重要、通常也很难的事，就是一旦他们认为当天属于趋势行情，他们必须至少建立一个小仓位。</strong>他们必须决定最糟糕情况下的保护性止损设在哪里（通常相对较远），然后使用这一止损。由于止损会比较大，<strong>如果入场较晚的话，初始仓位应该较小</strong>。一旦市场朝他们的方向运行，就可以收紧止损，然后寻找机会加仓，<strong>但永远不应该超过正常的风险水平</strong>。</div>
+<h3>为什么"等回调"常常等不到</h3>
+<div class="callout good"><strong>当所有人都在期待回调，回调通常在很长一段时间都不会出现。</strong>因为所有人都相信市场将会立即创出新高，却不一定认为市场将会马上出现更低价位。聪明的交易者知道这一点，因此他们<strong>开始分批买入</strong>；由于止损必须设在急速拉升 K 线的低点下方，他们会<strong>少量买入</strong>（风险是日常水平 3 倍 → 只买日常规模的 1/3）。</div>
+<p>原文的因果链很清晰：当强势多头一点点买入，就会造成买压、抑制市场向下调整；强势空头看到趋势、也相信市场将立即出现更高价位，所以<strong>不再寻求做空</strong>（如果他们认为几根 K 线之后就可以获得更好的卖点，那就没有理由现在去做空）。<strong>强势空头停止做空 + 强势多头一点点买入 = 市场不断攀升。</strong></p>
+<div class="callout good"><strong>所以原文的结论是：你应该跟随聪明交易者的步伐去交易——至少先建立少量头寸，或以市价买入，或在回调 1~2 个最小报价单位后买入，或回调 10 美分或 20 美分后买入，止损设在急速拉升 K 线的低点下方。</strong>要点就是：<strong>一旦你认为回调是买入机会，你就应该像强势多头那样去做，以市价至少先建立一个小头寸。</strong></div>
+<h3>一个值得模仿的实战框架</h3>
+<div class="callout"><strong>原文提到一位擅长强趋势的交易者：他会很早入场，然后确定初始风险（止损位与入场点的距离）。一旦行情达到他初始风险的<u>两倍</u>，他会<u>平仓一半</u>，另一半继续持有，直到出现明确反转。如果一直没有出现强势反转，他会在收盘前几分钟平仓。每当市场创出新高，他会将止损上移到最近的抬升低点下方——因为只要市场一直形成高点抬升和低点抬升，就说明趋势依然强劲；<u>如果停止出现低点抬升，则说明趋势开始走弱</u>。</strong></div>
+<p class="muted small">这个框架把本章的几条原则串成了一条线：<strong>早入场 → 两倍风险锁定一半 → 跟踪止损 → 以"是否还有低点抬升"作为趋势存续的判据</strong>。</p>
+</section>
+
+<section id="myths">
+<h2>9. 关键逻辑与七种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>趋势中入场</td><td>该找什么理由？</td><td>"必须等到完美信号"</td></tr>
+<tr><td>两个选项</td><td>我能做哪些方向？</td><td>"逆势也能稳定获利"</td></tr>
+<tr><td>刮头皮</td><td>适合我吗？</td><td>"每天都有 80% 的机会"</td></tr>
+<tr><td>跟踪止损</td><td>怎么保护浮盈？</td><td>"移到盈亏平衡点就安全了"</td></tr>
+</tbody></table>
+<h3>尤其需要避免的七种误区</h3>
+<ul>
+<li><strong>入场一套计划、管理另一套：</strong>最常见的亏钱方式。</li>
+<li><strong>在上升趋势中做空、打算"回调结束后反手做多"：</strong>铁定亏钱的做法，而且你实际上会不希望回调结束。</li>
+<li><strong>新手做刮头皮：</strong>需要约 70% 胜率，而大部分交易者长期做不到。</li>
+<li><strong>锁定过小的利润：</strong>若成功率只有 60%、风险 2 个点，锁定小于 2 个点的利润长期会亏钱。</li>
+<li><strong>把止损收紧到盈亏平衡点：</strong>回撤通常会跌破最初入场点，于是被扫掉、错过整波趋势。</li>
+<li><strong>止损拉远却不减仓：</strong>总资金风险必须保持一致——止损是日常 3 倍就只买 1/3 仓位。</li>
+<li><strong>持续不断加仓：</strong>可能最终持有过大的头寸；正确做法是持有摆动部分、分批锁定利润。</li>
+</ul>
+</section>
+
+<section id="practice">
+<h2>10. 自测与清单</h2>
+<div class="quiz">
+<p><strong>问题 1：</strong>在上升趋势中，成功交易者只有哪两种选择？</p>
+<label><input type="radio" name="q1" value="a"> A. 做多或做空</label>
+<label><input type="radio" name="q1" value="b"> B. 做多或空仓</label>
+<label><input type="radio" name="q1" value="c"> C. 做空或空仓</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>要成为成功的刮头皮交易者，大致的胜率要求是？</p>
+<label><input type="radio" name="q2" value="a"> A. 约 50%</label>
+<label><input type="radio" name="q2" value="b"> B. 约 70%——因为风险有时候高于潜在回报</label>
+<label><input type="radio" name="q2" value="c"> C. 约 40%</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>如果一笔交易风险 2 个点、成功率 60%，那么？</p>
+<label><input type="radio" name="q3" value="a"> A. 只要赚 1 个点就可以出场</label>
+<label><input type="radio" name="q3" value="b"> B. 回报至少要达到 2 个点或更高，交易者等式才开始有利；锁定更小利润长期会亏钱</label>
+<label><input type="radio" name="q3" value="c"> C. 回报与风险无关</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>把跟踪止损收紧到盈亏平衡点，主要风险是？</p>
+<label><input type="radio" name="q4" value="a"> A. 没有任何风险</label>
+<label><input type="radio" name="q4" value="b"> B. 回撤通常会跌破最初入场点，于是被扫掉止损，错过一波不错的趋势行情</label>
+<label><input type="radio" name="q4" value="c"> C. 会让利润变得太大</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>如果止损必须设在急速拉升 K 线的低点下方，导致风险是日常水平的 3 倍，应该？</p>
+<label><input type="radio" name="q5" value="a"> A. 照常买入日常头寸规模</label>
+<label><input type="radio" name="q5" value="b"> B. 只买入日常头寸规模的 1/3，让总资金风险保持在日常水平</label>
+<label><input type="radio" name="q5" value="c"> C. 把止损挪近</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我确认了当前的趋势方向，并只在这个方向上寻找入场理由（或空仓）。</label>
+<label><input type="checkbox"> 如果我在上升趋势中想做空，我先问自己：这是不是那个铁定亏钱的做法？</label>
+<label><input type="checkbox"> 我在入场前就决定了做刮头皮还是波段，并据此管理头寸。</label>
+<label><input type="checkbox"> 我用交易者等式检查了「成功率 × 回报 &gt; 失败率 × 风险」。</label>
+<label><input type="checkbox"> 我根据止损距离调整了仓位，让总资金风险保持一致。</label>
+<label><input type="checkbox"> 我按最近的低点/高点下方 1 个单位设置跟踪止损。</label>
+<label><input type="checkbox"> 盈亏达到初始风险两倍之前，我没有急于锁定小利润；达到之后分批了结。</label>
+<label><input type="checkbox"> 一旦我认为当天是趋势行情，我至少建立了一个小仓位，而不是一直等完美信号。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：八条核心结论</h2>
+<ol>
+<li><strong>趋势存在本身就是持有至少一个小仓位的充分理由；交易者应该寻找任何理由入场。</strong></li>
+<li><strong>在趋势中，成功交易者只有两个选项：顺势或空仓。只有极少数人能靠逆势稳定获利——假定你不是他们。</strong></li>
+<li><strong>上升趋势里最铁定亏钱的做法，就是不断做刮头皮空头、指望回调结束后反手做多。</strong></li>
+<li><strong>入场前必须先决定做刮头皮还是波段；刮头皮需要约 70% 胜率，新手应该做波段。</strong></li>
+<li><strong>交易者等式：成功率 × 潜在回报 大大高于 失败概率 × 风险。风险 2 个点、胜率 60% 时，回报必须至少 2 个点。</strong></li>
+<li><strong>最常见的亏钱方式是计划不一致：入场用一套计划、管理头寸用另一套。</strong></li>
+<li><strong>每次创新高就把止损移到最近低点下方 1 个单位；不要把止损收紧到盈亏平衡点（回撤常跌破入场点）。</strong></li>
+<li><strong>止损更远就必须减仓，让总资金风险保持一致；一旦认定是趋势日，至少先建立一个小仓位。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>每次入场前问一句——<strong>"如果我必须一直有仓位，我现在应该是多还是空？"</strong>这个问题的答案会让你自动站到趋势的方向，也自动排除掉那些"看起来不错但方向错了"的逆势交易。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 18 章内容整理、归纳并重新表述，加入示意图、表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 18 章 如何交易趋势举例</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"b",q2:"b",q3:"b",q4:"b",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：上升趋势中成功交易者只做多或空仓；做空属于极少数人能稳定获利的领域。",
+  "第 2 题：刮头皮的风险有时候高于潜在回报，因此需要大约 70% 的胜率，普通交易者很难长期做到。",
+  "第 3 题：风险 2 个点、胜率 60% 时，只有回报达到 2 个点或更高交易者等式才有利；锁定更小利润长期会亏钱。",
+  "第 4 题：回撤通常会跌破最初入场点，因此把止损收到盈亏平衡点容易被扫掉，从而错过整波趋势。",
+  "第 5 题：止损距离是日常的 3 倍时，只买日常规模的三分之一，让总资金风险保持在日常水平。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+" "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

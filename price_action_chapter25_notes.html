@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 25 章 趋势恢复交易日｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 25 章</div>
+<h1>趋势恢复交易日</h1>
+<p class="lead">这一章的实用性在于一条反直觉的提醒：<strong>午盘那段乏味的横盘，恰恰是机会，而不是收工的信号</strong>。趋势在头一个小时走出，然后进入数小时的交易区间，最后一个小时左右恢复。交易者最容易犯的错，就是在横盘阶段放弃当天的操作。</p>
+<div class="tags"><span class="tag">趋势恢复日</span><span class="tag">午盘横盘</span><span class="tag">尾盘恢复</span><span class="tag">假突破陷阱</span><span class="tag">第二波等距</span><span class="tag">跨日恢复</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#features">1. 主要特征</a><a href="#trap">2. 尾盘假突破陷阱</a><a href="#midday">3. 午盘横盘的三种形态</a><a href="#weak">4. 弱势反方向午后走势</a><a href="#multi">5. 跨越多日的恢复</a><a href="#myths">6. 关键逻辑与误区</a><a href="#practice">7. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：</strong>有时候交易日头一个小时左右会出现一轮<strong>强劲趋势</strong>，然后市场<strong>震荡数小时之久</strong>。一旦出现这种行情——尤其当震荡走势处于<strong>极窄交易区间</strong>——交易日就可能成为<strong>趋势恢复交易日</strong>。<strong>不要因为午盘乏味的震荡行情而放弃，因为最后一个小时左右市场可能走出强劲趋势。</strong></div>
+<div class="chart">
+<svg viewBox="0 0 680 320" role="img" aria-label="示意图：趋势恢复交易日的三段节奏，以及午盘假突破陷阱">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">趋势恢复日：早盘趋势 → 午盘横盘 → 尾盘恢复</text>
+
+<line x1="60" y1="290" x2="640" y2="290" stroke="currentColor" stroke-width="1" opacity=".35"/>
+<line x1="200" y1="60" x2="200" y2="290" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".3"/>
+<line x1="440" y1="60" x2="440" y2="290" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".3"/>
+
+<path d="M70 250 L110 200 L145 150 L180 110" fill="none" stroke="#16845b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="96" y="92" fill="#16845b" font-size="11.5" font-weight="700">① 早盘强劲趋势</text>
+
+<path d="M180 110 L215 132 L240 120 L268 140 L296 126 L324 146 L352 132 L380 150 L408 136" fill="none" stroke="#d6a747" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="244" y="176" fill="#d6a747" font-size="11.5" font-weight="700">② 数小时（常为窄幅）区间</text>
+<text x="244" y="194" fill="currentColor" font-size="11" opacity=".85">午盘乏味 → 最容易放弃的时段</text>
+
+<circle cx="408" cy="136" r="6" fill="#c74747"/>
+<text x="360" y="118" fill="#c74747" font-size="11" text-anchor="middle">尾盘假突破陷阱</text>
+
+<path d="M408 136 L428 158 L452 130 L486 96 L528 74 L580 52 L628 36" fill="none" stroke="#16845b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="510" y="66" fill="#16845b" font-size="11.5" font-weight="700">③ 尾盘恢复</text>
+<text x="510" y="84" fill="currentColor" font-size="11" opacity=".85">幅度 ≈ 第一波</text>
+
+<text x="340" y="308" fill="currentColor" opacity=".72" font-size="11.5" text-anchor="middle">示意图：午盘横盘不是收工信号，而是尾盘行情的准备期</text>
+</svg>
+</div>
+<div class="grid3">
+<div class="card"><h3>节奏</h3><p>早盘趋势 → 数小时区间 → 尾盘恢复趋势。</p><p class="small muted">突破通常发生在早盘趋势的方向。</p></div>
+<div class="card"><h3>幅度</h3><p><strong>第二波行情通常与第一波幅度相当。</strong></p><p class="small muted">这给了一个可估算的目标。</p></div>
+<div class="card"><h3>难点</h3><p>午盘的无聊让人放弃操作；而它其实是<strong>应该被当成机会</strong>的准备期。</p><p class="small muted">最完美的形式每月仅出现 2~3 次。</p></div>
+</div>
+</section>
+
+<section id="features">
+<h2>1. 主要特征</h2>
+<table><thead><tr><th>#</th><th>特征</th></tr></thead><tbody>
+<tr><td>1</td><td>交易日<strong>头一个小时左右走出强劲趋势</strong>，然后进入交易区间</td></tr>
+<tr><td>2</td><td>交易区间<strong>持续数小时</strong>，往往让交易者以为平淡走势将持续到收盘</td></tr>
+<tr><td>3</td><td><strong>趋势在最后 1~2 个小时恢复</strong></td></tr>
+<tr><td>4</td><td><strong>第二波行情通常与第一波幅度相当</strong></td></tr>
+<tr><td>5</td><td>那个漫长的交易区间<strong>往往是窄幅交易区间</strong></td></tr>
+<tr><td>6</td><td>交易日晚些时候市场通常会突破交易区间、<strong>试图让趋势逆转，但这种走势多半是陷阱</strong>；接下来市场反转并朝相反方向突破并持续到收盘。<strong>在区间极窄的情况下假突破概率更高</strong></td></tr>
+<tr><td>7</td><td>对于那些未能较早入场或在突破时入场的交易者，<strong>通常会有突破回踩的入场机会</strong></td></tr>
+</tbody></table>
+<div class="callout good"><strong>一个可操作的估算：如果早盘趋势的幅度已知，那么尾盘恢复行情的幅度<u>通常与之相当</u>。</strong>这给了你一个判断"这段趋势还能走多远"的锚点，也帮助你决定在哪个位置锁定利润。</div>
+<div class="callout"><strong>关于突破方向：</strong>突破通常发生在<strong>早盘趋势的方向</strong>；有时候也会朝相反方向突破，从而使交易日成为<strong>反转交易日</strong>。例如，假如始于开盘的趋势为下跌趋势，通常尾盘会向下突破交易区间，使得交易日<strong>开在高点附近、收在低点附近</strong>。</div>
+</section>
+
+<section id="trap">
+<h2>2. 尾盘假突破陷阱：一个具体时间窗口</h2>
+<div class="callout warn"><strong>原文给出了一个很具体的时间观察：在上午 11 点和中午之间（PST 时间），市场经常出现仅 1–2 根 K 线的强势反转假突破，将交易者套在错误的方向（做多），接下来往往迅速朝另一个方向突破。</strong></div>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>午盘横盘持续数小时</strong><br>交易者逐渐认为"今天就这样了"，注意力下降。</div></div>
+<div class="step" data-n="2"><div><strong>11 点到中午之间出现假反转</strong><br>仅 1–2 根 K 线的强势反转，把交易者套在<strong>与早盘趋势相反</strong>的方向。</div></div>
+<div class="step" data-n="3"><div><strong>迅速朝另一方向突破</strong><br>市场从反转假突破到再次反转，<strong>通常时间非常短</strong>——但如果你早有思想准备，就有可能抓住收盘前的一波大行情。</div></div>
+</div>
+<div class="callout"><strong>少数情况下反转突破会获得成功</strong>：如果最后一个小时走出趋势，有可能回撤开盘下跌趋势的部分或全部。这就是为什么"恢复"与"反转"必须同时准备——不能因为默认是恢复就完全排除反转。</div>
+</section>
+
+<section id="midday">
+<h2>3. 午盘横盘的三种形态</h2>
+<p>午盘的横盘走势<strong>不一定非得是窄幅交易区间</strong>，而是通常出现朝两个方向的可交易的波段。原文描述了三种具体形态：</p>
+<table><thead><tr><th>形态</th><th>结构</th><th>陷阱在哪里</th></tr></thead><tbody>
+<tr><td><strong>楔形旗</strong></td><td>市场出现 <strong>3 波力度很弱的逆势推动</strong>，构成楔形旗</td><td>交易者可能误以为这是新的反向趋势</td></tr>
+<tr><td><strong>头肩旗</strong></td><td>第三波推动<strong>未能超越第二波</strong>，构成头肩形态</td><td>大部分头肩<strong>反转</strong>形态都会失败并成为<strong>持续</strong>形态</td></tr>
+<tr><td><strong>三波推动</strong></td><td>由于这种形态通常有三波推动而非两波</td><td>交易者<strong>往往误以为这一逆势价格行为可能成为一轮新的反向趋势，从而过早退出开盘时所建立的头寸</strong></td></tr>
+</tbody></table>
+<div class="callout good"><strong>原文的明确提醒：不要被市场所欺骗，当你看到不错的建仓形态、与早盘趋势的方向相同，要准备好入场。</strong></div>
+<h3>为什么会加速：一个很清晰的机制</h3>
+<div class="callout"><strong>两个方向都会有交易者分批建仓，到某个时点，许多交易者头寸规模会达到极限。一旦发生突破，亏损的一方将无法继续增仓，唯一的选择就是祈祷然后止损。</strong></div>
+<p>原文举了一个具体例子：假如市场早盘出现一轮强劲下跌趋势、然后进入横盘，在接下来几个小时的交易区间内，多头和空头将会不断分批建仓，<strong>许多交易者头寸规模将达到最大极限</strong>。一旦市场向下突破，<strong>多头将无法继续买入</strong>。当大批多头没有剩余子弹，<strong>空头就失去了对手</strong>。随着市场下跌，越来越多的多头将会认输割肉，<strong>造成市场在收盘前加速下跌</strong>。</p>
+<div class="callout warn"><strong>这种类型交易日难做的地方在于：午盘乏味的横盘走势往往会让交易者放弃当天的操作，而实际上他们应该将其视为机会。要提前做好入场准备。</strong></div>
+</section>
+
+<section id="weak">
+<h2>4. 弱势反方向午后走势</h2>
+<div class="callout">有时候交易日中段的走势<strong>并非交易区间</strong>，而是<strong>持续数小时的弱势反方向趋势运动</strong>，让交易者怀疑当天可能成为<strong>反转交易日</strong>而非趋势恢复交易日。</div>
+<p>实际上这种情况<strong>往往构成较弱的趋势恢复交易日</strong>——虽然让人感觉更像交易区间交易日，但最后结果往往<strong>开盘和收盘分别位于当日振幅的两端</strong>。</p>
+<h3>一个具体剧本</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>开盘强劲抛盘</strong><br>市场开盘后出现一轮强劲下跌。</div></div>
+<div class="step" data-n="2"><div><strong>以非常低的动能走出三波向上推动</strong><br>回撤初始下跌的部分甚至全部跌幅——<strong>这就是那个"像反转"的诱惑</strong>。</div></div>
+<div class="step" data-n="3"><div><strong>做好心理准备</strong><br>因为市场有可能<strong>向下突破上升通道并恢复下跌趋势直到收盘</strong>。</div></div>
+</div>
+<h3>三个入场选择</h3>
+<table><thead><tr><th>入场方式</th><th>触发条件</th></tr></thead><tbody>
+<tr><td>摆动做空</td><td>市场先<strong>突破上升通道的上轨然后向下反转</strong>——可能是非常不错的摆动做空交易入场点</td></tr>
+<tr><td>低风险做空</td><td>市场<strong>跌破通道下轨</strong>之后出现不错的低风险做空点</td></tr>
+<tr><td>等确认后入场</td><td>等下跌趋势恢复之后，在<strong>突破回踩</strong>时或<strong>回踩均线</strong>时入场</td></tr>
+</tbody></table>
+<div class="callout"><strong>一个重要提示：虽然 5 分钟图可能看起来像交易区间，但在较高时间级别上可能像 ABC 调整。</strong>如果市场收于最低点附近，<strong>在日线图上可能形成一根空头趋势 K 线</strong>。这与第 19 章"日线趋势交易日可能源于日内趋势性交易区间行情"是同一件事的两面。</div>
+</section>
+
+<section id="multi">
+<h2>5. 跨越多日的恢复</h2>
+<div class="callout good"><strong>趋势恢复形态经常横跨 2 个或以上的交易日。</strong>虽然 5 分钟图也许看起来波动很大，但在 60 分钟图上可能只是构成<strong>简单的 ABC 调整</strong>。</div>
+<p>原文的例子：市场第一天一开始出现两个小时的强劲拉升，然后进入交易区间；<strong>交易区间可能持续到第二天头两个小时</strong>，那么前一天的趋势随时都可能恢复。</p>
+<div class="callout good"><strong>如果你意识到这种可能性，就更可能愿意让较高比例头寸参与摆动，从而抓住一波大幅上涨行情。</strong>这句话点出了这个形态的实际价值：它解决的是<strong>持仓信心</strong>问题——知道"午盘横盘不等于结束"，你才拿得住仓位。</div>
+<h3>关于跳空与缺口测试</h3>
+<div class="callout"><strong>在大幅跳空交易日，市场往往会在趋势开始之前测试开盘缺口。</strong>原文的例子：市场大幅跳空高开，以<strong>双底形式测试开盘低点</strong>，然后大幅上涨；从这里进入<strong>窄幅交易区间、持续超过 3 个小时</strong>，让交易者误以为好的交易时机已经过去了。<strong>但随后的走势显示：截至收盘的这轮上涨行情的信号 K 线，是当天第一根均线缺口 K 线。</strong></div>
+<p class="muted small">原文还指出当天有不少其他做多入场点，例如<strong>对微型趋势线假突破之后的向上反转</strong>——这与第 16 章的微型趋势线假突破入场完全一致。以及一些高 2 的变体（例如"阴线—阳线—阴线"结构构成两次向下推动）。</p>
+<h3>当恢复变成反转</h3>
+<div class="callout warn"><strong>有时候强劲趋势之后形成的窄幅交易区间会造成趋势反转而非趋势恢复。</strong>原文的例子：市场出现一轮强劲抛盘后进入窄幅交易区间、持续数小时；<strong>这种走势往往会导致尾盘恢复下跌趋势，而且尾盘下跌行情规模与初始下跌相当</strong>。在最后一轮下跌开始之前，<strong>市场往往对区间上轨频繁做出假突破</strong>。</div>
+<div class="callout"><strong>一个值得注意的反转信号：</strong>原文提到某个做空建仓形态（一根空头反转 K 线在尾盘突破窄幅交易区间上轨）看起来是"摆动做空交易的完美建仓形态"——<strong>然而它后面那根 K 线并未成为一轮大跌行情的入场 K 线，而是形成一根小内包阳线，因此属于突破回踩做多形态。</strong>这提醒我们：<strong>形态完美 ≠ 结果如愿</strong>，必须看下一根 K 线是否确认。</div>
+<div class="callout warn"><strong>同时也要保留反面可能：</strong>原文在一个例子中明确指出——虽然午盘的震荡为尾盘出现新一轮大跌做了极好的铺垫，<strong>但你不可能百分之百确定，因为总是有 40% 的可能性出现完全相反的情况</strong>。这就是为什么"恢复"与"反转"必须同时准备。</div>
+</section>
+
+<section id="myths">
+<h2>6. 关键逻辑与六种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>趋势恢复日</td><td>午盘横盘意味着结束吗？</td><td>"今天没机会了，收工"</td></tr>
+<tr><td>第二波幅度</td><td>尾盘能走多远？</td><td>"幅度无法估算"——通常与第一波相当</td></tr>
+<tr><td>尾盘假突破</td><td>反转是真的吗？</td><td>"突破区间就是要反转"——多半是陷阱</td></tr>
+<tr><td>午盘三波推动</td><td>是不是新趋势？</td><td>"逆势三波推动是新趋势的开端"</td></tr>
+</tbody></table>
+<h3>尤其需要避免的六种误区</h3>
+<ul>
+<li><strong>因为午盘无聊而放弃当天操作：</strong>这正是最应该保持准备的时段。</li>
+<li><strong>把午盘的三波逆势推动当成新趋势：</strong>它往往是楔形旗或头肩旗，成为持续形态。</li>
+<li><strong>过早退出早盘建立的头寸：</strong>被那段逆势走势骗出场。</li>
+<li><strong>把尾盘突破区间当成必然反转：</strong>多数是陷阱；区间极窄时假突破概率更高。</li>
+<li><strong>忘记准备反转剧本：</strong>总有一定概率（原文举出 40%）出现相反结果。</li>
+<li><strong>忽略可以跨日：</strong>恢复形态经常横跨 2 个以上交易日，5 分钟图的波动可能只是 60 分钟图上的 ABC 调整。</li>
+</ul>
+</section>
+
+<section id="practice">
+<h2>7. 自测与清单</h2>
+<div class="quiz">
+<p><strong>问题 1：</strong>趋势恢复交易日的典型节奏是？</p>
+<label><input type="radio" name="q1" value="a"> A. 早盘强劲趋势 → 数小时交易区间 → 最后 1~2 小时恢复趋势</label>
+<label><input type="radio" name="q1" value="b"> B. 全天单边上涨</label>
+<label><input type="radio" name="q1" value="c"> C. 全天窄幅横盘</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>尾盘恢复的那一波行情，幅度通常？</p>
+<label><input type="radio" name="q2" value="a"> A. 远小于第一波</label>
+<label><input type="radio" name="q2" value="b"> B. 与第一波幅度相当</label>
+<label><input type="radio" name="q2" value="c"> C. 无法与第一波比较</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>交易日晚些时候市场突破交易区间、试图让趋势逆转，通常？</p>
+<label><input type="radio" name="q3" value="a"> A. 会成功反转</label>
+<label><input type="radio" name="q3" value="b"> B. 多半是陷阱；接下来市场反转并朝相反方向突破并持续到收盘——区间极窄时假突破概率更高</label>
+<label><input type="radio" name="q3" value="c"> C. 市场会停止交易</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>午盘出现 3 波力度很弱的逆势推动，通常意味着？</p>
+<label><input type="radio" name="q4" value="a"> A. 新的反向趋势开始</label>
+<label><input type="radio" name="q4" value="b"> B. 往往是楔形旗或头肩旗等持续形态；不要被它骗得过早退出早盘头寸，应准备与早盘趋势同向的入场</label>
+<label><input type="radio" name="q4" value="c"> C. 当天一定收在最低点</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>关于趋势恢复形态的持续时间，正确的是？</p>
+<label><input type="radio" name="q5" value="a"> A. 一定在同一天内完成</label>
+<label><input type="radio" name="q5" value="b"> B. 经常横跨 2 个或以上交易日；5 分钟图的波动可能只是 60 分钟图上的 ABC 调整</label>
+<label><input type="radio" name="q5" value="c"> C. 不会跨日</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我识别出早盘已经走出一轮强劲趋势，并记下了它的幅度。</label>
+<label><input type="checkbox"> 我没有因为午盘横盘而放弃当天操作，而是保持准备。</label>
+<label><input type="checkbox"> 我把午盘的逆势三波推动当作可能的旗形，而不是新趋势。</label>
+<label><input type="checkbox"> 我准备了尾盘假突破的应对：不追突破，等下一次反转确认。</label>
+<label><input type="checkbox"> 我用「第二波与第一波幅度相当」来估算尾盘目标并据此锁定利润。</label>
+<label><input type="checkbox"> 我同时保留了「恢复」与「反转」两种剧本（知道总有相当概率出现相反结果）。</label>
+<label><input type="checkbox"> 我知道这类形态可能横跨 2 个以上交易日，愿意让更多头寸参与摆动。</label>
+<label><input type="checkbox"> 若出现突破回踩的机会，我准备好了入场。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：七条核心结论</h2>
+<ol>
+<li><strong>趋势恢复日 = 早盘强劲趋势 → 数小时（常为窄幅）交易区间 → 最后 1~2 小时恢复趋势。</strong></li>
+<li><strong>第二波行情的幅度通常与第一波相当</strong>——用它来估算目标。</li>
+<li><strong>尾盘突破区间试图反转，多半是陷阱；区间极窄时假突破概率更高。</strong></li>
+<li><strong>上午 11 点到中午之间常出现仅 1–2 根 K 线的强势假反转，把交易者套在与早盘趋势相反的方向。</strong></li>
+<li><strong>午盘的三波逆势推动往往是楔形旗或头肩旗等持续形态，不要因此过早退出早盘头寸。</strong></li>
+<li><strong>恢复形态经常横跨 2 个以上交易日；5 分钟图的波动可能只是 60 分钟图上的 ABC 调整。</strong></li>
+<li><strong>午盘的乏味横盘应该被当成机会而非收工信号——但要同时准备反转剧本。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>当下午两点你觉得"今天没什么可做的了"，先问一句——<strong>"早盘那波趋势的幅度是多少？现在这个狭窄区间，会不会在最后一小时走出与之相当的第二波？"</strong>这个提问，就是趋势恢复交易日最核心的准备动作。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 25 章内容整理、归纳并重新表述，加入表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 25 章 趋势恢复交易日</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"a",q2:"b",q3:"b",q4:"b",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：趋势恢复日的节奏是早盘强劲趋势、数小时交易区间、最后 1~2 小时恢复趋势。",
+  "第 2 题：尾盘恢复的那一波行情幅度通常与第一波相当，可用来估算目标。",
+  "第 3 题：尾盘突破区间试图反转多半是陷阱，市场往往反转并朝相反方向突破至收盘；区间极窄时假突破概率更高。",
+  "第 4 题：午盘三波弱逆势推动往往是楔形旗或头肩旗等持续形态，不应据此过早退出早盘头寸。",
+  "第 5 题：趋势恢复形态经常横跨 2 个以上交易日，5 分钟图上剧烈的波动在 60 分钟图上可能只是 ABC 调整。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+" "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

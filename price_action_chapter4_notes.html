@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 4 章 K线基础：信号K线、入场K线、建仓形态与K线形态｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 4 章</div>
+<h1>K 线基础：信号 K 线、入场 K 线、建仓形态与 K 线形态</h1>
+<p class="lead">前三章建立了坐标系与状态分类，这一章给出<strong>交易的语法</strong>：什么叫做建仓形态、信号 K 线何时才真正"变成"信号、入场 K 线如何确认交易。它还给出全书最重要的一条不对称规律——<strong>趋势越强，信号 K 线的外观越不重要；交易越是逆势，强信号 K 线就越重要。</strong></p>
+<div class="tags"><span class="tag">建仓形态 Setup</span><span class="tag">信号K线</span><span class="tag">入场K线</span><span class="tag">延续K线</span><span class="tag">1单位陷阱</span><span class="tag">顺势 vs 逆势</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#roles">1. 四个角色</a><a href="#twoDirections">2. 每根K线都是双向形态</a><a href="#asymmetry">3. 核心规律：信号重要性的不对称</a><a href="#catalog">4. 建仓形态清单</a><a href="#order">5. 挂单技巧与1单位陷阱</a><a href="#close">6. 收盘前的变化与放弃</a><a href="#myths">7. 关键逻辑与误区</a><a href="#workflow">8. 看图分析流程</a><a href="#practice">9. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：</strong>所谓<strong>建仓形态</strong>，是指由一根或多根 K 线组成的形态，让交易者相信可以在这里下单并且有较高概率实现盈利。而关键在于——<strong>图形上每根 K 线都是一个建仓形态</strong>，因为下一根 K 线成为一轮强劲上涨或下跌起点的可能性总是存在的。</div>
+<div class="grid3">
+<div class="card"><h3>建仓形态</h3><p>由一根或多根 K 线组成，提供下单理由。</p><p class="small muted">它是"候选"，尚未成立。</p></div>
+<div class="card"><h3>信号 K 线</h3><p>一旦入场单被执行，<strong>前一根</strong>建仓形态 K 线就变成信号 K 线。</p><p class="small muted">往往是事后标注的。</p></div>
+<div class="card"><h3>入场 K 线</h3><p>触发成交的那根 K 线（即当前的 K 线）。</p><p class="small muted">它的下一根叫延续 K 线。</p></div>
+</div>
+<div class="flow">
+<div class="flowbox"><strong>建仓形态 K 线</strong><br><span class="muted small">候选</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>入场单被执行</strong><br><span class="muted small">触发</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>信号 K 线</strong><br><span class="muted small">前一根</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>入场 K 线 + 延续 K 线</strong><br><span class="muted small">确认与跟进</span></div>
+</div>
+<div class="callout"><strong>关于延续 K 线：</strong>入场后的下一根 K 线是延续 K 线。<strong>建仓后出现第二根与你交易方向相同的 K 线总是一件好事。</strong>不过有时候市场会横向运行一两根 K 线之后再出现延续 K 线——这也不错，只要行情有延续，就有机会获得更大利润。</div>
+</section>
+
+<section id="roles">
+<h2>1. 四个角色的精确定义</h2>
+<table><thead><tr><th>角色</th><th>定义</th><th>关键点</th></tr></thead><tbody>
+<tr><td><strong>建仓形态</strong></td><td>由一根或多根 K 线组成，让交易者相信可以在此下单并有较高概率盈利</td><td>图形上<strong>每根 K 线</strong>都是建仓形态</td></tr>
+<tr><td><strong>信号 K 线</strong></td><td>触发入场的那根 K 线的<strong>前一根</strong></td><td>一旦成交，前一根 K 线就<strong>从建仓形态 K 线升级为信号 K 线</strong></td></tr>
+<tr><td><strong>入场 K 线</strong></td><td>入场单被执行时的那根 K 线</td><td>它的质量决定这笔交易的开局</td></tr>
+<tr><td><strong>延续 K 线</strong></td><td>入场后的下一根 K 线</td><td>同向最佳；横盘一两根后出现也可以接受</td></tr>
+</tbody></table>
+<div class="chart">
+<svg viewBox="0 0 680 430" role="img" aria-label="示意图：建仓形态K线、信号K线、入场K线与延续K线的顺序">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">建仓形态 → 信号 K 线 → 入场 K 线 → 延续 K 线</text>
+
+<rect x="89" y="120" width="22" height="56" fill="#8ab4ff" opacity=".5"/>
+<line x1="100" y1="108" x2="100" y2="194" stroke="#8ab4ff" stroke-width="2"/>
+<text x="100" y="220" fill="currentColor" font-size="11.5" text-anchor="middle">① 建仓形态</text>
+<text x="100" y="237" fill="currentColor" font-size="11" opacity=".8" text-anchor="middle">（候选）</text>
+
+<rect x="179" y="104" width="22" height="28" fill="#d6a747" opacity=".85"/>
+<line x1="190" y1="88" x2="190" y2="162" stroke="#d6a747" stroke-width="2"/>
+<text x="190" y="220" fill="#d6a747" font-size="11.5" font-weight="700" text-anchor="middle">② 信号 K 线</text>
+<text x="190" y="237" fill="currentColor" font-size="11" opacity=".8" text-anchor="middle">（触发后升级）</text>
+
+<rect x="269" y="72" width="22" height="52" fill="#16845b" opacity=".9"/>
+<line x1="280" y1="60" x2="280" y2="138" stroke="#16845b" stroke-width="2"/>
+<text x="280" y="220" fill="#16845b" font-size="11.5" font-weight="700" text-anchor="middle">③ 入场 K 线</text>
+<text x="280" y="237" fill="currentColor" font-size="11" opacity=".8" text-anchor="middle">（订单被执行）</text>
+
+<rect x="359" y="54" width="22" height="34" fill="#16845b" opacity=".75"/>
+<line x1="370" y1="44" x2="370" y2="102" stroke="#16845b" stroke-width="2"/>
+<text x="370" y="220" fill="#16845b" font-size="11.5" font-weight="700" text-anchor="middle">④ 延续 K 线</text>
+<text x="370" y="237" fill="currentColor" font-size="11" opacity=".8" text-anchor="middle">（同向最佳）</text>
+
+<line x1="146" y1="104" x2="640" y2="104" stroke="#16845b" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="640" y="94" fill="#16845b" font-size="11.5" text-anchor="end">触发价：信号 K 线高点上方 1 单位</text>
+
+<line x1="30" y1="266" x2="650" y2="266" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".3"/>
+<text x="26" y="292" fill="#c74747" font-size="12" font-weight="700">另一种结局：「1 单位陷阱」→ 取消挂单</text>
+<rect x="89" y="322" width="22" height="40" fill="#d6a747" opacity=".8"/>
+<line x1="100" y1="306" x2="100" y2="374" stroke="#d6a747" stroke-width="2"/>
+<line x1="70" y1="306" x2="330" y2="306" stroke="#c74747" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="336" y="302" fill="#c74747" font-size="11.5">只越出 1 个单位</text>
+<path d="M400 352 L440 382 L486 336" fill="none" stroke="#c74747" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="556" y="344" fill="#c74747" font-size="11.5" text-anchor="middle">随即反转 → 取消挂单</text>
+<text x="556" y="362" fill="currentColor" font-size="11.5" text-anchor="middle" opacity=".85">寻找新的位置入场</text>
+
+<text x="340" y="416" fill="currentColor" opacity=".72" font-size="11.5" text-anchor="middle">示意图：四根 K 线的角色由“是否触发”决定，而不是由外观决定</text>
+</svg>
+</div>
+<div class="callout warn"><strong>顺序不能颠倒：</strong>信号 K 线往往是<strong>事后标注</strong>的——是在这根 K 线收盘、并且交易开仓之后才确定。这提醒我们：<strong>不要"预先"把某根 K 线当成信号并据此入场</strong>，要等触发真正发生。</div>
+<h3>顺势交易与逆势交易</h3>
+<table><thead><tr><th>类型</th><th>定义</th><th>例子</th></tr></thead><tbody>
+<tr><td><strong>顺势交易</strong></td><td>交易方向与市场最近的或占主导的趋势方向相同</td><td>最近的趋势是上涨，你做多</td></tr>
+<tr><td><strong>逆势交易</strong></td><td>交易方向与主导趋势相反</td><td>上涨趋势中做空</td></tr>
+</tbody></table>
+</section>
+
+<section id="twoDirections">
+<h2>2. 每根 K 线都是双向建仓形态</h2>
+<p>这是本章最反直觉、也最重要的一节。对走势图上<strong>任意一根 K 线</strong>：</p>
+<div class="grid2">
+<div class="card"><h3>突破型交易者</h3><p>在其<strong>高点上方</strong>挂单买入、<strong>低点下方</strong>挂单卖出。他们预计突破可能有足够后续走势，至少能获得刮头皮利润。</p></div>
+<div class="card"><h3>反转型交易者</h3><p>在其<strong>低点或下方限价买入</strong>、<strong>高点或上方限价卖出</strong>。他们是同样聪明的人，预计突破将会失败。</p></div>
+</div>
+<div class="callout"><strong>具体机制：</strong>如果市场站上前一根 K 线高点 1 个最小报价单位，挂在那里的多头成交，<strong>前一根 K 线就成了他们做多交易的信号 K 线</strong>；同时空头预计突破会失败，在前一根 K 线高点处挂限价单卖空，他们希望下一根 K 线跌破自己入场 K 线的低点，那样<strong>他们的入场 K 线就成了他们做空交易的信号 K 线</strong>。</div>
+<div class="callout warn"><strong>必须认识到的现实：</strong>无论你对自己的判断如何坚信不疑，<strong>总有与你同样聪明的人对相反的判断同样坚信不疑</strong>。</div>
+<h3>由此推出你真正的技能</h3>
+<div class="callout good"><strong>交易者需要锻炼的最重要技能，就是判断前一根 K 线上方或下方何时买家更多、何时卖家更多。</strong>在恰当背景下出现的信号 K 线，就属于这种<strong>非均衡时刻</strong>。一旦你感觉市场处于非均衡状态，你就占据了一个先机——但这个先机通常很小，因为总有其他聪明的交易者持相反观点。<strong>你的优势在于解读价格行为的能力，能力越强，先机越大。</strong></div>
+</section>
+
+<section id="asymmetry">
+<h2>3. 核心规律：信号重要性的不对称</h2>
+<div class="callout good"><strong>一条定律：趋势越强，信号 K 线的外观越不重要；相反，交易越是逆势，入场时出现强信号 K 线就越重要。</strong></div>
+<table><thead><tr><th></th><th>顺势交易</th><th>逆势交易</th></tr></thead><tbody>
+<tr><td>对信号 K 线的要求</td><td>低——甚至可以是反向的趋势 K 线</td><td>高——必须看到强势反转 K 线</td></tr>
+<tr><td>原因</td><td>趋势会恢复，不需要末端出现强反转形态</td><td>大部分逆势交易都会失败，必须想办法提高成功率</td></tr>
+<tr><td>典型信号外观</td><td>往往"很难看"；强趋势中大部分信号 K 线看起来都很弱</td><td>需要明确的强势反转 K 线</td></tr>
+<tr><td>入场心态</td><td>急切，怕错过</td><td>谨慎，等大量证据</td></tr>
+</tbody></table>
+<h3>为什么强趋势的信号 K 线"难看"</h3>
+<div class="callout"><strong>机制：</strong>强趋势需要让交易者<strong>不断错过入场时机</strong>，制造出持续的张力和入场的迫切感，而<strong>弱信号 K 线就是趋势达到这一目的的手段之一</strong>。空头迫切想卖空、多头想以较小亏损离场，双方都在等一个强势卖出形态——如果这个完美形态一直不出现，空头就踏空、多头就被套牢，于是市场被不断推向新低。</div>
+<div class="callout warn"><strong>反过来也成立，而且更值得警惕：</strong>如果回调建仓形态<strong>看起来非常完美、一目了然</strong>，通常意味着<strong>趋势并不强</strong>。由于太多交易者蜂拥入场，往往使之成为<strong>趋势末端旗形</strong>，从而导致更大的回调。</div>
+<h3>给初学者的两条硬性建议</h3>
+<ol>
+<li><strong>只做顺势交易</strong>，并且<strong>只有当信号 K 线同时也是交易方向的一根趋势 K 线时才入场</strong>。例如做空时，限定在信号 K 线是空头趋势 K 线的情况——因为市场已表现出卖压，延续跌势的概率更大。</li>
+<li><strong>除非遇到异常强势的趋势反转，绝对不要参与逆势交易。</strong>一般交易者也只有在整体价格形态支持反转的情况下才能参与。最低限度：<strong>等待价格强势突破趋势线之后回踩，并且只有在出现强势反转 K 线时才逆势交易。</strong></li>
+</ol>
+<div class="callout warn"><strong>趋势持续的时间往往大大超过大部分交易者的预判。</strong>其结果便是大部分逆势交易都归于失败，最终只不过造成趋势中的又一次回调和又一个顺势入场点。</div>
+<h3>趋势反转需要更强信号的原因</h3>
+<p>相比做趋势回撤和交易区间交易，<strong>做趋势反转需要更强的信号 K 线</strong>。补充一点：趋势线突破之后的回踩<strong>可能达到新的极端价格</strong>——比如在上升趋势末端形成<strong>高点抬升</strong>，或在下跌趋势末端出现<strong>低点下降</strong>。这也是逆势交易容易失败的一个具体原因。</p>
+</section>
+
+<section id="catalog">
+<h2>4. 建仓形态清单</h2>
+<p>原文给了一份相当完整的清单。按功能分两类，便于查找：</p>
+<h3>A. 趋势持续信号（可在上升趋势顶部买入、下跌趋势底部卖出）</h3>
+<ul>
+<li>急速拉升中的<strong>强多头趋势 K 线</strong></li>
+<li>急速下挫中的<strong>强空头趋势 K 线</strong></li>
+<li>强趋势急速行情阶段出现的<strong>任何停止 K 线或回调 K 线</strong></li>
+<li><strong>通道中的所有 K 线</strong>：在前一根 K 线低点或其下方买入，在前一根 K 线高点或其上方卖出</li>
+</ul>
+<h3>B. 反转信号</h3>
+<div class="grid2">
+<div class="card"><h3>单根 / 两根 / 三根</h3><ul>
+<li>反转 K 线</li>
+<li>双 K 线反转</li>
+<li>三 K 线反转</li>
+<li>小 K 线</li>
+<li>内包 K 线</li>
+<li>双内包（ii）或三内包（iii）</li>
+<li><strong>内外内（ioi）</strong>形态</li>
+<li>外包 K 线或双外包（oo）</li>
+<li><strong>光 K 线</strong>（没有上下影线）</li>
+</ul></div>
+<div class="card"><h3>结构性</h3><ul>
+<li>双顶和双底</li>
+<li>失败的反转尝试（包括反转 K 线失败）</li>
+<li>失败的延续尝试（如低 1 下方买入、高 1 上方卖空）</li>
+<li>在长 K 线或交易区间高低点附近出现的<strong>小 K 线</strong></li>
+<li>趋势 K 线（在反弹中或区间顶部，多头趋势 K 线可以是卖出形态；反之亦然）</li>
+<li>任何在上升趋势中构成低点抬升、下跌趋势中构成高点下降的 K 线</li>
+</ul></div>
+</div>
+<div class="callout"><strong>关于"反转"的两种含义：</strong>反转形态可以是<strong>趋势反转</strong>，也可以是<strong>回调走势结束、行情反转回到趋势方向</strong>。后者其实就是顺势入场——这也解释了为什么"反转形态"清单里有那么多项目其实用于顺势交易。</div>
+<h3>要警惕的一个现实</h3>
+<div class="callout warn"><strong>绝大部分 K 线形态大多数时候都不管用</strong>，因为作为价格行为的一部分，它们并没有非常可靠的预测能力。因此五花八门的 K 线形态只会把交易搞得更复杂，让你花很多时间去琢磨，<strong>不能将注意力集中在市场趋势上面</strong>。</div>
+<p class="muted small">这也是本章对蜡烛图的态度：<strong>你应该把 K 线看成单纯的价格行为</strong>，而不要去管各种没有意义和产生误导的叫法（其误导性在于多多少少会让人误以为它具有某种神奇力量）。只有新手才会寻找所谓神奇的东西。</p>
+</section>
+
+<section id="order">
+<h2>5. 挂单技巧与「1 单位陷阱」</h2>
+<div class="callout good"><strong>通常入场的最佳策略：</strong>在<strong>前一根 K 线上方 1 个最小报价单位</strong>处挂单买入，或在<strong>下方 1 单位</strong>处挂单卖出。如果挂单没有成交，<strong>取消挂单，寻找新的位置入场</strong>。</div>
+<div class="callout warn"><strong>但对股票要特别小心：</strong>最好将挂单放在潜在信号 K 线高点上方或低点下方<strong>数单位</strong>处，因为<strong>"1 单位陷阱"很普遍</strong>——市场仅突破前一根 K 线高点或低点 1 个单位然后反转，将所有刚刚在那里挂单入场的交易者套住。</div>
+<h3>双向挂单及其后续处理</h3>
+<p>通常一根 K 线可以同时是两个方向的建仓形态 K 线，这时你可以在其上方和下方<strong>同时挂买单和卖单</strong>，无论朝哪个方向突破都可以入场。关键在于成交之后怎么处理：</p>
+<table><thead><tr><th>情形</th><th>处理</th></tr></thead><tbody>
+<tr><td>某一方向成交</td><td>未成交的那张挂单<strong>变成保护性止损单</strong></td></tr>
+<tr><td>成交之后</td><td>前一根 K 线正式成为你的<strong>信号 K 线</strong>——它是你下单的部分依据</td></tr>
+</tbody></table>
+</section>
+
+<section id="close">
+<h2>6. 收盘前的变化：什么时候应该放弃</h2>
+<p>这是与第 8 章直接呼应的内容，但本章给了更具体的操作判断。</p>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>信号 K 线在形成过程中看起来很好</strong><br>以 5 分钟图为例，当时间走到第 3 分钟时，这根 K 线的样子依然非常不错——比如它是突破一个末端熊旗之后的一根多头反转 K 线。</div></div>
+<div class="step" data-n="2"><div><strong>收盘前 5–10 秒突然变化</strong><br>价格突然上蹿 4 个或以上最小报价单位。收盘时它<strong>依然是一根很不错的多头反转 K 线</strong>，但其高点已经接近熊旗的高点。</div></div>
+<div class="step" data-n="3"><div><strong>关键决策点</strong><br>此时你是否还想在其高点上方买入呢？<strong>这样你有可能买在一个熊旗的高点。</strong>而你只有几秒钟来做出决定。</div></div>
+<div class="step" data-n="4"><div><strong>建议的处理</strong><br>除非你已经能够稳定盈利和快速解读市场，<strong>最好放过这样的交易，等待二次入场机会</strong>。当然，如果你确信有很多被套的空头，也可以参与交易。</div></div>
+</div>
+<div class="callout warn"><strong>一条附带的风险提示：</strong>任何时候当市场<strong>连续出现重叠度很高的多根长 K 线</strong>，风险都非常大。</div>
+<h3>关于高潮的一点补充</h3>
+<p>所有反转都包含高潮，但不同交易者对"高潮"的用法不同。只需记住：<strong>所有趋势 K 线都是一次高潮或高潮的一部分，而高潮在第一根停止 K 线结束。</strong>例如连续 3 根多头趋势 K 线后，若下一根是带长上影线的小多头趋势 K 线、内包 K 线、十字星或空头趋势 K 线，那么高潮就止于这 3 根多头趋势 K 线。</p>
+</section>
+
+<section id="myths">
+<h2>7. 关键逻辑与七种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>建仓形态</td><td>这里有没有下单的理由？</td><td>"形态出现就该入场"</td></tr>
+<tr><td>信号 K 线</td><td>哪一根提供了下单依据？</td><td>"可以提前判定"</td></tr>
+<tr><td>入射 K 线</td><td>交易是否真的被触发？</td><td>"入场后必然盈利"</td></tr>
+<tr><td>强信号 K 线</td><td>该不该做这笔交易？</td><td>"信号越漂亮越好"</td></tr>
+</tbody></table>
+<h3>尤其需要避免的七种误区</h3>
+<ul>
+<li><strong>把信号 K 线提前认定：</strong>它往往是事后标注的，要等触发真正发生。</li>
+<li><strong>忽略"每根 K 线都是双向形态"：</strong>你总有一个同样聪明的对手方。</li>
+<li><strong>在强趋势中等待完美信号：</strong>趋势越强，信号外观越不重要；等完美信号会持续踏空。</li>
+<li><strong>以为漂亮的回调形态更可靠：</strong>太完美往往说明趋势不强，容易成为末端旗形。</li>
+<li><strong>初学者直接做逆势交易：</strong>大部分逆势交易失败，只会造成又一次顺势入场点。</li>
+<li><strong>忽略"1 单位陷阱"：</strong>尤其做股票时，挂单应离极值数个最小报价单位。</li>
+<li><strong>沉迷 K 线形态的名称：</strong>绝大部分形态大多数时候不管用，注意力应放在趋势上。</li>
+</ul>
+</section>
+
+<section id="workflow">
+<h2>8. 看图分析流程</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>判定当前是顺势还是逆势</strong><br>先确定主导趋势方向，再确定你的交易方向。这决定了对信号 K 线的要求有多高。</div></div>
+<div class="step" data-n="2"><div><strong>识别建仓形态</strong><br>它属于趋势持续信号，还是反转信号？是单根、两根还是多根 K 线构成？</div></div>
+<div class="step" data-n="3"><div><strong>判断是不是非均衡时刻</strong><br>在这根 K 线上方买家是否多于卖家（或反之）？如果看不出非均衡，就没有先机。</div></div>
+<div class="step" data-n="4"><div><strong>按方向调整对信号的要求</strong><br>顺势：弱信号也可以做，甚至可以是反向的趋势 K 线。逆势：必须看到强势反转 K 线，最好等二次入场。</div></div>
+<div class="step" data-n="5"><div><strong>挂单并预防 1 单位陷阱</strong><br>通常在前一根 K 线极值外 1 单位；股票等品种考虑放在数个最小报价单位之外。</div></div>
+<div class="step" data-n="6"><div><strong>收盘前复核</strong><br>若收盘前形态被抬到不利位置（例如买点变成熊旗高点），放弃这笔，等二次入场。</div></div>
+<div class="step" data-n="7"><div><strong>观察入场 K 线与延续 K 线</strong><br>成交后确认：入场 K 线质量如何？是否出现同向的延续 K 线？</div></div>
+</div>
+<div class="callout good"><strong>实战记录句式：</strong>"主导趋势：上涨；本笔方向：<strong>逆势做空</strong> → 因此信号要求高；建仓形态：K 线 3 处三内包（iii）后一根强空头反转 K 线；非均衡判断：该 K 线低点下方卖家可能多于买家；挂单：低点下方 2 个单位（避开 1 单位陷阱）；若收盘前价格被拉回区间中部，则取消并等二次入场。"</div>
+</section>
+
+<section id="practice">
+<h2>9. 自测：检查你是否掌握建仓语法</h2>
+<p class="muted">选择最合理的回答。</p>
+<div class="quiz">
+<p><strong>问题 1：</strong>关于信号 K 线的形成，正确的是？</p>
+<label><input type="radio" name="q1" value="a"> A. 可以在 K 线收盘前提前确定</label>
+<label><input type="radio" name="q1" value="b"> B. 一旦入场单被执行，前一根建仓形态 K 线才成为信号 K 线（往往是事后标注）</label>
+<label><input type="radio" name="q1" value="c"> C. 信号 K 线就是入场 K 线本身</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>「趋势越强，信号 K 线的外观越不重要」的原因是？</p>
+<label><input type="radio" name="q2" value="a"> A. 强趋势中信号 K 线总是很漂亮</label>
+<label><input type="radio" name="q2" value="b"> B. 强趋势会让交易者不断错过入场，制造持续张力；弱信号 K 线正是趋势延续的手段之一</label>
+<label><input type="radio" name="q2" value="c"> C. 强趋势不需要任何信号</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>回调建仓形态看起来非常完美、一目了然，通常意味着？</p>
+<label><input type="radio" name="q3" value="a"> A. 趋势很强，应加大仓位</label>
+<label><input type="radio" name="q3" value="b"> B. 趋势可能并不强——太多人蜂拥入场，往往使之成为趋势末端旗形，导致更大回调</label>
+<label><input type="radio" name="q3" value="c"> C. 即将突破</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>「1 单位陷阱」指的是？</p>
+<label><input type="radio" name="q4" value="a"> A. 市场仅突破前一根 K 线高点或低点 1 个单位然后反转，把刚挂单入场的交易者套住</label>
+<label><input type="radio" name="q4" value="b"> B. 止损只能设 1 个单位</label>
+<label><input type="radio" name="q4" value="c"> C. 每次只能交易 1 手</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>对初学者，本章给出的硬性建议是？</p>
+<label><input type="radio" name="q5" value="a"> A. 优先做逆势交易以博取大行情</label>
+<label><input type="radio" name="q5" value="b"> B. 只做顺势交易，且只在信号 K 线同时是交易方向的趋势 K 线时入场；一般不要参与逆势交易</label>
+<label><input type="radio" name="q5" value="c"> C. 同时做两个方向</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我先确定了主导趋势方向，再确定本笔是顺势还是逆势。</label>
+<label><input type="checkbox"> 我识别出了具体的建仓形态（持续信号或反转信号）。</label>
+<label><input type="checkbox"> 我判断了这根 K 线上下方是否存在多空力量的非均衡。</label>
+<label><input type="checkbox"> 我按顺势/逆势的不同要求，调整了对信号 K 线质量的标准。</label>
+<label><input type="checkbox"> 我考虑过「1 单位陷阱」，挂单位置留出了余量。</label>
+<label><input type="checkbox"> 我在收盘前复核了形态是否被推到不利位置，必要时放弃并等二次入场。</label>
+<label><input type="checkbox"> 入场后我观察了入场 K 线的质量与是否出现延续 K 线。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：八条核心结论</h2>
+<ol>
+<li><strong>建仓形态＝提供下单理由的一根或多根 K 线；图形上每根 K 线都是建仓形态。</strong></li>
+<li><strong>入场单被执行后，前一根 K 线才成为信号 K 线，当前 K 线是入场 K 线，下一根是延续 K 线。</strong></li>
+<li><strong>每根 K 线都同时是做多与做空的建仓形态——总有人同样聪明地持相反观点。</strong></li>
+<li><strong>你的优势是判断前一根 K 线上下方何时买家更多、何时卖家更多（非均衡时刻）。</strong></li>
+<li><strong>核心规律：趋势越强，信号 K 线外观越不重要；越逆势，强信号 K 线越重要。</strong></li>
+<li><strong>完美的一目了然的回调形态往往意味着趋势不强，常成为末端旗形。</strong></li>
+<li><strong>初学者只做顺势，且信号 K 线须为交易方向的趋势 K 线；逆势交易须等趋势线突破后的回踩 + 强势反转 K 线。</strong></li>
+<li><strong>通常在前一根 K 线极值外 1 单位挂单；股票要小心「1 单位陷阱」，应留出数个最小报价单位。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>下单前问一句——<strong>"我凭什么认为这根 K 线的高点上方买家多于卖家？"</strong>答得出来，你抓住了一个非均衡时刻；答不出来，你只是在猜方向。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 4 章内容整理、归纳并重新表述，加入表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 4 章 K线基础：信号K线、入场K线、建仓形态与K线形态</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"b",q2:"b",q3:"b",q4:"a",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：信号 K 线往往是事后标注的——入场单被执行后，前一根建仓形态 K 线才升级为信号 K 线。",
+  "第 2 题：强趋势需要让交易者不断错过入场以维持张力与迫切感，弱信号 K 线正是达到这一目的的手段之一。",
+  "第 3 题：回调形态过于完美往往说明趋势不强，太多人蜂拥入场使之容易成为末端旗形并引发更大回调。",
+  "第 4 题：1 单位陷阱指市场仅突破极值 1 个单位就反转，把刚挂单入场的交易者套住。",
+  "第 5 题：初学者应只做顺势交易，且要求信号 K 线同时是交易方向的趋势 K 线；逆势交易需等趋势线突破后的回踩加强势反转 K 线。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+" "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

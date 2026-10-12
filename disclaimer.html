@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>免责声明｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">免责声明</div>
+<h1>关于这套笔记</h1>
+<p class="lead">在开始阅读之前，请先花一分钟了解这套笔记的性质、来源与使用边界。</p>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#what">这是什么</a><a href="#source">内容来源</a><a href="#not">这不是什么</a><a href="#use">使用建议</a><a href="#risk">风险提示</a><a href="#contact">反馈与纠错</a>
+</nav>
+<main>
+
+<section id="what">
+<h2>这是什么</h2>
+<div class="callout"><strong>这是一套个人学习笔记。</strong>作者在阅读价格行为交易相关著作的过程中，把其中的概念、方法与逻辑<strong>用自己的语言重新组织、归纳并改写成中文笔记</strong>，同时加入了自绘的结构示意图、对照表、操作流程与练习题，目的是<strong>方便自己反复查阅和复习</strong>。后来把它整理成网页，分享给有同样学习需求的人。</div>
+<div class="grid2">
+<div class="card"><h3>它包含什么</h3><ul>
+<li>对价格行为核心概念的<strong>归纳与重新表述</strong></li>
+<li>作者<strong>自绘的示意图</strong>（刻意简化的结构图，非真实行情截图）</li>
+<li>用于对照记忆的<strong>表格</strong>与操作流程</li>
+<li>每章的<strong>自测题</strong>与看盘检查清单</li>
+</ul></div>
+<div class="card"><h3>它适合谁</h3><ul>
+<li>已经或正在阅读相关原著、需要一份中文梳理的人</li>
+<li>想快速回顾某个概念、查漏补缺的人</li>
+<li>愿意自己动手在真实图表上验证的人</li>
+</ul><p class="small muted">它<strong>不适合</strong>作为零基础入门的唯一材料。</p></div>
+</div>
+</section>
+
+<section id="source">
+<h2>内容来源与版权说明</h2>
+<div class="callout warn"><strong>本笔记的内容框架来源于阿尔·布鲁克斯（Al Brooks）的价格行为交易著作</strong>（中译本如《高级趋势技术分析：价格行为交易系统之趋势分析》等）。相关著作权归原作者及出版方所有。</div>
+<p>本项目的定位与边界：</p>
+<ul>
+<li><strong>不是原文转录。</strong>页面中不存在对原著段落的成段复制。所有文字都是作者阅读后的<strong>归纳、压缩与重新表述</strong>，并加入了原著中没有的组织方式（对比表、清单、流程图、练习题）。</li>
+<li><strong>不是逐页摘要。</strong>笔记按主题重组，章节划分与篇幅与原书并不一一对应，内容的取舍带有作者个人的理解偏好。</li>
+<li><strong>示意图是自绘的。</strong>页面中所有 SVG 图形都是为说明结构关系而画的简化图，<strong>不是原书插图，也不是真实行情截图</strong>，不应作为形态识别的模板。</li>
+</ul>
+<div class="callout good"><strong>如果你对价格行为交易感兴趣，请购买并阅读原著。</strong>笔记无法替代原著——它省略了大量案例、背景解释与推理过程，而这些恰恰是理解这套方法的关键。原著能提供远为完整的训练。</div>
+</section>
+
+<section id="not">
+<h2>这不是什么</h2>
+<table><thead><tr><th>常见误解</th><th>实际情况</th></tr></thead><tbody>
+<tr><td>"这是原书的免费替代版"</td><td>不是。它是一份<strong>个人理解的中文笔记</strong>，缺失原著大量内容与案例</td></tr>
+<tr><td>"照做就能赚钱"</td><td>不是。笔记只描述方法框架，<strong>不含任何交易建议</strong></td></tr>
+<tr><td>"这些形态可以照图识别"</td><td>不是。示意图刻意简化，真实图表远比图示复杂且模糊</td></tr>
+<tr><td>"术语翻译是权威的"</td><td>不是。译者不同，术语中文译法可能不同，请以你手中译本为准</td></tr>
+<tr><td>"内容已经过验证"</td><td>不是。这是个人学习整理，<strong>可能存在理解偏差或错误</strong></td></tr>
+</tbody></table>
+</section>
+
+<section id="use">
+<h2>使用建议</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>先读原著，再用它复习</strong><br>把笔记当作<strong>索引与复习提纲</strong>，而不是第一手教材。遇到不理解的地方，回到原著对应部分精读。</div></div>
+<div class="step" data-n="2"><div><strong>在真实图表上验证</strong><br>每章的"看盘检查清单"就是为此设计的。概念只有在你自己的图表上被反复认出，才真正属于你。</div></div>
+<div class="step" data-n="3"><div><strong>做自测题，别只看正文</strong><br>每章末尾的题目会暴露"以为懂了其实没懂"的地方。</div></div>
+<div class="step" data-n="4"><div><strong>保持怀疑</strong><br>如果你发现某处解释与原书不符，<strong>大概率是笔记错了</strong>，请以原著为准。</div></div>
+</div>
+</section>
+
+<section id="risk">
+<h2>风险提示</h2>
+<div class="callout warn"><strong>本笔记仅用于学习与研究，不构成任何投资建议。</strong>价格行为交易涉及重大风险，绝大多数交易者在长期内是亏损的。书中反复强调的那些原则——<strong>仓位由风险决定、止损不可挪近、逆势交易门槛极高</strong>——本身就说明了这件事有多难。</div>
+<p>请勿将本笔记中的任何内容作为交易决策的唯一依据。任何交易决策及其后果，由交易者本人承担。</p>
+</section>
+
+<section id="contact">
+<h2>反馈与纠错</h2>
+<div class="callout"><strong>欢迎指出错误。</strong>如果你发现概念理解有误、表述不清、示意图画得不对，或术语译法与通行译法不一致，欢迎在本项目的仓库中提交 Issue 或 Pull Request。作为一份学习笔记，它最需要的恰恰是这样具体的校正。</div>
+<div class="callout good"><strong>最后：如果这套笔记对你的学习有帮助，请把这份帮助转达给原作者——去读原著、去购买正版。</strong>是原作者的思考构成了这套方法，笔记只是它的一道回声。</div>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 免责声明</div>
+</main></div></div>
+</body>
+</html>

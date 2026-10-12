@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 24 章 反转交易日｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 24 章</div>
+<h1>反转交易日</h1>
+<p class="lead">这一章很短，但它与上一章（趋势性交易区间交易日）构成一组关键的因果关系：<strong>大部分反转交易日都是从趋势性交易区间交易日开始的</strong>。也就是说，识别出"趋势性交易区间"这个状态，就等于提前拿到了尾盘可能反转的预警。</p>
+<div class="tags"><span class="tag">反转交易日</span><span class="tag">趋势性交易区间</span><span class="tag">尾盘反转</span><span class="tag">跨越全天区间</span><span class="tag">与趋势恢复日的对照</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#features">1. 主要特征</a><a href="#origin">2. 为什么它从趋势性交易区间开始</a><a href="#trade">3. 怎么交易这类反转</a><a href="#contrast">4. 与趋势恢复交易日的对照</a><a href="#myths">5. 关键逻辑与误区</a><a href="#practice">6. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心定义：</strong>反转交易日是指交易日<strong>先出现某个方向的趋势，然后进入相反方向的趋势直到收盘</strong>。原文强调：<strong>大部分情况下都始于趋势性交易区间交易日。</strong></div>
+<div class="grid3">
+<div class="card"><h3>典型形态</h3><p>早盘一个方向的趋势 → 中段转为区间/双向 → 尾盘反向突破并走到收盘。</p><p class="small muted">所以它在日线上往往表现为开在振幅一端、收在另一端。</p></div>
+<div class="card"><h3>何时最有力</h3><p>如果反转发生在<strong>最后两个小时而且走势强劲</strong>，反转走势<strong>通常会延续到第二天甚至后面数天</strong>。</p></div>
+<div class="card"><h3>为什么会发生</h3><p>与趋势恢复日的机制相同：<strong>双向都分批建仓，一方头寸达到极限后，突破必然加速</strong>。</p></div>
+</div>
+<div class="chart">
+<svg viewBox="0 0 680 320" role="img" aria-label="示意图：反转交易日的结构与趋势恢复日的对照">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">反转交易日：早盘趋势 → 中段区间 → 尾盘反向趋势</text>
+
+<line x1="60" y1="286" x2="650" y2="286" stroke="currentColor" stroke-width="1" opacity=".35"/>
+<line x1="230" y1="60" x2="230" y2="286" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".28"/>
+<line x1="420" y1="60" x2="420" y2="286" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".28"/>
+
+<path d="M70 96 L110 140 L146 180 L182 216" fill="none" stroke="#c74747" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="70" y="80" fill="#c74747" font-size="11.5" font-weight="700">① 早盘下跌趋势</text>
+
+<path d="M182 216 L216 200 L244 214 L272 196 L300 210 L328 192 L356 206 L384 190" fill="none" stroke="#d6a747" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="238" y="242" fill="#d6a747" font-size="11.5" font-weight="700">② 中段转为区间（双向）</text>
+
+<path d="M384 190 L416 168 L446 140 L482 112 L520 92 L566 74 L620 52" fill="none" stroke="#16845b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="474" y="70" fill="#16845b" font-size="11.5" font-weight="700">③ 尾盘反向趋势直到收盘</text>
+
+<text x="340" y="308" fill="currentColor" opacity=".72" font-size="11.5" text-anchor="middle">示意图：反转日常始于趋势性交易区间——中段的双向交易是它的必经阶段</text>
+</svg>
+</div>
+</section>
+
+<section id="features">
+<h2>1. 主要特征</h2>
+<table><thead><tr><th>#</th><th>特征</th></tr></thead><tbody>
+<tr><td>1</td><td>交易日<strong>先出现某个方向的趋势，然后进入相反方向趋势直到收盘</strong></td></tr>
+<tr><td>2</td><td><strong>大部分情况下都始于趋势性交易区间交易日</strong></td></tr>
+<tr><td>3</td><td>如果反转发生在<strong>最后两个小时而且走势强劲</strong>，反转走势通常会<strong>延续到第二天甚至后面数天</strong></td></tr>
+</tbody></table>
+<div class="callout good"><strong>第 3 条是本章最有交易价值的一条</strong>：它把"尾盘反转"从一天的形态升级成了<strong>多日趋势的起点</strong>。原文有一句相关的观察：<strong>某些最强劲的趋势行情是从盘中或者尾盘开始的。</strong></div>
+<div class="callout warn"><strong>注意与趋势恢复日的区别。</strong>两者中段都有一段区间/双向交易，尾盘都走出趋势——差别在于<strong>尾盘趋势的方向</strong>：与早盘趋势相同是<strong>趋势恢复</strong>，相反则是<strong>反转</strong>。这也是为什么交易者必须<strong>同时准备两个剧本</strong>。</div>
+</section>
+
+<section id="origin">
+<h2>2. 为什么它从趋势性交易区间开始</h2>
+<p>把上一章的机制接过来就很好理解了。趋势性交易区间交易日的特征之一是：<strong>由于存在交易区间，通常出现朝两个方向的交易机会</strong>。而在这类交易日中：</p>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>两个方向都有交易者分批建仓</strong><br>在数小时的交易区间内，多头和空头不断加仓。</div></div>
+<div class="step" data-n="2"><div><strong>许多交易者头寸规模达到极限</strong><br>一旦达到极限，他们在突破发生时<strong>就无法继续加仓</strong>。</div></div>
+<div class="step" data-n="3"><div><strong>亏损方只能止损</strong><br>没有剩余子弹的一方唯一的选择就是<strong>祈祷然后止损</strong>，而这会加速突破。</div></div>
+</div>
+<div class="callout"><strong>推论：当交易者发现交易日属于趋势性交易区间交易日，应随时准备好迎接尾盘的反转波段交易。</strong>原文还指出：<strong>这种反转可能走出很大的趋势行情，可以跨越整个交易日的区间。</strong></div>
+<h3>为什么区间会有牵引力</h3>
+<div class="callout good"><strong>由于全天都处于双向交易模式，市场在收盘前最后 1–2 个小时通常会至少反转其中一个交易区间（返回区间之内）。</strong>原因在原文里说得很清楚：<strong>交易区间属于双向交易模式，多头和空头都感到这里具有交易价值，因此它具有一种牵引力，倾向于将突破走势<u>拉回</u>区间之内。</strong></div>
+<p class="muted small">这也解释了为什么反转日的尾盘走势经常表现为"先假突破区间、再反向穿越"——假突破是区间牵引力的表现，而随后的反向突破则是力量真正转移的结果。这与第 25 章"尾盘突破区间试图反转多半是陷阱"看似矛盾，实则互补：<strong>区间窄时假突破多，区间经过充分双向建仓后尾盘突破更容易成真。</strong></p>
+</section>
+
+<section id="trade">
+<h2>3. 怎么交易这类反转</h2>
+<h3>一个具体的做法（来自上一章的延续）</h3>
+<div class="callout"><strong>当市场以一根长趋势 K 线运行到等距运动目标，交易老手会逆向开仓，期待市场回撤并测试突破缺口。</strong></div>
+<p>原文举了一个标普期货的例子：如果某个交易日头两个小时形成一个交易区间，然后<strong>向上突破</strong>，强势空头将会开始在<strong>下方交易区间上方 4–6 个点</strong>分批建空。他们期待市场<strong>回撤到突破区域，甚至一路跌至下方交易区间上轨</strong>。</p>
+<h3>反转之后的目标在哪里</h3>
+<div class="callout good"><strong>如果市场反转进入前期区间，有可能测试前期区间中的<u>逆势信号 K 线</u>。</strong>原文的具体说法：如果一轮下跌趋势向上反转，它将会试图<strong>上探之前失败的多头信号 K 线的高点</strong>。——这条"回撤的第一个目标永远是之前的逆势入场点"是第 22 章里一个很实用的通则。</div>
+<h3>什么情况下日线上会显示为反转日</h3>
+<div class="callout"><strong>如果市场反弹至或突破上方交易区间的上轨，并收于这一位置，那么交易日在日线上将显示为反转交易日。</strong>换句话说，<strong>尾盘能否收在区间的另一端之外</strong>，是反转是否"成立"的日线级确认。</div>
+<h3>操作上的两个准备</h3>
+<table><thead><tr><th>准备</th><th>内容</th></tr></thead><tbody>
+<tr><td>提前识别状态</td><td>发现当天是<strong>趋势性交易区间交易日</strong>时，就把它标成"尾盘可能有反转"的日子</td></tr>
+<tr><td>提前定好目标</td><td>用<strong>等距运动目标</strong>判断"空间是否已经走完"；趋势交易者在目标区锁定利润，逆势交易者在这里开始反向布局</td></tr>
+</tbody></table>
+<div class="callout warn"><strong>提醒：不要因为"反转日可能会来"就提前逆势。</strong>上一章明确说过——在趋势性交易区间交易日里，"更合理的做法是在区间上轨处逢高卖出，而不要在低位出场"，但要等到<strong>大约到达等距运动目标</strong>、且出现<strong>长趋势 K 线（耗竭性高潮）</strong>时才动手。</div>
+</section>
+
+<section id="contrast">
+<h2>4. 与趋势恢复交易日的对照</h2>
+<table><thead><tr><th></th><th>趋势恢复交易日（第 25 章）</th><th>反转交易日（本章）</th></tr></thead><tbody>
+<tr><td>早盘</td><td>强劲趋势</td><td>某个方向的趋势</td></tr>
+<tr><td>中段</td><td>数小时（常为窄幅）区间</td><td>趋势性交易区间 / 双向交易</td></tr>
+<tr><td><strong>尾盘方向</strong></td><td><strong>与早盘趋势相同</strong></td><td><strong>与早盘趋势相反</strong></td></tr>
+<tr><td>尾盘幅度</td><td>通常与第一波相当</td><td>可能跨越整个交易日的区间</td></tr>
+<tr><td>日线表现</td><td>开盘与收盘位于振幅两端（同向）</td><td>开在一端、收在另一端（反向）</td></tr>
+<tr><td>延续性</td><td>—</td><td>若反转在最后两小时且强劲，<strong>通常延续到第二天甚至数天</strong></td></tr>
+</tbody></table>
+<div class="callout good"><strong>这两个形态共用同一个"中段"，只是尾盘走向不同。</strong>所以正确的做法不是二选一，而是：<strong>在中段同时准备两个方向，等到尾盘突破真正发生、并且有突破回踩确认时再入场。</strong>这与第 22 章"突破回踩入场优于突破当下入场"完全一致。</div>
+</section>
+
+<section id="myths">
+<h2>5. 关键逻辑与五种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>反转交易日</td><td>尾盘会反向吗？</td><td>"早盘方向会延续一整天"</td></tr>
+<tr><td>趋势性交易区间</td><td>为什么会有反转？</td><td>"区间只是等待，与反转无关"</td></tr>
+<tr><td>尾盘反转</td><td>值得做吗？</td><td>"只是当天的事"——若强劲可能延续数天</td></tr>
+<tr><td>反转确认</td><td>怎么算成立？</td><td>"只要反向走一段就算"——日线上要收在另一端之外</td></tr>
+</tbody></table>
+<h3>尤其需要避免的五种误区</h3>
+<ul>
+<li><strong>在趋势性交易区间日中只做一个方向：</strong>原文说这类交易日"通常出现朝两个方向的交易机会"。</li>
+<li><strong>中段就把止损收紧到最近摆动点下方：</strong>上一章明确说"通常都会被扫掉"。</li>
+<li><strong>因为早盘趋势强就断定不会反转：</strong>大部分反转日都始于趋势性交易区间。</li>
+<li><strong>把尾盘反转当成一次性机会：</strong>若发生在最后两小时且强劲，往往延续到第二天甚至数天。</li>
+<li><strong>忽略日线级确认：</strong>收在区间另一端之外，才在日线上构成反转日。</li>
+</ul>
+</section>
+
+<section id="practice">
+<h2>6. 自测与清单</h2>
+<div class="quiz">
+<p><strong>问题 1：</strong>反转交易日的定义是？</p>
+<label><input type="radio" name="q1" value="a"> A. 交易日先出现某个方向的趋势，然后进入相反方向趋势直到收盘</label>
+<label><input type="radio" name="q1" value="b"> B. 全天窄幅横盘</label>
+<label><input type="radio" name="q1" value="c"> C. 全天单边上涨</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>大部分反转交易日都始于哪一类交易日？</p>
+<label><input type="radio" name="q2" value="a"> A. 急速与通道趋势交易日</label>
+<label><input type="radio" name="q2" value="b"> B. 趋势性交易区间交易日</label>
+<label><input type="radio" name="q2" value="c"> C. 楼梯形态交易日</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>什么样的尾盘反转最值得重视？</p>
+<label><input type="radio" name="q3" value="a"> A. 发生在开盘后不久的小幅反转</label>
+<label><input type="radio" name="q3" value="b"> B. 发生在最后两个小时而且走势强劲——通常会延续到第二天甚至后面数天</label>
+<label><input type="radio" name="q3" value="c"> C. 发生在午盘的任何反转</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>为什么趋势性交易区间日后段容易出现反向趋势？</p>
+<label><input type="radio" name="q4" value="a"> A. 因为两个方向都在分批建仓，许多交易者头寸达到极限，突破时亏损方只能止损，加速突破</label>
+<label><input type="radio" name="q4" value="b"> B. 因为成交量突然减少</label>
+<label><input type="radio" name="q4" value="c"> C. 因为机构随机操作</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>市场从区间反转后，第一个测试目标通常是？</p>
+<label><input type="radio" name="q5" value="a"> A. 当天开盘价</label>
+<label><input type="radio" name="q5" value="b"> B. 之前的逆势入场点（如前期区间中失败的多头信号 K 线高点）</label>
+<label><input type="radio" name="q5" value="c"> C. 没有可参照的目标</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我识别出当天是否属于趋势性交易区间交易日（尾盘可能反转的预警）。</label>
+<label><input type="checkbox"> 我没有在中段把止损收紧到最近摆动点下方。</label>
+<label><input type="checkbox"> 我准备了「尾盘恢复」与「尾盘反转」两个剧本，没有只押一个方向。</label>
+<label><input type="checkbox"> 我用等距运动目标判断空间是否走完，并等长趋势 K 线（耗竭）出现。</label>
+<label><input type="checkbox"> 我优先在突破回踩时入场，而不是突破当下追入。</label>
+<label><input type="checkbox"> 我把反转后的第一目标设为之前的逆势入场点。</label>
+<label><input type="checkbox"> 如果反转发生在最后两小时且强劲，我准备好它可能延续到第二天。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：五条核心结论</h2>
+<ol>
+<li><strong>反转交易日 = 先走一个方向的趋势，然后进入相反方向趋势直到收盘。</strong></li>
+<li><strong>大部分反转交易日都始于趋势性交易区间交易日——识别这个状态就是拿到预警。</strong></li>
+<li><strong>如果反转发生在最后两个小时而且强劲，往往会延续到第二天甚至后面数天。</strong></li>
+<li><strong>机制是：双向都在分批建仓，一方头寸到极限后突破加速；区间的牵引力则解释了假突破与反向穿越。</strong></li>
+<li><strong>反转后的第一个测试目标通常是之前的逆势入场点；收在区间另一端之外，才在日线上构成反转日。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>当你在午后意识到"今天大部分时间是区间"时，不要放松——这正是<strong>尾盘可能反转的日子</strong>。把"趋势性交易区间"这个标签，自动翻译成"两个方向都要准备"。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 24 章及相邻章节内容整理、归纳并重新表述，加入示意图、表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 24 章 反转交易日</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"a",q2:"b",q3:"b",q4:"a",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：反转交易日指交易日先出现某个方向的趋势，然后进入相反方向的趋势直到收盘。",
+  "第 2 题：大部分反转交易日都始于趋势性交易区间交易日，因此识别该状态等于提前拿到预警。",
+  "第 3 题：发生在最后两个小时且走势强劲的反转最值得重视，通常会延续到第二天甚至后面数天。",
+  "第 4 题：双向分批建仓使许多交易者头寸达到极限，突破发生时亏损方只能止损，从而加速突破。",
+  "第 5 题：反转后第一个测试目标通常是之前的逆势入场点，例如前期区间中失败的多头信号 K 线高点。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+" "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

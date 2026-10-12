@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 10 章 二次入场点｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 10 章</div>
+<h1>二次入场点</h1>
+<p class="lead">本章给出了全书最实用的一条胜率规律：<strong>相比首次入场点，二次入场点几乎总是更有可能获利</strong>。同时它也给出一个反直觉的价格法则——<strong>如果二次入场点给了你更好的价格，反而要警惕那是陷阱</strong>。这两条合起来，构成一套可以直接执行的过滤器。</p>
+<div class="tags"><span class="tag">二次入场点 Second Entry</span><span class="tag">好价格=坏交易</span><span class="tag">强动能不逆势</span><span class="tag">微型双顶/双底</span><span class="tag">低2 / 高2</span><span class="tag">逆势交易门槛</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#why">1. 为什么二次更可靠</a><a href="#price">2. 价格法则：好价格=坏交易</a><a href="#momentum">3. 强动能下必须等二次</a><a href="#micro">4. 微型双顶/双底</a><a href="#how">5. 怎么识别与执行</a><a href="#myths">6. 关键逻辑与误区</a><a href="#workflow">7. 操作流程</a><a href="#practice">8. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：</strong>市场倾向于在同一件事上做<strong>两次尝试</strong>（第 1 章已铺垫）。第二次尝试之所以更可靠，是因为它让<strong>足够多的交易者</strong>相信新方向正在形成。所以在两个入场点之间，通常应该选第二个——尤其在逆势交易时。</div>
+<div class="grid3">
+<div class="card"><h3>二次更可靠</h3><p>无论是底部还是顶部，形成往往需要<strong>从极端位二次反转</strong>。</p><p class="small muted">第二次尝试让更多交易者认同新趋势。</p></div>
+<div class="card"><h3>但价格通常更差</h3><p>大部分好的二次入场点处于<strong>同一价位或更差的价格</strong>。</p><p class="small muted">你为“额外信息”支付了一点费用。</p></div>
+<div class="card"><h3>反而更好 = 警报</h3><p>如果二次入场点给你<strong>更低（做多）或更高（做空）</strong>的更好价格，要怀疑它是假信号。</p><p class="small muted">“好价格等于坏交易。”</p></div>
+</div>
+<div class="callout warn"><strong>本章的执行含义：</strong>二次入场点是一条<strong>过滤器</strong>，不是一个必须遵守的规则。它的作用是：当你准备在<strong>第一次</strong>尝试就逆势入场时，先停下来问一句——“第二个信号出现了吗？”</div>
+</section>
+
+<section id="why">
+<h2>1. 为什么二次入场点更可靠</h2>
+<p>分析师常说，日线图上底部的形成往往需要<strong>从低点二次反转</strong>，这样才能让足够多交易者相信市场正在酝酿一轮新趋势。顶部也是如此。</p>
+<table><thead><tr><th></th><th>首次入场点</th><th>二次入场点</th></tr></thead><tbody>
+<tr><td>参与者共识</td><td>只有一部分人认为方向变了</td><td>更多交易者认同新方向</td></tr>
+<tr><td>被套者压力</td><td>第一次尝试失败后，被套者尚未被迫平仓</td><td>第一次失败的参与者已经或正在离场，推动力更真实</td></tr>
+<tr><td>获利概率</td><td>较低</td><td><strong>几乎总是更高</strong></td></tr>
+<tr><td>典型价格</td><td>更好（更早、更靠近极值）</td><td>同价或更差</td></tr>
+</tbody></table>
+<div class="callout good"><strong>与第 1 章的连接：</strong>第 1 章说“某种尝试失败两次后，市场往往会做相反的尝试”。二次入场点正是这句话的<strong>交易化表达</strong>——它把“结构事实”变成了“入场时机”。</div>
+</section>
+
+<section id="price">
+<h2>2. 价格法则：好价格 = 坏交易</h2>
+<div class="callout warn"><strong>本章最反直觉、也最有用的一条：</strong>如果二次入场点让你获得比首次入场点<strong>更好</strong>的价格，应该警惕它可能是一个陷阱。</div>
+<h3>背后的机制</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>你为什么选二次入场？</strong><br>为了让<strong>风险最小化</strong>——你放弃了更早的入场，换取更多确认信息。</div></div>
+<div class="step" data-n="2"><div><strong>市场为什么要给你折扣？</strong><br>市场往往会让你为这额外的信息<strong>付出一点“费用”</strong>，表现为价格更差。如果“收费”反而更低，那它很可能是一个<strong>假信号</strong>，是来骗你钱的。</div></div>
+<div class="step" data-n="3"><div><strong>谁在给你折扣？</strong><br>寻找二次入场点的交易者往往更激进、更有信心，并且通常根据<strong>较小时间级别</strong>图形入场。所以他们中很多人会比 5 分钟图的交易者更早成交，价格更好。<strong>如果你反而拿到了更好的价格，说明你的解读可能哪里错了。</strong></div></div>
+</div>
+<div class="callout"><strong>一句话记住：</strong><strong>在大部分情况下，好的入场点等于糟糕的交易，糟糕的入场点等于好的交易。</strong>这句话不是叫你追求坏价格，而是提醒你：<strong>价格上的“便宜”往往对应结构上的“可疑”。</strong></div>
+<h3>一个具体的判读例子</h3>
+<p>假设某处出现一个二次做多入场点，但相比前一个买点，市场给你的价格<strong>还要低 1 个最小报价单位</strong>。按上面的法则：<strong>无论何时，如果市场给你一个“折扣价”，你应该假定自己对图形的解读有误，最好不要参与这笔交易。</strong></p>
+<p class="muted small">注意前提：即使它是一个“二次入场点”，如果下跌动能非常强劲（例如处于一段窄幅下跌通道中），也不应参与。逆势开仓的一般要求是——<strong>前面几根 K 线已经出现多头活跃的迹象</strong>，例如能够站上前一根 K 线高点 2 个单位以上。</p>
+</section>
+
+<section id="momentum">
+<h2>3. 强动能下必须等二次入场</h2>
+<p>这一节是本章最具操作性的部分。规则很干脆：</p>
+<div class="callout warn"><strong>如果市场动能强劲，应该等出现二次反转形态再考虑逆势开仓。</strong></div>
+<h3>原文给出的动能判据（可直接套用）</h3>
+<table><thead><tr><th>想做的方向</th><th>动能过强的迹象</th><th>正确动作</th></tr></thead><tbody>
+<tr><td>逆势做空（在上升趋势中）</td><td>前面有约 <strong>4 根连续多头趋势 K 线</strong>，或 <strong>2–3 根长多头趋势 K 线</strong></td><td>不在第一次下跌尝试中做空；等趋势恢复 1–2 根 K 线后，在<strong>第二次</strong>反转尝试时入场</td></tr>
+<tr><td>逆势做多（在下跌趋势中）</td><td>前面连续多根 K 线<strong>没有一根阳线</strong>（例如连续 6 根）</td><td>等出现<strong>二次做多入场点</strong>再考虑</td></tr>
+<tr><td>逆势做多</td><td>前面 4 根<strong>空头趋势 K 线</strong></td><td>不买入；如果二次入场点一直没出现，<strong>因等待而避免损失就是收益</strong></td></tr>
+<tr><td>逆势做空</td><td>前面 6 根 K 线均<strong>形成低点抬升</strong>，只有两根很小的阴线实体</td><td>等<strong>二次入场点</strong>（例如一根空头反转 K 线）出现</td></tr>
+</tbody></table>
+<div class="callout good"><strong>“等待也是收益”：</strong>有时二次入场点<strong>始终没有出现</strong>。这时聪明的交易者因为等待而避免了损失——这与赚到一笔刮头皮利润在账户上的价值是一样的。<strong>把“没做”记成功，是这个体系里很重要的一项训练。</strong></div>
+</section>
+
+<section id="micro">
+<h2>4. 微型双顶与微型双底</h2>
+<p>二次入场点最有代表性的结构，是<strong>微型双顶</strong>与<strong>微型双底</strong>。</p>
+<table><thead><tr><th>结构</th><th>构成</th><th>含义</th></tr></thead><tbody>
+<tr><td><strong>微型双顶</strong></td><td>例如一根空头反转 K 线与它前面两根 K 线中的某根构成两次上攻失败</td><td>大部分顶部都是由某种类型的微型双顶构成</td></tr>
+<tr><td><strong>微型双底</strong></td><td>例如某根 K 线与它前一根之前的那根构成两次下探失败</td><td>大部分底部都是由某种类型的微型双底构成</td></tr>
+</tbody></table>
+<div class="chart">
+<svg viewBox="0 0 680 300" role="img" aria-label="示意图：微型双顶与微型双底，二次尝试失败后反转">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">微型双顶：两次上攻失败后的二次做空入场点</text>
+<path d="M50 210 L110 200 L150 120 L185 175 L225 108 L268 190 L305 150" fill="none" stroke="#4788d8" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="150" cy="120" r="6" fill="#c74747"/>
+<circle cx="225" cy="108" r="6" fill="#c74747"/>
+<line x1="120" y1="104" x2="330" y2="104" stroke="#c74747" stroke-width="1.4" stroke-dasharray="5 4" opacity=".8"/>
+<text x="112" y="134" fill="#c74747" font-size="11.5" text-anchor="middle">第一次上攻失败</text>
+<text x="248" y="86" fill="#c74747" font-size="11.5" text-anchor="middle">第二次上攻失败</text>
+<text x="330" y="122" fill="#c74747" font-size="12" font-weight="700" text-anchor="end">二次做空入场点</text>
+<line x1="196" y1="150" x2="196" y2="240" stroke="currentColor" stroke-width="1" stroke-dasharray="3 4" opacity=".4"/>
+<text x="196" y="258" fill="currentColor" font-size="11.5" text-anchor="middle">两次尝试之间</text>
+<text x="196" y="274" fill="currentColor" font-size="11.5" text-anchor="middle">趋势恢复 1–2 根 K 线</text>
+
+<line x1="360" y1="26" x2="360" y2="286" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".25"/>
+
+<text x="392" y="24" fill="currentColor" font-size="13" font-weight="700">微型双底：两次下探失败</text>
+<path d="M400 90 L455 100 L495 180 L530 125 L570 192 L612 112 L648 150" fill="none" stroke="#4788d8" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="495" cy="180" r="6" fill="#16845b"/>
+<circle cx="570" cy="192" r="6" fill="#16845b"/>
+<line x1="470" y1="202" x2="660" y2="202" stroke="#16845b" stroke-width="1.4" stroke-dasharray="5 4" opacity=".8"/>
+<text x="418" y="212" fill="#16845b" font-size="11.5" text-anchor="middle">第一次下探失败</text>
+<text x="495" y="250" fill="#16845b" font-size="11.5" text-anchor="middle">第二次下探失败</text>
+<text x="650" y="106" fill="#16845b" font-size="12" font-weight="700" text-anchor="end">二次做多入场点</text>
+
+<text x="340" y="296" fill="currentColor" opacity=".72" font-size="11.5" text-anchor="middle">示意图：二次尝试把结构压缩到两三根 K 线之内，因而入场与止损都很近</text>
+</svg>
+</div>
+<div class="callout"><strong>实用价值：</strong>微型双顶/双底把“二次尝试”压缩到<strong>两三根 K 线</strong>之内，因此提供的是<strong>距离很近的入场点与止损</strong>。这也是为什么它们常被用作反转型交易的触发器。</div>
+<h3>典型的二次入场结构</h3>
+<ul>
+<li><strong>二次做空入场点：</strong>第一次上攻失败后，市场恢复 1–2 根 K 线，第二次上攻再度失败（常以空头反转 K 线收尾）。</li>
+<li><strong>二次做多入场点：</strong>第一次下探失败后，市场再下探一次并失败（常以多头反转 K 线收尾）。</li>
+<li><strong>与数 K 线结合：</strong>低 2 / 高 2 本身就是二次尝试的语言（第 1 章）。</li>
+</ul>
+</section>
+
+<section id="how">
+<h2>5. 怎么识别与执行</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>先判断动能</strong><br>前面是否连续出现同向趋势 K 线？是否有长实体？数量与长度决定“能不能做第一次”。</div></div>
+<div class="step" data-n="2"><div><strong>如果是强动能 → 强制等待</strong><br>把第一次尝试标记为“不参与”。观察市场是否恢复 1–2 根 K 线。</div></div>
+<div class="step" data-n="3"><div><strong>等待第二次尝试失败</strong><br>第二次上攻（或下探）是否再度失败？是否出现反转 K 线收尾？是否与前面构成微型双顶/双底？</div></div>
+<div class="step" data-n="4"><div><strong>比较价格——这是关键过滤</strong><br>这个二次入场点的价格，比首次入场点<strong>更好还是更差</strong>？<strong>更好 = 警报，倾向放弃。</strong></div></div>
+<div class="step" data-n="5"><div><strong>确认逆势的前置条件</strong><br>逆势开仓前，前面几根 K 线是否已有反方向活跃的迹象（例如站上前一根 K 线高点 2 个单位以上）？</div></div>
+<div class="step" data-n="6"><div><strong>定义触发与作废</strong><br>在信号 K 线一端挂单；另一端之外作废。若二次入场点迟迟不来，接受“这笔不做”。</div></div>
+</div>
+<div class="callout good"><strong>实战记录句式：</strong>“方向：逆势做空；动能检查：前面 5 根阳线 → <strong>动能过强，禁止第一次入场</strong>；等待：市场恢复 2 根 K 线后第二次上攻失败，出现空头反转 K 线 → <strong>二次入场点成立</strong>；价格检查：本次入场价与首次相同/更差 → 通过；若无二次信号则本笔放弃。”</div>
+</section>
+
+<section id="myths">
+<h2>6. 关键逻辑与六种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>二次入场点</td><td>这次尝试是否已被市场认同？</td><td>“第二个信号一定赚钱”</td></tr>
+<tr><td>更好的价格</td><td>是否值得参与？</td><td>“占到便宜就是好事”</td></tr>
+<tr><td>强动能</td><td>能否做第一次？</td><td>“动能强所以更要抢反转”</td></tr>
+<tr><td>等待</td><td>没做算不算失败？</td><td>“没交易就是浪费时间”</td></tr>
+</tbody></table>
+<h3>尤其需要避免的六种错误</h3>
+<ul>
+<li><strong>在强动能中抢第一次反转：</strong>例如连续 4–5 根阳线后立刻做空。</li>
+<li><strong>把“更好的价格”当成优势：</strong>它更可能是陷阱——好价格等于坏交易。</li>
+<li><strong>把二次入场点当成必然盈利：</strong>它只是<strong>更可能</strong>盈利，仍需要背景与止损。</li>
+<li><strong>逆势时忽略前置条件：</strong>前面几根 K 线必须先有反方向活跃的迹象。</li>
+<li><strong>因为等待而自责：</strong>二次信号不出现时，避免损失等同于盈利。</li>
+<li><strong>在小级别上抢二次入场：</strong>越小级别越容易提前成交、拿到“可疑的好价格”。</li>
+</ul>
+</section>
+
+<section id="workflow">
+<h2>7. 操作流程</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>定位与惰性判断</strong><br>先按第 1 章确定状态与方向偏好。顺势与逆势的门槛完全不同。</div></div>
+<div class="step" data-n="2"><div><strong>数动能</strong><br>数前面同向趋势 K 线的数量与长度。这是“能不能抢第一次”的硬指标。</div></div>
+<div class="step" data-n="3"><div><strong>若是逆势 → 默认等二次</strong><br>把第一次尝试降级为观察对象，专注寻找第二次失败的结构。</div></div>
+<div class="step" data-n="4"><div><strong>核对微型双顶/双底</strong><br>二次尝试是否形成了可命名的微型结构？这决定止损能否放得足够近。</div></div>
+<div class="step" data-n="5"><div><strong>执行价格法则</strong><br>比较两次入场价格。更好 → 放弃或减仓；同价或更差 → 通过。</div></div>
+<div class="step" data-n="6"><div><strong>入场并管理</strong><br>在信号 K 线一端挂单，另一端之外作废。若二次信号没来，接受不做。</div></div>
+</div>
+</section>
+
+<section id="practice">
+<h2>8. 自测与清单</h2>
+<div class="quiz">
+<p><strong>问题 1：</strong>相比首次入场点，二次入场点通常？</p>
+<label><input type="radio" name="q1" value="a"> A. 价格更好，获利概率更低</label>
+<label><input type="radio" name="q1" value="b"> B. 几乎总是更有可能获利，但价格通常相同或更差</label>
+<label><input type="radio" name="q1" value="c"> C. 完全没有区别</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>如果二次入场点给了你比首次更好的价格，应该怎么理解？</p>
+<label><input type="radio" name="q2" value="a"> A. 这是优势，应该加大仓位</label>
+<label><input type="radio" name="q2" value="b"> B. 警惕陷阱——市场通常要为额外信息“收费”，折扣价往往意味着你的解读可能错了</label>
+<label><input type="radio" name="q2" value="c"> C. 说明市场一定会朝你的方向走</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>前面刚出现 5 根连续阳线，此时想在第一次下跌尝试中做空，最合理的是？</p>
+<label><input type="radio" name="q3" value="a"> A. 立即做空，趋势已经过热</label>
+<label><input type="radio" name="q3" value="b"> B. 动能过强，应等趋势恢复 1–2 根 K 线后，在第二次反转尝试（二次入场点）时入场</label>
+<label><input type="radio" name="q3" value="c"> C. 做多，因为动能强</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>大部分顶部和底部通常由什么结构构成？</p>
+<label><input type="radio" name="q4" value="a"> A. 单根 K 线的十字星</label>
+<label><input type="radio" name="q4" value="b"> B. 某种类型的微型双顶 / 微型双底</label>
+<label><input type="radio" name="q4" value="c"> C. 交易区间中部的一次随机反转</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>如果二次入场点始终没有出现，正确的理解是？</p>
+<label><input type="radio" name="q5" value="a"> A. 应该用市价追进去</label>
+<label><input type="radio" name="q5" value="b"> B. 因等待而避免损失，其价值等同于赚到一笔刮头皮利润</label>
+<label><input type="radio" name="q5" value="c"> C. 说明方法失效了</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我数了前面同向趋势 K 线的数量与长度，判断动能是否过强。</label>
+<label><input type="checkbox"> 动能过强时，我没有抢第一次反转，而是等第二次尝试。</label>
+<label><input type="checkbox"> 我检查了是否形成微型双顶 / 微型双底。</label>
+<label><input type="checkbox"> 我比较了本次入场价与首次入场价——更好时倾向放弃。</label>
+<label><input type="checkbox"> 逆势前，我确认了前面已有反方向活跃的迹象（如站上前一根 K 线高点 2 个单位以上）。</label>
+<label><input type="checkbox"> 二次信号没有出现时，我接受了“这笔不做”，并把它记为成功。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：七条核心结论</h2>
+<ol>
+<li><strong>相比首次入场点，二次入场点几乎总是更有可能获利——无论顶部还是底部。</strong></li>
+<li><strong>大部分好的二次入场点与首次同价或更差；你是在为“额外信息”付费。</strong></li>
+<li><strong>如果二次入场点给了你更好的价格，要警惕陷阱——好价格等于坏交易。</strong></li>
+<li><strong>动能强劲时（如连续 4–5 根同向趋势 K 线）不要抢第一次反转，等二次反转形态。</strong></li>
+<li><strong>逆势开仓前需要有前置证据：前面几根 K 线已出现反方向活跃的迹象。</strong></li>
+<li><strong>大部分顶部与底部由某种微型双顶 / 微型双底构成——它把二次尝试压缩成很近的入场与止损。</strong></li>
+<li><strong>二次信号没有出现时，因等待而避免的损失，价值等同于一笔刮头皮利润。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>每当你想逆势入场，先强制自己问一句——<strong>“这是第一次尝试，还是第二次？”</strong>这个提问本身就能过滤掉大量劣质交易，而且不需要你预测任何东西。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 10 章内容整理、归纳并重新表述，加入表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 10 章 二次入场点</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"b",q2:"b",q3:"b",q4:"b",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：二次入场点几乎总是更可能获利，但价格通常与首次相同或更差——这是为额外信息付出的“费用”。",
+  "第 2 题：更好的价格往往是陷阱；市场通常要为额外确认收费，折扣价说明你的解读可能有问题。",
+  "第 3 题：连续多根同向趋势 K 线意味着动能过强，应等趋势恢复 1–2 根 K 线后的第二次反转尝试。",
+  "第 4 题：大部分顶部与底部由某种微型双顶或微型双底构成，这正是二次尝试的典型结构。",
+  "第 5 题：二次信号不出现时，因等待而避免的损失等同于赚到一笔刮头皮利润。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+ " "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 1 章 价格行为的谱系：从极端趋势到极端交易区间｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 1 章</div>
+<h1>价格行为的谱系：从极端趋势到极端交易区间</h1>
+<p class="lead">这是全书的<strong>坐标系</strong>。它给出的不是某个形态，而是一根标尺：任何一张图、任何一段走势都落在「极端趋势 → 极端交易区间」之间。判断位置比识别形状重要得多——这是后面所有章节共同的前提。</p>
+<div class="tags"><span class="tag">价格行为 Price Action</span><span class="tag">连续谱</span><span class="tag">市场惰性</span><span class="tag">趋势 ↔ 区间</span><span class="tag">高1低1 / 数K线</span><span class="tag">两段式行情</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#spectrum">1. 一根连续谱</a><a href="#inertia">2. 市场惰性</a><a href="#nested">3. 趋势与区间的嵌套</a><a href="#counting">4. 数K线：高1低1体系</a><a href="#twostage">5. 两段式行情</a><a href="#book">6. 本书的组织逻辑</a><a href="#myths">7. 关键逻辑与误区</a><a href="#workflow">8. 看图分析流程</a><a href="#practice">9. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：</strong>市场只呈现两种状态——<strong>趋势</strong>与<strong>交易区间</strong>——但真实图表是两者之间的<strong>连续谱</strong>：一端是极端趋势（几乎每个最小报价单位都比前一个更高或更低），另一端是极端交易区间（每上涨 1–2 个单位就跟着 1–2 个单位的反向运动）。本章的真正问题只有一个：<strong>现在这张图落在谱上的哪里？</strong></div>
+<div class="grid3">
+<div class="card"><h3>趋势端</h3><p>以一定斜率运行，回撤很小。</p><p class="small muted">它制造<strong>确定性与迫切感</strong>——让人愿意追入。</p></div>
+<div class="card"><h3>中间地带</h3><p>有方向，但重叠增加、斜率走平。</p><p class="small muted">最难判断，最容易两头挨打。</p></div>
+<div class="card"><h3>区间端</h3><p>横向运行，价格变动范围较小。</p><p class="small muted">它制造<strong>困惑</strong>——让人不断猜方向。</p></div>
+</div>
+<div class="callout warn"><strong>两个极端其实都很罕见、也很短暂。</strong>更常见的是：市场持续处于稳定的趋势、中间只出现非常小的回撤，或者在一个窄幅区间上下震荡数小时之久。所以不要总想着抓“极端”，要学会识别<strong>稳定的中间状态</strong>。</div>
+</section>
+
+<section id="spectrum">
+<h2>1. 一根连续谱：从极端趋势到极端区间</h2>
+<div class="chart">
+<svg viewBox="0 0 680 300" role="img" aria-label="示意图：从极端趋势到极端交易区间的连续谱">
+<defs>
+<linearGradient id="spec1" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#16845b" stop-opacity=".85"/>
+<stop offset="35%" stop-color="#8ab46f" stop-opacity=".6"/>
+<stop offset="65%" stop-color="#d6a747" stop-opacity=".55"/>
+<stop offset="100%" stop-color="#c74747" stop-opacity=".6"/>
+</linearGradient>
+</defs>
+<rect x="40" y="74" width="600" height="26" rx="13" fill="url(#spec1)"/>
+<line x1="40" y1="110" x2="40" y2="122" stroke="currentColor" stroke-width="1.5" opacity=".6"/>
+<line x1="190" y1="110" x2="190" y2="122" stroke="currentColor" stroke-width="1.5" opacity=".6"/>
+<line x1="340" y1="110" x2="340" y2="122" stroke="currentColor" stroke-width="1.5" opacity=".6"/>
+<line x1="490" y1="110" x2="490" y2="122" stroke="currentColor" stroke-width="1.5" opacity=".6"/>
+<line x1="640" y1="110" x2="640" y2="122" stroke="currentColor" stroke-width="1.5" opacity=".6"/>
+<text x="40" y="140" fill="currentColor" font-size="12" font-weight="700" text-anchor="middle">极端趋势</text>
+<text x="190" y="140" fill="currentColor" font-size="12" font-weight="700" text-anchor="middle">稳定趋势</text>
+<text x="340" y="140" fill="currentColor" font-size="12" font-weight="700" text-anchor="middle">窄幅区间</text>
+<text x="490" y="140" fill="currentColor" font-size="12" font-weight="700" text-anchor="middle">宽幅区间</text>
+<text x="640" y="140" fill="currentColor" font-size="12" font-weight="700" text-anchor="middle">极端区间</text>
+<text x="40" y="56" fill="currentColor" font-size="12" opacity=".85" text-anchor="middle">每个 tick 都创新高/低</text>
+<text x="190" y="56" fill="currentColor" font-size="12" opacity=".85" text-anchor="middle">回撤非常小</text>
+<text x="340" y="56" fill="currentColor" font-size="12" opacity=".85" text-anchor="middle">震荡数小时</text>
+<text x="490" y="56" fill="currentColor" font-size="12" opacity=".85" text-anchor="middle">双向大幅摆动</text>
+<text x="640" y="56" fill="currentColor" font-size="12" opacity=".85" text-anchor="middle">涨1–2跌1–2</text>
+
+<text x="40" y="182" fill="#16845b" font-size="12" font-weight="700">顺势交易的优势区</text>
+<text x="640" y="182" fill="#c74747" font-size="12" font-weight="700" text-anchor="end">逆势（边界反手）的优势区</text>
+<line x1="40" y1="196" x2="330" y2="196" stroke="#16845b" stroke-width="2"/>
+<line x1="350" y1="196" x2="640" y2="196" stroke="#c74747" stroke-width="2"/>
+<text x="40" y="222" fill="currentColor" font-size="12" opacity=".8">· 大多反转尝试失败　· 假定趋势延续</text>
+<text x="640" y="222" fill="currentColor" font-size="12" opacity=".8" text-anchor="end">· 大多突破尝试失败　· 假定回归区间</text>
+
+<text x="340" y="262" fill="currentColor" font-size="12" opacity=".75" text-anchor="middle">趋势制造确定性与迫切感；交易区间制造困惑</text>
+<text x="340" y="282" fill="currentColor" font-size="12" opacity=".75" text-anchor="middle">示意图：市场很少停留在两个极端，常态是稳定的中间状态</text>
+</svg>
+</div>
+<h3>用两个指针定位</h3>
+<table><thead><tr><th>指针</th><th>靠趋势端</th><th>靠区间端</th></tr></thead><tbody>
+<tr><td><strong>回撤深度</strong></td><td>非常小，趋势中只出现很小的回撤</td><td>大，每 1–2 个单位变动后就跟 1–2 个单位反向</td></tr>
+<tr><td><strong>K 线重叠</strong></td><td>相邻 K 线重叠很少</td><td>两根或以上 K 线大致重叠——<strong>这本身就构成一个交易区间</strong></td></tr>
+<tr><td><strong>斜率</strong></td><td>以一定斜率运行</td><td>横向运行，价格变动范围较小</td></tr>
+<tr><td><strong>心理感受</strong></td><td>确定性与迫切感</td><td>困惑、想猜方向</td></tr>
+</tbody></table>
+<div class="callout"><strong>一个关键的操作性定义：</strong>当市场出现<strong>两根或以上大致重叠的 K 线</strong>，就已经构成了一个交易区间。这意味着“区间”并不需要很宽的边界——它可以从两根 K 线开始。<strong>重叠度是判断趋势与区间最直接的显微镜。</strong></div>
+</section>
+
+<section id="inertia">
+<h2>2. 市场惰性：本章最重要的一条规律</h2>
+<div class="callout good"><strong>市场倾向于重复当前的状态。</strong>如果处于趋势之中，<strong>大部分反转尝试都会失败</strong>；如果处于交易区间，<strong>大部分突破尝试都会失败</strong>。这就是“市场惰性”。</div>
+<p>这条规律之所以重要，是因为它把“预测”换成了“押注当前状态延续”。你不需要猜顶底，只需要判断当前状态，然后假设它会继续——直到出现明确的改变证据。</p>
+<table><thead><tr><th>当前状态</th><th>惰性的表现</th><th>默认策略</th></tr></thead><tbody>
+<tr><td>趋势中</td><td>大部分反转尝试失败</td><td>顺势；把逆势形态优先读成顺势的入场机会</td></tr>
+<tr><td>区间中</td><td>大部分突破尝试失败</td><td>边界反手（低买高卖）；不追突破</td></tr>
+</tbody></table>
+<div class="callout warn"><strong>惰性不是永远的。</strong>它只是说“在当前状态下，延续比改变更可能”。一旦出现真正有力的改变证据（有跟随的突破、被打破的摆动结构），惰性就被推翻——此时继续按旧状态交易才是错误。</div>
+</section>
+
+<section id="nested">
+<h2>3. 趋势与区间的嵌套：自相似结构</h2>
+<p>本章给出的一个极其有用的观察是：<strong>所有趋势都包含较小的交易区间，所有交易区间都包含较小的趋势。</strong>更进一步——</p>
+<div class="grid2">
+<div class="card"><h3>向上嵌套</h3><p><strong>大部分趋势都是更高时间级别上交易区间的一部分。</strong></p><p class="small muted">所以一轮“强趋势”在大周期上可能只是区间里的一次摆动。</p></div>
+<div class="card"><h3>向下嵌套</h3><p><strong>大部分交易区间都是更高时间级别上趋势的一部分。</strong></p><p class="small muted">所以一段“无聊横盘”在大周期上可能只是趋势中的回调。</p></div>
+</div>
+<div class="callout"><strong>一个震撼的例子：</strong>即便是美国股市 1987 年和 2009 年的崩盘，从<strong>月线级别</strong>来看也只是回调——刚好回调到月线图上的上升趋势线。<strong>时间级别决定了你看到的是灾难还是回调。</strong>这也是为什么判断状态必须先选定时间级别。</div>
+<h3>嵌套带来的三个实际结论</h3>
+<ol>
+<li><strong>状态是相对的：</strong>同一段行情在 3 分钟图上是趋势，在日线图上可能是区间。说“现在是趋势”之前，必须说清“在哪个级别上”。</li>
+<li><strong>一根 K 线内部也有状态：</strong>一根趋势 K 线内部可能包含一段强劲趋势；一根长十字星本质上就是<strong>单根 K 线级别的交易区间</strong>（第 5 章会用这个洞见解释为什么长十字星不能当反转信号）。</li>
+<li><strong>级别之间会互相解释：</strong>当小级别形态看不懂时，切到大级别往往能看清它在更大结构中的位置（第 9 章会讲用 ETF／反向 ETF 换视角的实用技巧）。</li>
+</ol>
+</section>
+
+<section id="counting">
+<h2>4. 数 K 线：高 1 / 低 1 标示体系</h2>
+<p>本章引入了全书通用的<strong>“数 K 线”语言</strong>。它的动机很实际：传统的 ABC、AB＝CD 等表述容易互相混淆，而数段数的方法更清晰、更便于交易沟通。</p>
+<div class="grid2">
+<div class="card"><h3>上升趋势或区间中的回调</h3><ul>
+<li>出现一波下跌后，<strong>某根 K 线的高点高于前一根 K 线的高点</strong> → 这个突破是<strong>高 1</strong></li>
+<li>市场再出现第二波下跌，又出现一根高点高于前一根的 K 线 → <strong>高 2</strong></li>
+<li>第三次、第四次 → <strong>高 3、高 4</strong></li>
+</ul></div>
+<div class="card"><h3>下跌趋势或区间中的反弹</h3><ul>
+<li>出现一波反弹后转跌 → 这个入场点是<strong>低 1</strong></li>
+<li>第二波反弹后转跌 → <strong>低 2</strong> 卖点</li>
+<li>它前面那根 K 线称为<strong>低 2 建仓形态</strong>或信号 K 线</li>
+</ul></div>
+</div>
+<div class="callout"><strong>为什么要数：</strong>它把“回调结束了吗”这种模糊问题，变成了“这是第几次尝试”这种可计数的结构。<strong>第二次尝试（高 2 / 低 2）往往比第一次更可靠</strong>——因为第一次尝试失败后，反向的动能已经得到一次释放。这条逻辑会在第 10 章「二次入场点」被系统展开。</div>
+<h3>与“段”的对应</h3>
+<p>作者同时建议用<strong>“段”</strong>来数行情：段 1（第一次推动）、段 2，以此类推。当一段趋势出现两段式回调时，传统上叫 ABC 运动，但用“段”来表述更不容易和波浪理论的 1/2/3 浪、或等距理论的 AB＝CD 混淆。</p>
+<table><thead><tr><th>传统叫法</th><th>问题</th><th>本书的叫法</th></tr></thead><tbody>
+<tr><td>ABC 调整</td><td>与波浪理论标注容易混淆</td><td>段 1、段 2 ……</td></tr>
+<tr><td>AB＝CD（等距）</td><td>缩写极易与 ABC 混用</td><td>段 1、段 2，或高/低 1/2/3/4</td></tr>
+<tr><td>1 浪、3 浪</td><td>依赖波浪理论框架</td><td>第一次推动、第二次推动</td></tr>
+</tbody></table>
+</section>
+
+<section id="twostage">
+<h2>5. 两段式行情：市场喜欢做两次尝试</h2>
+<p>本章反复出现的另一个结构性事实是<strong>两段式运动十分常见</strong>：市场倾向于在同一件事上做两次尝试。这解释了为什么 ·第二次尝试常常是关键，也解释了为什么第 10 章会专门讲二次入场点。</p>
+<div class="flow">
+<div class="flowbox"><strong>第一次推动</strong><br><span class="muted small">尝试</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>回撤</strong><br><span class="muted small">消化</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>第二次推动</strong><br><span class="muted small">再尝试</span></div><div class="arrow">→</div>
+<div class="flowbox"><strong>成功 / 失败</strong><br><span class="muted small">延续或反转</span></div>
+</div>
+<div class="callout good"><strong>一个贯穿全书的规律：</strong><strong>如果市场的某种尝试失败了两次，它往往会做相反的尝试。</strong>这正是双顶、双底之所以如此常见的根本原因，也是为什么只有在<strong>前期趋势的极端位置被测试之后</strong>，交易者才会真正相信市场将要反转。（第 5 章会把这条规律用于判断反转 K 线是否可靠。）</div>
+</section>
+
+<section id="book">
+<h2>6. 本书的组织逻辑：谱系即目录</h2>
+<p>理解本章还有一个实用价值：它解释了这本书为什么这样排章。全书内容<strong>基本按照从最强趋势到最窄交易区间的谱系展开</strong>，然后专门讲两种过渡：</p>
+<table><thead><tr><th>过渡方向</th><th>名称</th><th>本质</th></tr></thead><tbody>
+<tr><td>趋势 → 区间</td><td><strong>回调</strong></td><td>趋势暂歇，区间在趋势内部形成</td></tr>
+<tr><td>区间 → 趋势</td><td><strong>突破</strong></td><td>区间被打破，新的趋势开始</td></tr>
+</tbody></table>
+<div class="callout"><strong>读这本书的一个建议：</strong>遇到任何新概念时，先问它在谱上的哪个位置、它属于“回调”还是“突破”这一类过渡。这个坐标一旦建立，后面章节的大量细节会自然归位，而不是变成一堆需要死记的形态名称。</div>
+</section>
+
+<section id="myths">
+<h2>7. 关键逻辑与六种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>价格行为</td><td>价格自己说了什么？</td><td>一张形态名称背诵清单</td></tr>
+<tr><td>连续谱</td><td>现在落在谱上哪里？</td><td>非此即彼的二选一</td></tr>
+<tr><td>市场惰性</td><td>当前状态会延续吗？</td><td>趋势或区间永远不会结束</td></tr>
+<tr><td>嵌套结构</td><td>在大级别上这是什么？</td><td>状态可以脱离时间级别谈</td></tr>
+</tbody></table>
+<h3>尤其需要避免的六种错误</h3>
+<ul>
+<li><strong>只想着两个极端：</strong>极端趋势和极端区间都罕见且短暂，常态是稳定的中间状态。</li>
+<li><strong>忽略时间级别：</strong>“现在是趋势”这句话如果没有级别，就没有意义。</li>
+<li><strong>把“在涨”当成“在趋势端”：</strong>方向相同，结构可能完全相反。</li>
+<li><strong>忘记市场惰性：</strong>逆着当前状态反复下注，是最稳定的亏损方式。</li>
+<li><strong>忽视“两根 K 线重叠就是区间”：</strong>区间的判定门槛比想象中低得多。</li>
+<li><strong>在区间中部交易：</strong>方向优势最弱，却因为“有形态”而频繁入场。</li>
+</ul>
+</section>
+
+<section id="workflow">
+<h2>8. 看图分析流程：定位 → 决策</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>先选定时间级别</strong><br>不做这一步，后面所有判断都失去参照。先明确你现在读的是哪个级别、它在大级别上处于什么位置。</div></div>
+<div class="step" data-n="2"><div><strong>只做定位，不找形态</strong><br>看斜率、看回撤深度、看 K 线重叠度。先写下“我在谱上哪个区段”。</div></div>
+<div class="step" data-n="3"><div><strong>应用市场惰性</strong><br>若在趋势 → 假定反转尝试会失败；若在区间 → 假定突破尝试会失败。</div></div>
+<div class="step" data-n="4"><div><strong>标出结构与关键位</strong><br>摆动高低点、区间上下沿、趋势线。这些是后面判断“回调 / 突破”的参照。</div></div>
+<div class="step" data-n="5"><div><strong>用数 K 线沟通结构</strong><br>这是第几次回调？高 1 还是高 2？低 1 还是低 2？把它写成可计数的语言。</div></div>
+<div class="step" data-n="6"><div><strong>再决定方向偏好与入场</strong><br>定位完成之后，才去看信号 K 线（第 4–7 章）与入场点（第 10–11 章）。</div></div>
+</div>
+<div class="callout good"><strong>复盘记录句式：</strong>“级别：5 分钟；在日线上处于上涨趋势的回调；当前状态：窄幅区间（已横盘 12 根 K 线、重叠度高）；惰性推断：向上突破尝试大概率先失败；关注位置：区间上沿 / 下沿；结构计数：这是第二次向下测试（低 2）。”——可检验、可复盘。</div>
+</section>
+
+<section id="practice">
+<h2>9. 自测：检查你的定位能力</h2>
+<p class="muted">选择最合理的回答。重点是状态判断与结构语言。</p>
+<div class="quiz">
+<p><strong>问题 1：</strong>关于「市场惰性」，最准确的表述是？</p>
+<label><input type="radio" name="q1" value="a"> A. 趋势中大部分反转尝试会失败；区间中大部分突破尝试会失败</label>
+<label><input type="radio" name="q1" value="b"> B. 市场永远不会改变状态</label>
+<label><input type="radio" name="q1" value="c"> C. 趋势中突破一定成功</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>当图上出现两根或以上大致重叠的 K 线，说明？</p>
+<label><input type="radio" name="q2" value="a"> A. 什么都不能说明</label>
+<label><input type="radio" name="q2" value="b"> B. 已经构成了一个交易区间</label>
+<label><input type="radio" name="q2" value="c"> C. 一定是趋势的开始</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>“现在是趋势”这句话要成立，必须先明确什么？</p>
+<label><input type="radio" name="q3" value="a"> A. 成交量大小</label>
+<label><input type="radio" name="q3" value="b"> B. 时间级别——同一段行情在不同级别上状态可能相反</label>
+<label><input type="radio" name="q3" value="c"> C. K 线的颜色</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>上升趋势中出现一波下跌，随后一根 K 线的高点高于前一根 K 线的高点，这是？</p>
+<label><input type="radio" name="q4" value="a"> A. 高 1</label>
+<label><input type="radio" name="q4" value="b"> B. 低 1</label>
+<label><input type="radio" name="q4" value="c"> C. 高 2</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>为什么只有在前期趋势的极端位置被测试之后，交易者才更相信反转？</p>
+<label><input type="radio" name="q5" value="a"> A. 因为极端位置的成交量总是更大</label>
+<label><input type="radio" name="q5" value="b"> B. 因为某种尝试失败两次后，市场往往会做相反的尝试</label>
+<label><input type="radio" name="q5" value="c"> C. 因为极端位置一定会有缺口</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我明确了当前分析的时间级别，以及它在大级别上的位置。</label>
+<label><input type="checkbox"> 我先做定位，没有一上来就找形态。</label>
+<label><input type="checkbox"> 我检查了 K 线的重叠度（两根重叠即构成区间）。</label>
+<label><input type="checkbox"> 我按市场惰性推断了当前状态更可能延续的方向。</label>
+<label><input type="checkbox"> 我用高 1/高 2/低 1/低 2 或“段”的语言描述了结构。</label>
+<label><input type="checkbox"> 我意识到当前的趋势或区间可能只是更大级别结构的一部分。</label>
+<label><input type="checkbox"> 我写下的是“状态 + 惰性推断 + 关键位置”，而不是“感觉要涨”。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：八条核心结论</h2>
+<ol>
+<li><strong>市场只有趋势与交易区间两种状态，真实图表是两者之间的连续谱。</strong></li>
+<li><strong>两个极端都罕见且短暂，常态是稳定的趋势（回撤很小）或窄幅区间（震荡数小时）。</strong></li>
+<li><strong>市场具有惰性：趋势中大部分反转尝试失败，区间中大部分突破尝试失败。</strong></li>
+<li><strong>两根或以上大致重叠的 K 线就已构成交易区间——区间的门槛比想象中低。</strong></li>
+<li><strong>所有趋势都包含较小的区间，所有区间都包含较小的趋势；大部分趋势是大级别区间的一部分，反之亦然。</strong></li>
+<li><strong>状态只有在指定时间级别之后才有意义——1987 与 2009 年的崩盘在月线上只是回调。</strong></li>
+<li><strong>用高 1/高 2/低 1/低 2 或“段”来数结构，比 ABC、AB＝CD 更清晰、更不易混淆。</strong></li>
+<li><strong>某种尝试失败两次后，市场往往做相反的尝试——这是双顶双底普遍的根源。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>每次打开图表，先花十秒只回答一个问题——<strong>“在哪个级别上，这张图现在处于谱的哪里？”</strong>不找形态、不想方向。把这个动作变成条件反射，后面所有章节的技巧才有落脚点。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 1 章内容整理、归纳并重新表述，加入示意图与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 1 章 价格行为的谱系</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"a",q2:"b",q3:"b",q4:"a",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：市场惰性指当前状态倾向于重复——趋势中反转多半失败，区间中突破多半失败。",
+  "第 2 题：两根或以上大致重叠的 K 线就构成了交易区间，这也是判断区间最直接的方法。",
+  "第 3 题：状态是相对的；没有指定时间级别，“趋势”或“区间”都无从谈起。",
+  "第 4 题：在上升趋势或区间中，一波下跌后出现高点高于前一根 K 线高点的突破，就是高 1。",
+  "第 5 题：某种尝试失败两次后市场往往做相反尝试，这正是双顶双底普遍、也是反转需要测试前期极端位的原因。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+ " "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

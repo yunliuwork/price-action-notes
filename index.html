@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>价格行为学习笔记 · 总目录（全 26 章）</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">总目录</div>
+<h1>《高级趋势技术分析》学习笔记</h1>
+<p class="lead">价格行为交易系统之趋势分析 · <strong>全 26 章</strong>。本索引按<strong>书的四篇结构</strong>与<strong>谱系顺序</strong>组织，每章一页独立笔记，包含自绘示意图、对照表、操作流程、5 题自测与看盘清单。</p>
+<div class="tags"><span class="tag">26 章</span><span class="tag">四篇</span><span class="tag">自绘示意图</span><span class="tag">130 道自测题</span><span class="tag">看盘清单</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#path">学习路径</a><a href="#part1">第一篇 价格行为（1–12）</a><a href="#part2">第二篇 趋势线与通道（13–17）</a><a href="#part3">第三篇 趋势（18–20）</a><a href="#part4">第四篇 常见趋势形态（21–26）</a><a href="#map">概念地图</a><a href="#howto">怎么用这套笔记</a><a href="disclaimer.html">免责声明</a>
+</nav>
+<main>
+
+<section id="path">
+<h2>建议的学习顺序</h2>
+<div class="callout"><strong>不要按章号死读。</strong>这套笔记的核心是一条主线：<strong>先学会定位（第 1–3 章）→ 再掌握建仓语法（第 4–7 章）→ 然后处理执行细节（第 8–11 章）→ 最后理解趋势与交易日类型（第 12–26 章）</strong>。后面的章节全部建立在前面建立的语言之上。</div>
+<table><thead><tr><th>阶段</th><th>章节</th><th>这一阶段要解决的问题</th></tr></thead><tbody>
+<tr><td><strong>① 坐标系</strong></td><td>1 – 3</td><td>现在是趋势还是区间？这根 K 线由谁掌控？这段行情在急速还是通道？</td></tr>
+<tr><td><strong>② 建仓语法</strong></td><td>4 – 7</td><td>建仓形态、信号 K 线、入场 K 线的定义；反转 K 线、其他信号类型、外包 K 线。</td></tr>
+<tr><td><strong>③ 执行细节</strong></td><td>8 – 11</td><td>为什么必须等收盘；如何换视角复核；二次入场点；迟到与错过的入场点。</td></tr>
+<tr><td><strong>④ 趋势与通道</strong></td><td>12 – 17</td><td>形态的演变；趋势线、趋势通道线、通道、微型通道、水平线。</td></tr>
+<tr><td><strong>⑤ 趋势本身</strong></td><td>18 – 20</td><td>趋势中如何入场与管理；趋势强度的特征；两段式行情。</td></tr>
+<tr><td><strong>⑥ 交易日类型</strong></td><td>21 – 26</td><td>急速与通道、趋势性交易区间、始于开盘与小幅回撤、反转、趋势恢复、楼梯形态。</td></tr>
+</tbody></table>
+</section>
+
+<section id="part1">
+<h2>第一篇 价格行为（第 1–12 章）</h2>
+<table><thead><tr><th>章</th><th>标题</th><th>核心命题</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="price_action_chapter1_notes.html">价格行为的谱系：从极端趋势到极端交易区间</a></td><td>市场惰性：趋势中反转多半失败，区间中突破多半失败。附数 K 线（高 1/低 1）体系。</td></tr>
+<tr><td>2</td><td><a href="price_action_chapter2_notes.html">趋势K线、十字星K线与高潮</a></td><td>每根 K 线要么是趋势 K 线要么是十字星；买压/卖压是累积的；趋势 K 线的四重身份。</td></tr>
+<tr><td>3</td><td><a href="price_action_chapter3_notes.html">突破、交易区间、测试与反转</a></td><td>急速与通道结构；通道即旗形；大部分反转只是转入区间的过渡。</td></tr>
+<tr><td>4</td><td><a href="price_action_chapter4_notes.html">K线基础：信号K线、入场K线、建仓形态与K线形态</a></td><td>每根 K 线都是双向建仓形态；趋势越强信号外观越不重要。</td></tr>
+<tr><td>5</td><td><a href="price_action_chapter5_notes.html">信号K线之反转K线</a></td><td>强反转 K 线的五条特征；过度重叠即区间；完美的反转 K 线若没套住人也不会有跟随。</td></tr>
+<tr><td>6</td><td><a href="price_action_chapter6_notes.html">信号K线之其他类型</a></td><td>按「掌控 / 均衡 / 收窄」三类理解信号；可靠形态也有约 40% 失败率。</td></tr>
+<tr><td>7</td><td><a href="price_action_chapter7_notes.html">外包K线</a></td><td>所有外包 K 线都是交易区间的一部分；方向只看收盘；顺势外包线可等同于强趋势 K 线。</td></tr>
+<tr><td>8</td><td><a href="price_action_chapter8_notes.html">K线收盘价的重要性</a></td><td>提前入场是负期望值交易（赚 1 个单位、亏 8 个单位）；收盘质量决定持仓比例。</td></tr>
+<tr><td>9</td><td><a href="price_action_chapter9_notes.html">ETF与反向ETF</a></td><td>用反向 ETF 的镜像图复核判断；SPY 与 Emini 的关系；三重魔力日的缺口。</td></tr>
+<tr><td>10</td><td><a href="price_action_chapter10_notes.html">二次入场点</a></td><td>二次入场几乎总是更可靠；但若价格更好则是陷阱——好价格等于坏交易。</td></tr>
+<tr><td>11</td><td><a href="price_action_chapter11_notes.html">迟到的与错过的入场点</a></td><td>如果早入场现在仍持有摆动头寸，就按那部分规模以市价入场。</td></tr>
+<tr><td>12</td><td><a href="price_action_chapter12_notes.html">形态的演变</a></td><td>形态是动词；失败产生反向动能；失败后横盘则旧形态作废。</td></tr>
+</tbody></table>
+</section>
+
+<section id="part2">
+<h2>第二篇 趋势线与通道（第 13–17 章）</h2>
+<table><thead><tr><th>章</th><th>标题</th><th>核心命题</th></tr></thead><tbody>
+<tr><td>13</td><td><a href="price_action_chapter13_notes.html">趋势线</a></td><td>突破趋势线 ≠ 反转，只说明进入双向交易；趋势线斜率逐次降低；线只活几秒钟。</td></tr>
+<tr><td>14</td><td><a href="price_action_chapter14_notes.html">趋势通道线</a></td><td>趋势通道线过靶 = 楔形；不要预测反转；不断重画通道线说明方向错了。</td></tr>
+<tr><td>15</td><td><a href="price_action_chapter15_notes.html">通道</a></td><td>通道 = 倾斜的交易区间；所有上升通道即熊旗；三波推动；等距运动目标。</td></tr>
+<tr><td>16</td><td><a href="price_action_chapter16_notes.html">微型通道</a></td><td>微型趋势线假突破的顺势入场；微型趋势线只用于顺势；不要交易 1 分钟图。</td></tr>
+<tr><td>17</td><td><a href="price_action_chapter17_notes.html">水平线：摆动点与其他关键价位</a></td><td>大部分交易日是区间日；水平线是障碍；二次信号（更极端价位）成功率更高。</td></tr>
+</tbody></table>
+</section>
+
+<section id="part3">
+<h2>第三篇 趋势（第 18–20 章）</h2>
+<table><thead><tr><th>章</th><th>标题</th><th>核心命题</th></tr></thead><tbody>
+<tr><td>18</td><td><a href="price_action_chapter18_notes.html">如何交易趋势举例</a></td><td>趋势中只有两个选项（顺势或空仓）；交易者等式与仓位换算；计划不一致是最常见的亏损来源。</td></tr>
+<tr><td>19</td><td><a href="price_action_chapter19_notes.html">趋势强度的特征</a></td><td>24 条强度清单；最漂亮的反转 K 线往往逆势；建仓形态的唯一目的是控制风险。</td></tr>
+<tr><td>20</td><td><a href="price_action_chapter20_notes.html">两段式行情</a></td><td>市场喜欢做两次尝试；第二次失败则反向、成功则延续；只看自己交易级别的图。</td></tr>
+</tbody></table>
+</section>
+
+<section id="part4">
+<h2>第四篇 常见趋势形态（第 21–26 章）</h2>
+<table><thead><tr><th>章</th><th>标题</th><th>核心命题</th></tr></thead><tbody>
+<tr><td>21</td><td><a href="price_action_chapter21_notes.html">急速与通道趋势</a></td><td>最常见的趋势形态；急速＝迫切/突破缺口，通道＝焦虑/「忧虑之墙」；通道起点必被测试。</td></tr>
+<tr><td>22</td><td><a href="price_action_chapter22_notes.html">趋势性交易区间交易日</a></td><td>开盘区间 1/3–1/2；双向机会；不要收紧止损；大部分反转日从这里开始。</td></tr>
+<tr><td>23</td><td><a href="price_action_chapter23_notes.html">始于开盘的趋势与小幅回撤趋势</a></td><td>最强劲的趋势类型（仅约 20% 交易日）；弱信号＝强趋势；不要收紧到盈亏平衡止损。</td></tr>
+<tr><td>24</td><td><a href="price_action_chapter24_notes.html">反转交易日</a></td><td>大部分反转日始于趋势性交易区间日；尾盘强力反转常延续到次日甚至数天。</td></tr>
+<tr><td>25</td><td><a href="price_action_chapter25_notes.html">趋势恢复交易日</a></td><td>午盘横盘是机会而非收工信号；尾盘第二波幅度≈第一波；尾盘假突破陷阱。</td></tr>
+<tr><td>26</td><td><a href="price_action_chapter26_notes.html">楼梯形态：宽幅趋势通道</a></td><td>宽幅趋势通道；每次突破都被回撤超越；缩梯＝动能减弱；用幅度测量来交易。</td></tr>
+</tbody></table>
+</section>
+
+<section id="map">
+<h2>概念地图：贯穿全书的八条主线</h2>
+<div class="grid2">
+<div class="card"><h3>① 两种状态</h3><p>趋势 vs 交易区间——适用于 K 线、一段行情、整个交易日。<strong>第 1、2、3 章</strong></p></div>
+<div class="card"><h3>② 位置优先于形状</h3><p>同一形态在不同位置含义相反。<strong>贯穿全部章节</strong></p></div>
+<div class="card"><h3>③ 市场惰性</h3><p>趋势中反转多半失败；区间中突破多半失败。<strong>第 1、3、17 章</strong></p></div>
+<div class="card"><h3>④ 谁被套住了</h3><p>反转与失败的动能来自做错方向者的被迫平仓。<strong>第 5、7、12、19 章</strong></p></div>
+<div class="card"><h3>⑤ 收盘价是裁判</h3><p>方向由收盘决定，不由颜色或盘中形态决定。<strong>第 5、7、8 章</strong></p></div>
+<div class="card"><h3>⑥ 风险决定仓位</h3><p>止损太远就减仓或不做，绝不把止损挪近。<strong>第 5、7、10、11、18 章</strong></p></div>
+<div class="card"><h3>⑦ 弱信号＝强趋势</h3><p>最难看的信号 K 线往往出现在最强的趋势里。<strong>第 16、19、23 章</strong></p></div>
+<div class="card"><h3>⑧ 只看一张图</h3><p>跨级别找完美信号会拖慢决策、错过本级别的机会。<strong>第 8、9、16、19、20 章</strong></p></div>
+</div>
+<div class="callout good"><strong>八条主线的交集：</strong>先定位（①）→ 判断位置是否合格（②）→ 假设当前状态延续（③）→ 问谁会被套住（④）→ 等收盘确认（⑤）→ 用结构止损反推仓位（⑥）→ 不被难看的信号吓退（⑦）→ 在单一时间级别上执行（⑧）。<strong>这八步就是这套笔记的完整操作链。</strong></div>
+</section>
+
+<section id="howto">
+<h2>怎么用这套笔记</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>每章先看「一页总览」</strong><br>用三张卡片建立这一章的骨架，5 分钟读完。</div></div>
+<div class="step" data-n="2"><div><strong>再看示意图</strong><br>每章的自绘示意图是刻意简化的结构图，不是真实行情。它的作用是让你记住<strong>结构关系</strong>，而不是形态外观。</div></div>
+<div class="step" data-n="3"><div><strong>然后读表格</strong><br>对照表是这套笔记信息密度最高的部分，尤其是「强弱」与「应放弃」两栏。</div></div>
+<div class="step" data-n="4"><div><strong>做自测题</strong><br>每章 5 题、可点击判分（全书共 130 题）。错题会给出对应解释，直接告诉你该复习哪一节。</div></div>
+<div class="step" data-n="5"><div><strong>最后用看盘清单</strong><br>在真实图表上逐项核对。清单的价值在于<strong>把「感觉」替换成「可检验的描述」</strong>。</div></div>
+<div class="step" data-n="6"><div><strong>复盘时记录句式</strong><br>各章的「实战记录句式」可以直接套用，让交易记录事后可检验，而不是「感觉要涨」。</div></div>
+</div>
+<div class="callout warn"><strong>关于打印：</strong>每页右上角都有「打印 / 保存为 PDF」按钮，打印样式已经优化（自动隐藏导航与测验区、避免分页切断表格）。可以整章打印，也可以按需打印某一章。</div>
+<div class="callout"><strong>资料说明：</strong>本套笔记依据用户提供的《高级趋势技术分析：价格行为交易系统之趋势分析》（舵手经典）整理，<strong>是对原书内容的归纳、重新组织与教学化改写，并加入自绘示意图、对照表、操作流程与练习题</strong>；不是原文转录，也不是逐页摘要。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</div>
+</section>
+<div class="callout warn"><strong>使用前请阅读：</strong>这套笔记的内容框架来源于阿尔·布鲁克斯的价格行为交易著作，是<strong>个人学习整理与重新表述</strong>，非原文转录、也不构成投资建议。完整说明见 <a href="disclaimer.html">免责声明</a>。</div>
+<div class="footer">PRICE ACTION STUDY NOTES · 总目录 · 全 26 章</div>
+</main></div></div>
+</body>
+</html>

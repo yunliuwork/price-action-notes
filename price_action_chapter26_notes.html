@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 26 章 楼梯形态：宽幅趋势通道｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 26 章</div>
+<h1>楼梯形态：宽幅趋势通道</h1>
+<p class="lead">本书最后一章，讲的是<strong>宽幅趋势通道</strong>——每一级「台阶」是一次突破，而每一次突破都会被回撤超越，形成<strong>重叠</strong>。它的实战价值在于给出了一套<strong>可测量的逆势刮头皮方法</strong>：用前一次突破的回撤幅度，去估计下一次回撤的深度。同时它还有一个明确的预警信号——<strong>缩梯</strong>（每次突破幅度都小于上一次）。</p>
+<div class="tags"><span class="tag">楼梯形态</span><span class="tag">宽幅趋势通道</span><span class="tag">突破重叠</span><span class="tag">缩梯</span><span class="tag">用幅度估计回撤</span><span class="tag">双向刮头皮</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#features">1. 主要特征</a><a href="#def">2. 结构：每次突破都被回撤超越</a><a href="#measure">3. 用幅度测量来交易</a><a href="#shrink">4. 缩梯：动能减弱的预警</a><a href="#accel">5. 突然加速与等距目标</a><a href="#context">6. 在不同级别上的含义</a><a href="#myths">7. 关键逻辑与误区</a><a href="#practice">8. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：</strong>当市场走出 <strong>3 波或以上趋势性摆动</strong>，构成一个<strong>略微倾斜的交易区间或通道</strong>时，多头和空头都表现活跃，但<strong>一方略微掌握更大的控制权</strong>。关键特征是：<strong>每次回撤都会超越突破点</strong>，使得每一突破走势与随后的回撤之间存在<strong>重叠</strong>。</div>
+<div class="chart">
+<svg viewBox="0 0 680 340" role="img" aria-label="示意图：下降楼梯形态，每次突破都被回撤超越形成重叠">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">下降楼梯：每次跌破都被回撤超越（形成重叠）</text>
+
+<path d="M60 90 L110 150 L150 118 L205 186 L246 152 L300 220 L340 188 L392 254 L430 224 L480 286 L520 258" fill="none" stroke="#4788d8" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+
+<circle cx="110" cy="150" r="5.5" fill="#c74747"/>
+<circle cx="205" cy="186" r="5.5" fill="#c74747"/>
+<circle cx="300" cy="220" r="5.5" fill="#c74747"/>
+<circle cx="392" cy="254" r="5.5" fill="#c74747"/>
+
+<line x1="110" y1="150" x2="205" y2="150" stroke="#c74747" stroke-width="1.2" stroke-dasharray="4 4" opacity=".6"/>
+<line x1="205" y1="186" x2="300" y2="186" stroke="#c74747" stroke-width="1.2" stroke-dasharray="4 4" opacity=".6"/>
+<line x1="300" y1="220" x2="392" y2="220" stroke="#c74747" stroke-width="1.2" stroke-dasharray="4 4" opacity=".6"/>
+
+<line x1="60" y1="70" x2="560" y2="196" stroke="#c74747" stroke-width="1.5" stroke-dasharray="7 5" opacity=".6"/>
+<line x1="60" y1="132" x2="560" y2="258" stroke="#16845b" stroke-width="1.5" stroke-dasharray="7 5" opacity=".6"/>
+<text x="566" y="192" fill="#c74747" font-size="11.5">趋势线（高点上方）</text>
+<text x="566" y="256" fill="#16845b" font-size="11.5">趋势通道线（低点下方）</text>
+
+<text x="60" y="312" fill="currentColor" font-size="11.5" opacity=".85">台阶 = 一次突破；回撤站回突破点之上 → 相邻摆动重叠</text>
+<text x="60" y="330" fill="currentColor" font-size="11.5" opacity=".85">双向交易明显 → 可低买高卖（在两个方向各做刮头皮）</text>
+</svg>
+</div>
+<div class="callout warn"><strong>入门门槛提醒（原文明确）：用限价单在楼梯形态中双向刮头皮的这种做法，只适合经验丰富的交易者。初学者应该只采取挂止损单的方法入场，因为这样他们入场时市场已经朝他们的方向运行。</strong></div>
+</section>
+
+<section id="features">
+<h2>1. 主要特征</h2>
+<table><thead><tr><th>#</th><th>特征</th></tr></thead><tbody>
+<tr><td>1</td><td>楼梯形态交易日是<strong>趋势性交易区间交易日的变体</strong>，<strong>至少包含 3 个交易区间</strong></td></tr>
+<tr><td>2</td><td>交易日<strong>波动剧烈</strong>，但形成<strong>趋势性高点和低点</strong></td></tr>
+<tr><td>3</td><td>由于波动较大，交易者往往会朝两个方向交易，但<strong>应该试图让部分或全部顺势头寸参与摆动</strong></td></tr>
+<tr><td>4</td><td>几乎在所有突破之后市场都会出现<strong>超越突破点的回撤</strong>（突破测试），造成相邻摆动之间存在一些<strong>重叠</strong>。例如在宽幅下降通道中，所有突破至新低的走势都跟随一波反弹，<strong>返回突破点之上但未能超越最近的摆动高点</strong></td></tr>
+<tr><td>5</td><td>不过，有时候会有<strong>一两波反弹略微超过上一个摆动高点</strong>。这将让部分交易者怀疑市场是否正在反转，<strong>但通常情况下趋势会很快恢复</strong></td></tr>
+<tr><td>6</td><td>如果<strong>每一次突破都比上一次幅度小一点</strong>，就属于<strong>缩梯形态</strong>，说明动能减弱，可能引发更大的调整</td></tr>
+</tbody></table>
+<div class="callout"><strong>第 4 条与第 5 条的关系值得注意：</strong>正常楼梯中，回撤<strong>返回突破点之上但不超过上一个摆动高点</strong>。而当回撤<strong>略微超过</strong>上一个摆动高点时，会制造"是不是要反转了"的错觉——<strong>但原文说，通常情况下趋势会很快恢复</strong>。这是一个专门针对"过早反手"的陷阱。</div>
+</section>
+
+<section id="def">
+<h2>2. 结构：楼梯与通道的关系</h2>
+<div class="callout good"><strong>楼梯形态本质上是一个<u>宽幅趋势通道</u>。</strong>在宽幅通道内，双向交易正在发生，因此<strong>交易者可以寻找两个方向的入场机会</strong>。</div>
+<table><thead><tr><th>概念</th><th>关系</th></tr></thead><tbody>
+<tr><td>与趋势性交易区间交易日</td><td>楼梯形态是其<strong>变体</strong>——同样由多个区间构成，但区间之间有明确的方向性倾斜</td></tr>
+<tr><td>与通道</td><td>通道只是<strong>倾斜的交易区间</strong>；宽幅通道即楼梯形态。斜率越低，越像交易区间，双向交易越安全</td></tr>
+<tr><td>与三连推反转</td><td><strong>许多三连推反转都属于失败并反转的楼梯形态或缩梯形态</strong></td></tr>
+</tbody></table>
+<div class="callout"><strong>关于"部分顺势头寸参与摆动"：</strong>第 3 条特征指出，虽然双向交易频繁，但趋势性高点和低点仍然存在——<strong>因此不要全部做刮头皮，应该留一部分顺势头寸参与摆动</strong>。这与第 18、19、21 章"让大部分顺势仓位参与摆动"的原则一致。</div>
+</section>
+
+<section id="measure">
+<h2>3. 用幅度测量来交易：本章最实用的部分</h2>
+<div class="callout good"><strong>原文给出的方法：交易者将会密切关注突破走势超越最近摆动点的<u>幅度</u>，然后利用这一幅度来对后面的突破走势进行逆势交易，期待市场出现突破回踩。</strong></div>
+<h3>具体步骤</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>测量上一次突破的幅度</strong><br>例如：最近的摆动低点低于上一个摆动低点 <strong>14 个最小报价单位</strong>。</div></div>
+<div class="step" data-n="2"><div><strong>推算本波的目标回撤位</strong><br>从最近摆动低点<strong>下方约 10 单位</strong>开始分批买入（往往在趋势通道线附近）。</div></div>
+<div class="step" data-n="3"><div><strong>推算利润目标</strong><br>如果最近一次突破之后的回撤幅度约为 <strong>15 单位</strong>，他们将会在低点<strong>上方大约 10–15 单位</strong>寻求锁定利润（往往在趋势线附近）。</div></div>
+</div>
+<div class="callout"><strong>原文的一个具体例子（更直观）：</strong>K 线 5 的低点大约低于 K 线 3 的低点 <strong>4 个点</strong>。激进多头将在 K 线 5 低点下方 <strong>3–4 个点</strong>挂限价单买入，买单在 K 线 7 获得成交。一旦市场跌破 K 线 7，他们又在 K 线 7 低点下方 3–4 个点挂买单，在之后的下跌中获得成交（那个低点低于 K 线 7 低点 4 个点）。<strong>由于前面的反弹也大约是 4 个点，他们将会在入场点上方大约 3 个点的位置锁定利润。</strong></div>
+<h3>空头的对称做法</h3>
+<div class="callout"><strong>空头看到前面的反弹为 4–6 个点，因此他们在<u>最近摆动低点上方 3–5 个点</u>的位置分批建立空单。</strong>这就是"用上一次回撤幅度，估计下一次回撤幅度"的镜像版本。</div>
+<div class="callout warn"><strong>再次强调门槛：这种操作手法只适合经验丰富的交易者。初学者应该只采取挂止损单的方法入场</strong>——因为这样他们入场时，<strong>市场已经朝他们的方向运行</strong>。这与第 4 章"止损单 vs 限价单"的难度差异是同一个判断。</div>
+<h3>另一种画法：在通道线附近做</h3>
+<div class="callout"><strong>部分交易者会在趋势通道线附近做多，在趋势线附近做空。</strong>即把两条通道线本身当作逆势刮头皮的区域——这本质上就是第 15 章"通道内的角色分工"（多头在下轨买、空头在上轨卖）在楼梯形态中的具体应用。</div>
+</section>
+
+<section id="shrink">
+<h2>4. 缩梯：动能减弱的预警</h2>
+<div class="callout warn"><strong>当市场每一次突破幅度都小于上一次，说明动能在减弱，可能很快出现较深的回撤甚至反转。</strong></div>
+<h3>缩梯的含义与后果</h3>
+<table><thead><tr><th>观察</th><th>含义</th></tr></thead><tbody>
+<tr><td>突破幅度逐次变小</td><td><strong>动能减弱</strong></td></tr>
+<tr><td>常见后果</td><td>通常会导致<strong>两段式反转走势和趋势线突破</strong></td></tr>
+<tr><td>与三连推的关系</td><td>许多三连推反转<strong>都属于失败并反转的楼梯形态或缩梯形态</strong></td></tr>
+</tbody></table>
+<div class="callout"><strong>原文的一个例子：</strong>市场走出楼梯形态上升趋势（3 个或以上趋势性上移的高点和低点，大致处于通道中），随后连续三根 K 线形成<strong>缩梯</strong>，代表上升动能减弱、预示行情可能反转。上升通道相当于一个<strong>大的熊旗</strong>，随后向下突破。</div>
+<div class="callout good"><strong>但原文同时提醒：三连推并不能保证趋势一定反转。</strong>在某个例子中，截至某处的下跌过程中并未表现出多少买压——<strong>没有一根长多头趋势 K 线，也没有高潮性反转</strong>；从那里开始的上涨也不是特别强劲。<strong>这并不是强势反转应有的特征，因此并未吸引足够的多头参与并带来反转。</strong>相反，市场形成了楔形熊旗和高点下降，然后下跌趋势恢复。</div>
+<p class="muted small">这个反例很重要：<strong>形态出现 ≠ 反转成立</strong>。判断反转是否可信，还要看是否有<strong>长趋势 K 线</strong>与<strong>高潮性反转</strong>的配合。</p>
+<h3>缩梯之后的操作</h3>
+<div class="callout"><strong>当市场开始形成楼梯形下跌趋势，通常你可以在每一根强趋势 K 线向下突破时逆势刮头皮——在每一根空头趋势 K 线收盘跌破前一个摆动低点时刮头皮做多。同样，在楼梯形上涨行情中，你可以在每一根趋势 K 线超越上一个摆动高点时刮头皮做空。</strong></div>
+<div class="callout good"><strong>不过一般来讲，更安全的做法是在市场反转时挂止损单入场。比如说，如果市场从通道底部向上反转，可以在前一根 K 线高点上方挂单入场。</strong>——这是"止损单入场更安全"在本章的又一次确认。</div>
+</section>
+
+<section id="accel">
+<h2>5. 突然加速与等距目标</h2>
+<div class="callout"><strong>有时候楼梯形态会突然加速，以顺势方向突破趋势通道。</strong>如果随后立即反转，那么这一<strong>过靶与反转走势有可能造成至少两段式调整</strong>。如果没有反转，突破走势可能<strong>至少再持续两波行情，或发生大致相当于通道高度的等距运动</strong>。</div>
+<div class="callout good"><strong>等距运动的判据（原文表述）：价格超越通道的距离应该大约相当于通道之内的距离。</strong>这就是第 15 章"突破后第一目标＝通道高度"在楼梯形态中的具体化。</div>
+<h3>一个例子：阶梯之后进入更强趋势</h3>
+<p>原文举了一个外汇的例子：截至某处市场处于一个上升通道，形成<strong>3 个高点抬升和低点抬升</strong>，属于楼梯形态上升趋势；随后一根多头趋势 K 线<strong>突破通道上轨</strong>。之后虽然出现一根空头反转 K 线，但<strong>没有被触发</strong>。突破走势应该可以持续到<strong>将通道等距上移的平行线位置</strong>，结果的确如此。</p>
+<div class="callout"><strong>原文指出：在楔形顶部失败的情况下，这种加速上涨是很常见的。</strong>并且给出一个可用的测量方式：<strong>楔形失败之后往往会出现大约与楔形高度等距的行情。</strong></div>
+<div class="callout warn"><strong>但不要忘记第 21 章的提醒：</strong>楔形（收敛通道）向上突破失败后的这种走势，属于<strong>异常强劲的买入高潮</strong>。此类价格行为处于钟形曲线的尾端，<strong>通常会在 5–10 根 K 线之内反转</strong>。所以"加速"与"见顶"可能只差几根 K 线。</div>
+</section>
+
+<section id="context">
+<h2>6. 在不同级别上的含义</h2>
+<table><thead><tr><th>级别</th><th>楼梯形态是什么</th></tr></thead><tbody>
+<tr><td>当前交易级别</td><td>一个宽幅趋势通道，双向都有交易机会，需留部分顺势头寸参与摆动</td></tr>
+<tr><td><strong>较高时间级别</strong></td><td><strong>往往只是回调或旗形</strong></td></tr>
+<tr><td>跨交易日</td><td>楼梯形态<strong>经常发生在交易日最后 1–2 个小时，然后在第二天开盘突破这个旗形</strong>。例如某天走出的宽幅上升通道可能只是一个<strong>大的熊旗</strong>，下跌趋势可能在第二天向下突破</td></tr>
+</tbody></table>
+<div class="callout good"><strong>这条"经常发生在交易日最后 1–2 小时，第二天开盘突破"的观察很有价值</strong>——它与第 25 章「趋势恢复交易日」的尾盘突破形成呼应：<strong>尾盘形成的宽幅通道，往往就是次日行情的起点。</strong></div>
+</section>
+
+<section id="myths">
+<h2>7. 关键逻辑与六种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>楼梯形态</td><td>这是趋势还是区间？</td><td>"非此即彼"——它是宽幅趋势通道，两者兼具</td></tr>
+<tr><td>突破被回撤超越</td><td>是不是反转了？</td><td>"回撤超过上一个大点就是反转"——通常趋势会很快恢复</td></tr>
+<tr><td>缩梯</td><td>动能如何？</td><td>"缩梯一定反转"——还要看长趋势 K 线与高潮配合</td></tr>
+<tr><td>幅度测量</td><td>该在哪里逆势入场？</td><td>"初学者也适用"——只适合有经验者</td></tr>
+</tbody></table>
+<h3>尤其需要避免的六种误区</h3>
+<ul>
+<li><strong>把回撤略微超过上一个摆动高点当成反转：</strong>这是楼梯形态的常见陷阱，趋势通常很快恢复。</li>
+<li><strong>全部仓位做刮头皮：</strong>特征 3 明确要求让<strong>部分或全部顺势头寸参与摆动</strong>。</li>
+<li><strong>初学者使用限价单在楼梯中双向刮头皮：</strong>应改用止损单入场，因为入场时市场已朝你的方向运行。</li>
+<li><strong>看到缩梯就直接反手：</strong>还要检查是否有长趋势 K 线与高潮性反转配合。</li>
+<li><strong>在加速突破时盲目追入：</strong>可能属于异常强劲的买入高潮，通常 5–10 根 K 线内反转。</li>
+<li><strong>忽略它可能是高一级别的旗形：</strong>楼梯形态经常只是大级别上的回调，次日开盘可能突破。</li>
+</ul>
+</section>
+
+<section id="practice">
+<h2>8. 自测与清单</h2>
+<div class="quiz">
+<p><strong>问题 1：</strong>楼梯形态的主要特征之一是？</p>
+<label><input type="radio" name="q1" value="a"> A. 每次回撤都会超越突破点，使相邻摆动之间存在重叠</label>
+<label><input type="radio" name="q1" value="b"> B. 每次突破都不会被回撤超越</label>
+<label><input type="radio" name="q1" value="c"> C. 完全没有回撤</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>当楼梯形态中出现一两波反弹略微超过上一个摆动高点时，通常？</p>
+<label><input type="radio" name="q2" value="a"> A. 趋势已经反转</label>
+<label><input type="radio" name="q2" value="b"> B. 会让部分交易者怀疑反转，但通常趋势会很快恢复</label>
+<label><input type="radio" name="q2" value="c"> C. 应立即反手</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>「缩梯」指的是什么，意味着什么？</p>
+<label><input type="radio" name="q3" value="a"> A. 每次突破幅度都小于上一次——动能减弱，可能引发更大调整</label>
+<label><input type="radio" name="q3" value="b"> B. 每次突破幅度都大于上一次——动能增强</label>
+<label><input type="radio" name="q3" value="c"> C. 成交量逐次放大</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>关于用限价单在楼梯形态中双向刮头皮，原文的态度是？</p>
+<label><input type="radio" name="q4" value="a"> A. 适合所有交易者</label>
+<label><input type="radio" name="q4" value="b"> B. 只适合经验丰富的交易者；初学者应改用挂止损单入场</label>
+<label><input type="radio" name="q4" value="c"> C. 完全不该使用</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>楼梯形态在较高时间级别上通常是？</p>
+<label><input type="radio" name="q5" value="a"> A. 往往是回调或旗形——经常在交易日最后 1~2 小时形成，次日在开盘突破</label>
+<label><input type="radio" name="q5" value="b"> B. 一定是长期顶部</label>
+<label><input type="radio" name="q5" value="c"> C. 与更高级别无关</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我确认了这是宽幅趋势通道（至少 3 个区间、有趋势性高低点）。</label>
+<label><input type="checkbox"> 我确认了每次突破之后都有超越突破点的回撤（重叠）。</label>
+<label><input type="checkbox"> 我测量了上一次突破与回撤的幅度，用来估算本次的入场与目标。</label>
+<label><input type="checkbox"> 我让部分或全部顺势头寸参与摆动，没有全部做刮头皮。</label>
+<label><input type="checkbox"> 我把「回撤略微超过上一个摆动高点」视为陷阱，而非反转。</label>
+<label><input type="checkbox"> 我检查了突破幅度是否在逐次缩小（缩梯），并留意长趋势 K 线与高潮配合。</label>
+<label><input type="checkbox"> 若形态加速突破通道，我提防它可能是异常强劲的买入高潮（5~10 根 K 线内易反转）。</label>
+<label><input type="checkbox"> 我用止损单而不是限价单入场（除非我是有经验的双向刮头皮者）。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：七条核心结论</h2>
+<ol>
+<li><strong>楼梯形态＝宽幅趋势通道，至少包含 3 个区间，是趋势性交易区间交易日的变体。</strong></li>
+<li><strong>核心结构特征：每次突破都会被回撤超越，造成相邻摆动之间的重叠。</strong></li>
+<li><strong>回撤略微超过上一个摆动高点常让人怀疑反转，但通常趋势会很快恢复。</strong></li>
+<li><strong>最实用的方法是用上一次突破/回撤的幅度，来估算本次的入场位与利润目标。</strong></li>
+<li><strong>缩梯（每次突破幅度小于上一次）说明动能减弱，可能导致更大调整；但要配合长趋势 K 线与高潮来确认。</strong></li>
+<li><strong>突然顺势加速突破通道时：反转则两段式调整；不反转则至少两波行情或通道高度的等距运动。</strong></li>
+<li><strong>在较高时间级别上，楼梯形态往往只是回调或旗形，常在交易日最后 1~2 小时形成、次日开盘突破。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>在宽幅通道里量化着做——<strong>把上一次突破和回撤的幅度记下来</strong>，而不是凭感觉在"看起来差不多"的位置逆势。这一个习惯，就把楼梯形态从"凭经验的手艺"变成了"可以复盘的算术"。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 26 章内容整理、归纳并重新表述，加入示意图、表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 26 章 楼梯形态：宽幅趋势通道</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"a",q2:"b",q3:"a",q4:"b",q5:"a"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：楼梯形态中每次回撤都会超越突破点，使相邻摆动之间存在重叠，这也是它的定义性特征。",
+  "第 2 题：反弹略微超过上一个摆动高点会让部分交易者怀疑反转，但通常趋势会很快恢复。",
+  "第 3 题：缩梯指每次突破幅度都小于上一次，说明动能减弱，可能引发更大的调整。",
+  "第 4 题：双向刮头皮的限价单手法只适合经验丰富的交易者；初学者应改用挂止损单入场。",
+  "第 5 题：楼梯形态在较高时间级别上往往只是回调或旗形，常在一日最后 1~2 小时形成、次日开盘突破。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+" "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

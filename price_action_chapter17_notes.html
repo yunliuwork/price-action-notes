@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 17 章 水平线：摆动点与其他关键价位｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 17 章</div>
+<h1>水平线：摆动点与其他关键价位</h1>
+<p class="lead">第二篇的收尾章节，也是最贴近日常实战的一章。核心事实很朴素：<strong>大部分交易日都是交易区间交易日</strong>。在那种日子里，经过摆动高点和低点的<strong>水平线</strong>会成为价格运动的障碍，制造假突破然后反转。而最值得交易的，是<strong>第二次信号</strong>。</p>
+<div class="tags"><span class="tag">摆动高/低点</span><span class="tag">水平线即障碍</span><span class="tag">假突破</span><span class="tag">高点抬升/低点下降反转</span><span class="tag">二次信号</span><span class="tag">趋势日只用回调</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#range">1. 区间交易日：水平线是障碍</a><a href="#twotypes">2. 两种反转形态</a><a href="#second">3. 二次信号与失败再失败</a><a href="#why">4. 为什么更极端的价位更容易赚</a><a href="#trend">5. 趋势交易日：只用于回调入场</a><a href="#strong">6. 强趋势中不要逆势</a><a href="#myths">7. 关键逻辑与误区</a><a href="#practice">8. 自测与清单</a><a href="#summary">最后记住</a></nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：大部分交易日都是交易区间交易日，或者存在大量交易区间走势。</strong>在这些交易日里，经过<strong>摆动高点和低点</strong>的水平线通常会成为价格运动的<strong>障碍</strong>，造成假突破然后反转。而在趋势交易日，水平线的用途完全不同——<strong>只用于在回调中入场</strong>。</div>
+<div class="grid3">
+<div class="card"><h3>区间交易日</h3><p>水平线是障碍：突破往往失败，产生反转机会。</p><p class="small muted">最佳形态是<strong>二次信号</strong>。</p></div>
+<div class="card"><h3>趋势交易日</h3><p>水平线只用于<strong>回调入场</strong>（如突破后的回踩）。</p><p class="small muted">逆势需要强得多的证据。</p></div>
+<div class="card"><h3>强趋势日</h3><p>只有当市场<strong>强力突破趋势线并出现强势反转 K 线</strong>，才考虑在摆动点逆势开仓。</p><p class="small muted">而且通常只能刮头皮。</p></div>
+</div>
+<div class="chart">
+<svg viewBox="0 0 680 330" role="img" aria-label="示意图：水平线成为障碍，假突破后反转，以及二次信号">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">区间交易日：水平线是障碍，假突破后反转</text>
+
+<line x1="40" y1="96" x2="640" y2="96" stroke="#c74747" stroke-width="1.8" stroke-dasharray="7 5"/>
+<line x1="40" y1="236" x2="640" y2="236" stroke="#16845b" stroke-width="1.8" stroke-dasharray="7 5"/>
+<text x="46" y="86" fill="#c74747" font-size="11.5">摆动高点水平线（阻力）</text>
+<text x="46" y="258" fill="#16845b" font-size="11.5">摆动低点水平线（支撑）</text>
+
+<path d="M60 210 L120 106 L165 170 L225 88 L270 156 L330 66 L380 140 L440 104 L500 176 L560 120 L620 160" fill="none" stroke="#4788d8" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="120" cy="106" r="5" fill="#c74747"/>
+<circle cx="225" cy="88" r="5" fill="#c74747"/>
+<circle cx="330" cy="66" r="5" fill="#c74747"/>
+<text x="225" y="76" fill="#c74747" font-size="11.5" text-anchor="middle">假突破</text>
+<text x="336" y="56" fill="#c74747" font-size="11.5" font-weight="700">第二个抬升高点</text>
+
+<circle cx="165" cy="170" r="5" fill="#16845b"/>
+<circle cx="270" cy="156" r="5" fill="#16845b"/>
+<text x="288" y="176" fill="#16845b" font-size="11.5" font-weight="700">下降低点（二次信号）</text>
+
+<text x="340" y="292" fill="currentColor" opacity=".85" font-size="11.5" text-anchor="middle">对摆动高点的突破往往失败 → 形成「高点抬升反转形态」</text>
+<text x="340" y="312" fill="currentColor" opacity=".85" font-size="11.5" text-anchor="middle">对摆动低点的突破失败 → 形成「低点下降反转形态」</text>
+</svg>
+</div>
+<div class="callout warn"><strong>本章的一个实用默认值：</strong>当你打开一张图表、还不能判断它属于什么类型时，<strong>先假设它是区间交易日</strong>——因为这只是大多数情况。在这个默认假设下，摆动高点和低点附近的假突破，比"突破成功"更值得下注。</div>
+</section>
+
+<section id="range">
+<h2>1. 区间交易日：水平线是障碍</h2>
+<div class="callout"><strong>观察：</strong>在大部分交易日，经过摆动高点和低点的水平线通常会成为价格运动的<strong>障碍</strong>，造成假突破然后反转。</div>
+<table><thead><tr><th>突破方向</th><th>典型结果</th><th>形成的形态</th></tr></thead><tbody>
+<tr><td>向上突破<strong>摆动高点</strong></td><td>往往失败</td><td><strong>高点抬升反转形态</strong></td></tr>
+<tr><td>向下突破<strong>摆动低点</strong></td><td>失败后反转</td><td><strong>低点下降反转形态</strong></td></tr>
+</tbody></table>
+<div class="callout good"><strong>为什么水平线会有效：</strong>因为交易者都在看它们。这与第 4 章"每根 K 线都是双向建仓形态"是同一个道理——水平线之所以成为障碍，是因为足够多的人把它当成参考，于是支撑与阻力自我实现。</div>
+<h3>怎么用</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>先标出摆动高点和低点</strong><br>把这些水平位画出来。它们是你后续寻找假突破反转的参照系。</div></div>
+<div class="step" data-n="2"><div><strong>等价格去测试它们</strong><br>不要预测突破会不会成功，等价格实际到达并表现出行为。</div></div>
+<div class="step" data-n="3"><div><strong>观察是否假突破</strong><br>突破后是否立刻被吞回？是否形成反转 K 线？这是核心判据。</div></div>
+<div class="step" data-n="4"><div><strong>优先做第二次</strong><br>如果"失败"又再失败，就构成<strong>突破回踩形态</strong>，并形成<strong>第二个更高的抬升高点</strong>或<strong>更低的下降低点</strong>。</div></div>
+</div>
+</section>
+
+<section id="twotypes">
+<h2>2. 两种反转形态：「失败」与「失败再失败」</h2>
+<div class="callout"><strong>原文的关键描述：有时候"失败"会再失败，从而成为突破回踩形态，然后形成第二个更高的抬升高点或更低的下降低点。</strong></div>
+<table><thead><tr><th>阶段</th><th>发生了什么</th><th>结果</th></tr></thead><tbody>
+<tr><td><strong>第一次</strong></td><td>价格突破摆动高点但失败，回落</td><td>形成<strong>高点抬升</strong>；这是第一次反转尝试</td></tr>
+<tr><td><strong>失败再失败</strong></td><td>价格再次上攻、再次失败</td><td>构成<strong>突破回踩形态</strong>，形成<strong>第二个更高的抬升高点</strong></td></tr>
+</tbody></table>
+<div class="callout good"><strong>最重要的一句：在第二个抬升高点或下降低点逆势交易成功率更高，因为它们是第二次反转尝试，而二次信号在交易区间交易日是不错的建仓形态。</strong>这与第 10 章「二次入场点」的逻辑完全一致——被套者的被迫平仓提供了动能。</div>
+<h3>为什么第二次更好</h3>
+<ul>
+<li><strong>第一次</strong>反转尝试时，原方向的动能还没被消化完，所以经常只是短暂停顿。</li>
+<li><strong>第二次</strong>失败说明：先前跟着突破方向入场的人已经被套住，他们的止损会成为反转方向的推力。</li>
+<li>二次尝试通常出现在<strong>更极端的价位</strong>，而极端价位在区间交易日有更好的回报（见下节）。</li>
+</ul>
+</section>
+
+<section id="second">
+<h2>3. 二次信号与「失败再失败」</h2>
+</section>
+
+<section id="why">
+<h2>4. 为什么更极端的价位更容易赚</h2>
+<div class="callout good"><strong>原文的解释：第二个抬升高点或下降低点是交易区间交易日<u>更极端</u>的价位，由于当天的<u>中间价位</u>具有一定磁力，因此这个更为极端的价位更有可能产生刮头皮利润。</strong></div>
+<div class="chart">
+<svg viewBox="0 0 680 280" role="img" aria-label="示意图：区间中部有磁力，更极端的价位更容易产生利润">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">为什么第二次（更极端的那一次）更容易赚</text>
+
+<rect x="60" y="80" width="560" height="150" rx="10" fill="#4788d8" opacity=".08"/>
+<line x1="60" y1="80" x2="620" y2="80" stroke="#c74747" stroke-width="1.6" stroke-dasharray="6 4"/>
+<line x1="60" y1="230" x2="620" y2="230" stroke="#16845b" stroke-width="1.6" stroke-dasharray="6 4"/>
+<line x1="60" y1="155" x2="620" y2="155" stroke="#d6a747" stroke-width="1.6" stroke-dasharray="4 6" opacity=".8"/>
+<text x="66" y="150" fill="#d6a747" font-size="11.5" font-weight="700">当天中间价位 —— 具有磁力</text>
+
+<path d="M80 200 L140 130 L190 165 L250 92 L300 150 L360 196 L420 214 L480 176 L540 205 L600 224" fill="none" stroke="#4788d8" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="250" cy="92" r="6" fill="#c74747"/>
+<circle cx="480" cy="176" r="6" fill="#16845b"/>
+<text x="256" y="86" fill="#c74747" font-size="11.5">第一次（不够极端）</text>
+<text x="486" y="170" fill="#16845b" font-size="11.5">第二次 → 更极端，空间更大</text>
+
+<text x="360" y="262" fill="currentColor" opacity=".8" font-size="11.5" text-anchor="middle">越靠近区间中部，磁力越强、可赚空间越小；越靠极端价位，回归中部的空间越大</text>
+</svg>
+</div>
+<div class="callout"><strong>这条逻辑的实用推论：</strong>在区间交易日中，如果某个反转信号出现在<strong>靠近中部</strong>的位置，即便形态标准，可赚空间也很有限——因为磁力会把你往回拉。而出现在<strong>更极端价位</strong>的信号，回向中部的空间自然更大。<strong>这与第 1 章"区间中部方向优势最弱"是同一件事的两种表述。</strong></div>
+<h3>一些具体的结构识别（原文举例）</h3>
+<table><thead><tr><th>结构</th><th>识别要点</th></tr></thead><tbody>
+<tr><td>三连推</td><td>虽然样子并非楔形，<strong>三连推通常表现出楔形的特征</strong>，可以视为楔形的变体</td></tr>
+<tr><td>扩散三角形</td><td>可以数它的"点"（如第 7 个点）；可能同时与前一天的低点构成双底——<strong>没必要那么精确</strong></td></tr>
+<tr><td>大双底回撤</td><td>可能同时是一个<strong>高 2 买入形态</strong>（处于两波大规模复杂下跌的底部）</td></tr>
+<tr><td>上升通道（熊旗）被假突破</td><td>对熊旗的假突破可以成为买点；同时也可能是大的<strong>楔形牛旗</strong></td></tr>
+<tr><td>双顶熊旗失败</td><td>一根长阳突破其高点 → 市场显著转为多头态势</td></tr>
+<tr><td>下降低点 + 楔形牛旗</td><td>可能同时是突破之后以<strong>低点抬升</strong>方式发生的突破回踩</td></tr>
+</tbody></table>
+<div class="callout"><strong>一个重要的心态提示：</strong>同一个价位往往同时满足多种形态的命名（双底、楔形、高 2、突破回踩……）。原文的态度是<strong>"没必要那么精确"</strong>——名字多不重要，重要的是它位于<strong>哪个价位</strong>、是<strong>第几次</strong>尝试。</div>
+</section>
+
+<section id="trend">
+<h2>5. 趋势交易日：水平线只用于回调入场</h2>
+<div class="callout good"><strong>在趋势交易日，水平线通常只能用于在回调中入场。</strong></div>
+<h3>一个典型场景</h3>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>市场强势向上突破交易区间</strong><br>突破本身给出了方向信号。</div></div>
+<div class="step" data-n="2"><div><strong>数根 K 线后出现回踩突破位的走势</strong><br>价格回到原区间上沿附近——这个位置现在应该起支撑作用。</div></div>
+<div class="step" data-n="3"><div><strong>若测试过程中出现多头反转形态</strong><br>这就是一个<strong>非常不错的突破回踩买入形态</strong>。</div></div>
+</div>
+<div class="callout"><strong>注意方向的不同：</strong>在区间交易日，水平线给出的是<strong>反向</strong>机会（假突破 → 反转）；在趋势交易日，同一条水平线给出的是<strong>顺势</strong>机会（回踩守住 → 继续）。<strong>位置相同，含义取决于市场状态</strong>——这再一次印证了第 1 章的坐标系优先。</div>
+</section>
+
+<section id="strong">
+<h2>6. 强趋势中不要逆势</h2>
+<div class="callout warn"><strong>严格条件：在强趋势交易日，只有当市场强力突破趋势线并出现强势反转 K 线，才能考虑在上升趋势中的摆动高点和下降趋势中的摆动低点逆势开仓。</strong></div>
+<h3>为什么门槛这么高</h3>
+<p>原文举了两个强趋势交易日的例子来说明：这些交易日<strong>开盘附近就构成当天的最低点或最高点</strong>，价格<strong>超过 2 个小时没有回踩均线</strong>（这属于"20 根均线缺口 K 线回踩建仓形态"）。在这种环境下，即便出现了看起来标准的反转 K 线：</p>
+<div class="callout"><strong>原文的判语：不过，它们都属于逆势交易，而且此前对趋势线的突破逆势动能很小，因此<u>并非强势建仓形态，只能刮头皮</u>。</strong></div>
+<div class="callout good"><strong>一句极其实用的取舍准则：如果它们对你的顺势持仓造成了干扰（顺势持仓应该让很大一部分仓位参与摆动），那就干脆不要做。</strong></div>
+<p class="muted small">这句话值得单独记住：<strong>逆势刮头皮的收益，可能不足以弥补它对你顺势摆动仓位造成的干扰。</strong>很多交易者的实际亏损不是因为看错方向，而是因为用一笔小逆势单毁掉了一个正在赚钱的摆动头寸。</p>
+<h3>一个时间上的经验</h3>
+<div class="callout"><strong>原文提到：均线缺口 K 线建仓形态若发生在上午 11 点半之后，这个时间段市场通常会出现强劲的逆势行情，将交易者震出趋势或者套在错误的方向。</strong>而这恰恰带来<strong>可靠的顺势交易机会</strong>——市场往往会创出新高或新低并持续到收盘。</div>
+</section>
+
+<section id="myths">
+<h2>7. 关键逻辑与六种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>水平线</td><td>哪里有障碍？</td><td>"到了就一定会反转"</td></tr>
+<tr><td>假突破</td><td>突破是真的吗？</td><td>"突破即成立"</td></tr>
+<tr><td>二次信号</td><td>哪一次更可靠？</td><td>"第一次就该做"</td></tr>
+<tr><td>趋势日中的水平线</td><td>在哪入场？</td><td>"可以拿来逆势"</td></tr>
+</tbody></table>
+<h3>尤其需要避免的六种误区</h3>
+<ul>
+<li><strong>把每条水平线都当铁板：</strong>它是概率性的障碍，不是必然反转点。</li>
+<li><strong>在第一次反转尝试就重仓：</strong>二次信号（更极端的那一次）成功率更高。</li>
+<li><strong>忽略区间中部的磁力：</strong>靠近中部的信号即便标准，可赚空间也有限。</li>
+<li><strong>在趋势交易日用水平线做逆势：</strong>趋势日里它只用于回调入场。</li>
+<li><strong>在强趋势中凭一根反转 K 线逆势开摆动仓：</strong>通常只能刮头皮，且需强力突破趋势线 + 强势反转 K 线。</li>
+<li><strong>让逆势刮头皮干扰顺势持仓：</strong>若造成干扰，干脆不做。</li>
+</ul>
+</section>
+
+<section id="practice">
+<h2>8. 自测与清单</h2>
+<div class="quiz">
+<p><strong>问题 1：</strong>在交易区间交易日，经过摆动高点的水平线通常？</p>
+<label><input type="radio" name="q1" value="a"> A. 会被有效突破，应追突破</label>
+<label><input type="radio" name="q1" value="b"> B. 成为价格运动的障碍，突破往往失败，形成高点抬升反转形态</label>
+<label><input type="radio" name="q1" value="c"> C. 完全没有作用</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>为什么在第二个抬升高点（或下降低点）逆势交易成功率更高？</p>
+<label><input type="radio" name="q2" value="a"> A. 因为它是第二次反转尝试，而二次信号在区间交易日是不错的建仓形态</label>
+<label><input type="radio" name="q2" value="b"> B. 因为第二次的图表更好看</label>
+<label><input type="radio" name="q2" value="c"> C. 因为第二次的价格一定更好</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>为什么更极端的价位更容易产生刮头皮利润？</p>
+<label><input type="radio" name="q3" value="a"> A. 因为成交量更大</label>
+<label><input type="radio" name="q3" value="b"> B. 因为当天中间价位具有磁力，从更极端价位回到中部的空间更大</label>
+<label><input type="radio" name="q3" value="c"> C. 因为机构只在极端价位交易</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>在趋势交易日，水平线的正确用途是？</p>
+<label><input type="radio" name="q4" value="a"> A. 用于逆势抓反转</label>
+<label><input type="radio" name="q4" value="b"> B. 只用于在回调中入场，例如突破后的回踩出现多头反转形态</label>
+<label><input type="radio" name="q4" value="c"> C. 完全没有用途</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>如果一笔逆势刮头皮交易会干扰你的顺势摆动持仓，应该？</p>
+<label><input type="radio" name="q5" value="a"> A. 照做，反正止损很小</label>
+<label><input type="radio" name="q5" value="b"> B. 干脆不要做——逆势的小利润不值得干扰顺势的大仓位</label>
+<label><input type="radio" name="q5" value="c"> C. 加大逆势仓位</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>看盘检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我先标出了经过摆动高点和低点的水平线。</label>
+<label><input type="checkbox"> 我默认假设这是区间交易日（因为大多数情况如此）。</label>
+<label><input type="checkbox"> 我观察突破是否失败，而不是预测突破会不会成功。</label>
+<label><input type="checkbox"> 我优先寻找「第二次」信号（第二个抬升高点 / 下降低点）。</label>
+<label><input type="checkbox"> 我检查了信号离区间中部的距离，评估可赚空间是否够。</label>
+<label><input type="checkbox"> 如果是趋势交易日，我只用水平线做回调入场，没有逆势。</label>
+<label><input type="checkbox"> 在强趋势中若想做逆势，我确认了「强力突破趋势线 + 强势反转 K 线」两个条件。</label>
+<label><input type="checkbox"> 我确认这笔逆势交易不会干扰我的顺势摆动持仓。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：七条核心结论</h2>
+<ol>
+<li><strong>大部分交易日都是交易区间交易日——默认假设应是区间，不是趋势。</strong></li>
+<li><strong>在区间交易日，经过摆动高点和低点的水平线会成为障碍，突破往往失败并反转。</strong></li>
+<li><strong>对摆动高点突破失败 → 高点抬升反转形态；对摆动低点突破失败 → 低点下降反转形态。</strong></li>
+<li><strong>"失败"再失败 → 构成突破回踩，形成第二个抬升高点或下降低点，成功率更高（二次信号）。</strong></li>
+<li><strong>更极端的价位更容易产生刮头皮利润，因为当天中间价位具有磁力、回归空间更大。</strong></li>
+<li><strong>在趋势交易日，水平线只用于回调入场（如突破后回踩出现反转形态）。</strong></li>
+<li><strong>强趋势中逆势需「强力突破趋势线 + 强势反转 K 线」且通常只能刮头皮；若干扰顺势持仓，干脆不做。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>面对任何一条水平线，先问三句——<strong>"这是第几次尝试？"、"它离区间中部有多远？"、"现在是趋势日还是区间日？"</strong>这三问能过滤掉大部分低质量的突破追单。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 17 章内容整理、归纳并重新表述，加入示意图、表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 17 章 水平线：摆动点与其他关键价位</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"b",q2:"a",q3:"b",q4:"b",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：区间交易日里，摆动高点形成的水平线是障碍，向上突破往往失败，形成高点抬升反转形态。",
+  "第 2 题：第二个抬升高点或下降低点是第二次反转尝试，二次信号在区间交易日是相当可靠的建仓形态。",
+  "第 3 题：当天中间价位具有磁力，因此从更极端的价位回归中部有更大空间，更容易产生刮头皮利润。",
+  "第 4 题：趋势交易日里水平线只用于回调入场，例如强势突破区间后回踩突破位并出现多头反转形态。",
+  "第 5 题：逆势刮头皮的收益通常不值得干扰顺势摆动持仓；若造成干扰，就干脆不要做这笔交易。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+" "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>

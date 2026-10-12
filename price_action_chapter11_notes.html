@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 11 章 迟到的与错过的入场点｜价格行为学习笔记</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f6f8,#11151b);
+  --surface:light-dark(#fff,#1a2029);
+  --surface2:light-dark(#edf1f5,#232c38);
+  --text:light-dark(#202a36,#e8edf4);
+  --muted:light-dark(#637184,#a4b0c0);
+  --line:light-dark(#dce2e9,#354151);
+  --accent:light-dark(#2459a9,#8ab4ff);
+  --green:light-dark(#16845b,#57d6a1);
+  --red:light-dark(#c74747,#ff8989);
+  --amber:light-dark(#986200,#f2c46d);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+#app{min-height:100vh;background:var(--bg);border-radius:0}
+.hero{padding:52px 22px 40px;background:linear-gradient(135deg,light-dark(#e7efff,#182a45),light-dark(#f8fbff,#171e29));border-bottom:1px solid var(--line)}
+.hero-inner,.layout{max-width:1120px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.chap{display:inline-block;padding:4px 13px;border-radius:99px;background:light-dark(#dce7fb,#2b3f5e);border:1px solid light-dark(#b9cdf0,#3a5578);color:var(--accent);font-weight:800;font-size:.92rem;letter-spacing:.06em;margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.15;letter-spacing:-.04em;margin:.55rem 0 1rem}
+.lead{max-width:800px;font-size:1.08rem;color:var(--muted);margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:.82rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;padding:28px 22px 70px}
+nav{position:sticky;top:18px;align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+nav strong{display:block;margin-bottom:8px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;font-size:.91rem}
+nav a:hover{background:var(--surface2);color:var(--text)}
+main{min-width:0}
+section{scroll-margin-top:20px;margin-bottom:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px)}
+h2{font-size:1.55rem;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+h3{font-size:1.08rem;margin:18px 0 8px}
+p{margin:.55rem 0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.callout{padding:14px 16px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--amber)}
+.callout.good{border-left-color:var(--green)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.card h3{margin:0 0 7px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin:16px 0}
+.flowbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.arrow{font-size:1.25rem;color:var(--accent)}
+.chart{background:var(--surface2);border-radius:13px;padding:14px;margin:14px 0}
+.chart svg{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid var(--line)}
+th{background:var(--surface2);font-weight:700}
+ol,ul{padding-left:1.3rem}li{margin:.38rem 0}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.step:before{content:attr(data-n);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--surface2);color:var(--accent);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+.quiz{background:var(--surface2);padding:16px;border-radius:12px;margin-top:14px}
+.quiz label{display:block;margin:8px 0}
+button{font:inherit;border:0;border-radius:9px;background:var(--accent);color:white;padding:9px 15px;cursor:pointer;margin-top:8px}
+.result{font-weight:700;margin-top:10px}
+.checklist label{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.layout nav{position:relative;top:auto}.grid3,.grid2{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}.hero{padding-top:35px}}
+@media print{body,#app{background:white!important;color:#111!important}.hero{background:white!important;padding:20px 0}.layout{display:block;padding:16px 0}nav,button,.quiz{display:none!important}section{break-inside:avoid;background:white!important;border:1px solid #ccc;margin-bottom:14px}.card,.callout,.chart,.flowbox,th{background:#f5f5f5!important}.muted,.tag{color:#444!important}}
+</style>
+</head><body>
+<div id="app">
+<header class="hero"><div class="hero-inner">
+<div class="eyebrow">PRICE ACTION · STUDY NOTES</div>
+<div class="chap">第 11 章</div>
+<h1>迟到的与错过的入场点</h1>
+<p class="lead">这一章处理的是一个心理问题，但它给出的解法完全是<strong>算术问题</strong>：如果你在最早的入场点进场、现在仍会持有一部分摆动头寸，那么你现在就该<strong>以市价入场</strong>，并且按“剩下的那部分头寸”来确定股数与止损。晚入场与持有原有摆动头寸，在风险上<strong>绝对等同</strong>。</p>
+<div class="tags"><span class="tag">迟到的入场</span><span class="tag">错过的入场点</span><span class="tag">始终入场方向</span><span class="tag">摆动头寸</span><span class="tag">跟踪止损</span><span class="tag">连续趋势K线</span></div>
+</div></header>
+<div class="layout">
+<nav>
+<strong>本页目录</strong>
+<a href="#overview">一页总览</a><a href="#rule">1. 核心规则</a><a href="#sizing">2. 怎么算仓位与止损</a><a href="#illusion">3. 破除“浮盈不是我的钱”错觉</a><a href="#trigger">4. 什么时候必须考虑入场</a><a href="#add">5. 加仓与跟踪止损</a><a href="#myths">6. 关键逻辑与误区</a><a href="#workflow">7. 操作流程</a><a href="#practice">8. 自测与清单</a><a href="#summary">最后记住</a>
+<button onclick="window.print()">打印 / 保存为 PDF</button>
+</nav>
+<main>
+
+<section id="overview">
+<h2>一页总览：本章要解决的问题</h2>
+<div class="callout"><strong>核心思想：</strong>当你确认市场处于明确的“始终入场”方向，却发现自己还没上车时，<strong>“错过”是一个假问题</strong>。真正该问的是：如果我在最早那个入场点进场、按计划只保留参与摆动的那部分头寸，现在我持有多少、止损在哪？<strong>那么现在入场就应该买同样的数量、用同样的止损。</strong></div>
+<div class="grid3">
+<div class="card"><h3>前提</h3><p>市场处于明确的<strong>“始终入场”方向</strong>，且获利概率很高。</p><p class="small muted">这是入场许可，不是加仓许可。</p></div>
+<div class="card"><h3>仓位</h3><p>相当于“如果你在最早入场点进场，<strong>现在依然持有的那部分头寸</strong>”。</p><p class="small muted">通常比初始仓位小得多。</p></div>
+<div class="card"><h3>止损</h3><p>使用<strong>同样的跟踪止损</strong>。止损更大 → 相应降低仓位，使资金风险保持一致。</p><p class="small muted">风险金额不变是关键。</p></div>
+</div>
+<div class="callout warn"><strong>关键限定：</strong>仓位<strong>不应该太重</strong>。它不是让你追高满仓，而是让你建立相当于“剩余摆动头寸”的规模——这是一个<strong>风险已被定义</strong>的头寸，不是一次冲动。</div>
+</section>
+
+<section id="rule">
+<h2>1. 核心规则</h2>
+<div class="callout good"><strong>规则：</strong>假设你现在尚未入场，但看了走势图之后得出结论——<strong>如果你当初在最早的入场点进场，现在仍然会持有一部分参与摆动的头寸</strong>，那么你应该以市价入场。</div>
+<h3>两个成立条件</h3>
+<table><thead><tr><th>条件</th><th>内容</th><th>为什么重要</th></tr></thead><tbody>
+<tr><td>① 方向明确</td><td>市场处于明确的“始终入场”方向，获利概率很高</td><td>没有明确方向就不存在“错过”，只存在“看不清”</td></tr>
+<tr><td>② 仍会持有摆动头寸</td><td>如果早在最初入场点进场，按计划现在仍会留有一部分参与摆动的头寸</td><td>这是你计算仓位的依据</td></tr>
+</tbody></table>
+<div class="callout"><strong>逻辑等价性：</strong>你现在建立一个“摆动规模的头寸”，与持有早期入场后剩下的摆动头寸，<strong>在性质上完全一样</strong>。这就是本章的全部论证——剩下的是心理层面的障碍。</div>
+</section>
+
+<section id="sizing">
+<h2>2. 怎么算仓位与止损</h2>
+<p>用一个具体例子把规则变成算术：</p>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>设定初始计划</strong><br>假设你在最早入场点买入 <strong>300 股</strong>。</div></div>
+<div class="step" data-n="2"><div><strong>推算“现在还剩多少”</strong><br>按你一贯的跟踪止损方式，如果早入场，现在可能<strong>只剩 100 股</strong>继续持有，保护性止损为 <strong>1.5 美元</strong>。</div></div>
+<div class="step" data-n="3"><div><strong>照此下单</strong><br>那么你现在进场应该买入的股数就是 <strong>100 股</strong>，止损也是 <strong>1.5 美元</strong>。</div></div>
+<div class="step" data-n="4"><div><strong>用风险金额校准</strong><br>相比刮头皮，你的止损肯定要大一些，所以要<strong>适当降低仓位，让资金风险保持在同一水平</strong>。这是所有仓位计算的统一原则。</div></div>
+</div>
+<div class="chart">
+<svg viewBox="0 0 680 350" role="img" aria-label="示意图：迟到的入场应按剩余摆动头寸的规模下单">
+<text x="26" y="24" fill="currentColor" font-size="13" font-weight="700">仓位换算：晚入场 ≠ 按初始规模追入</text>
+
+<text x="40" y="58" fill="currentColor" font-size="12" font-weight="700">假设：最早入场点买入 300 股</text>
+<rect x="40" y="72" width="180" height="26" rx="6" fill="#8ab4ff" opacity=".45"/>
+<text x="130" y="90" fill="currentColor" font-size="11.5" text-anchor="middle">300 股（初始规模）</text>
+
+<text x="40" y="130" fill="currentColor" font-size="12" font-weight="700">按跟踪止损推算——现在仍会持有：</text>
+<rect x="40" y="144" width="76" height="26" rx="6" fill="#16845b" opacity=".8"/>
+<text x="78" y="162" fill="white" font-size="11.5" text-anchor="middle" font-weight="700">100 股</text>
+<rect x="122" y="144" width="150" height="26" rx="6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 4" opacity=".45"/>
+<text x="197" y="162" fill="currentColor" font-size="11" text-anchor="middle" opacity=".85">200 股已按计划了结</text>
+
+<text x="40" y="208" fill="#16845b" font-size="12" font-weight="700">那么现在入场就应该：</text>
+<rect x="40" y="222" width="76" height="26" rx="6" fill="#16845b" opacity=".9"/>
+<text x="78" y="240" fill="white" font-size="11.5" text-anchor="middle" font-weight="700">买 100 股</text>
+<text x="124" y="240" fill="currentColor" font-size="11">止损同样是 1.5 美元（与那部分头寸相同）</text>
+
+<line x1="320" y1="30" x2="320" y2="300" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" opacity=".25"/>
+
+<text x="344" y="58" fill="#c74747" font-size="12" font-weight="700">要避免的两种误用</text>
+<rect x="344" y="72" width="300" height="26" rx="6" fill="#c74747" opacity=".3"/>
+<text x="494" y="90" fill="currentColor" font-size="11.5" text-anchor="middle">✗ 按 300 股追入（仓位过重）</text>
+<rect x="344" y="108" width="300" height="26" rx="6" fill="#c74747" opacity=".3"/>
+<text x="494" y="126" fill="currentColor" font-size="11.5" text-anchor="middle">✗ 沿用初始止损却不调整数量</text>
+<text x="344" y="162" fill="currentColor" font-size="11.5" opacity=".88">正确做法：止损更大 → 相应降低数量，让资金风险</text>
+<text x="344" y="180" fill="currentColor" font-size="11.5" opacity=".88">保持在同一水平。</text>
+<text x="344" y="216" fill="currentColor" font-size="11.5" opacity=".88">“浮盈是别人的钱”是错觉——那也是你的钱，</text>
+<text x="344" y="234" fill="currentColor" font-size="11.5" opacity=".88">所冒风险与现在买入完全一样。</text>
+<text x="344" y="270" fill="#16845b" font-size="11.5" font-weight="700">晚入场 + 初始止损 ≡ 持有原头寸的摆动部分 + 同样止损</text>
+
+<text x="340" y="330" fill="currentColor" opacity=".72" font-size="11.5" text-anchor="middle">示意图：把“我来晚了吗”换算成“如果早来，我现在还持有什么”</text>
+</svg>
+</div>
+<table><thead><tr><th>要素</th><th>取值方式</th></tr></thead><tbody>
+<tr><td>买入数量</td><td>＝ 早期入场后<strong>现在仍会持有的摆动部分</strong>（例：100 股，而非 300 股）</td></tr>
+<tr><td>保护性止损</td><td>与那一部分头寸<strong>相同的跟踪止损</strong>（例：1.5 美元）</td></tr>
+<tr><td>资金风险</td><td>与其他交易保持一致——止损越大，仓位越小</td></tr>
+</tbody></table>
+<div class="callout good"><strong>一个漂亮的推论：</strong><strong>晚入场并使用初始止损，与“持有初始头寸的摆动部分并使用同样止损”，绝对是等同的。</strong>这句话把“要不要追”这个情绪问题，彻底变成了规模换算问题。</div>
+</section>
+
+<section id="illusion">
+<h2>3. 破除“浮盈不是我的钱”错觉</h2>
+<div class="callout warn"><strong>常见的心理借口：</strong>“那笔有浮盈的交易已经没有风险了，我现在追进去像是拿别人的钱在冒险。”</div>
+<p><strong>事实并非如此。</strong></p>
+<table><thead><tr><th>错觉</th><th>事实</th></tr></thead><tbody>
+<tr><td>那笔浮盈已经是“别人的钱”</td><td><strong>那也是你的钱。</strong>账户净值是同一笔钱。</td></tr>
+<tr><td>现在买入的风险与早入场不同</td><td>你所冒的风险与现在买入<strong>完全一样</strong>——同样是那 1.5 美元止损。</td></tr>
+<tr><td>早入场的人“没有风险”</td><td>他同样承受着 1.5 美元的回撤风险，只是被浮盈掩盖了</td></tr>
+</tbody></table>
+<div class="callout"><strong>两种交易者的分野：</strong>成熟的交易者了解这一点，所以会<strong>毫不犹豫地进场</strong>；不成熟的交易者可能根本不相信“如果早入场，现在还会持有一部分头寸”，或者需要先解决自己的心理问题。<strong>注意后一句：问题可能不在判断，而在心理。</strong></div>
+</section>
+
+<section id="trigger">
+<h2>4. 什么时候必须考虑入场</h2>
+<div class="callout good"><strong>一条可执行的触发标准：</strong>一般来讲，一旦市场开始<strong>连续出现 4 根或以上的多头趋势 K 线</strong>，而且<strong>K 线不是太长</strong>（因此不属于高潮走势），交易者应该考虑<strong>至少先少量建仓</strong>，而不要等待回调。</div>
+<table><thead><tr><th>情形</th><th>判断</th><th>动作</th></tr></thead><tbody>
+<tr><td>连续 ≥4 根多头趋势 K 线，且都不太长</td><td>强劲上升趋势，非高潮</td><td>至少先少量建仓，不等回调</td></tr>
+<tr><td>连续多根趋势 K 线，但<strong>非常长</strong></td><td>可能是<strong>高潮</strong>走势</td><td>不适用本规则——高潮之后常伴随长时间横盘或下跌</td></tr>
+<tr><td>方向不明确</td><td>谈不上“始终入场”方向</td><td>本规则不适用</td></tr>
+</tbody></table>
+<div class="callout warn"><strong>为什么“不是太长”这个限定如此重要：</strong>如果连续趋势 K 线很长，那更接近<strong>买入高潮</strong>。第 10 章已指出，买入高潮之后往往要出现约 10 根或以上 K 线的横盘或下跌才恢复趋势。在这种情况下追入，与“迟到的入场点”是完全不同的处境。</div>
+</section>
+
+<section id="add">
+<h2>5. 加仓与跟踪止损</h2>
+<p>本章也顺带给出了晚入场之后的头寸管理方式：应该<strong>寻找盘整或回调的机会加仓</strong>。</p>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>先建立摆动规模的头寸</strong><br>按第 2 节算出的数量入场，止损与“早入场剩余头寸”相同。</div></div>
+<div class="step"><div><strong>寻找加仓机会</strong><br>在盘整或回调中加仓，而不是在情绪最高点追加。</div></div>
+<div class="step" data-n="2"><div><strong>在信号 K 线上方加仓后上移止损</strong><br>例如在某根信号 K 线高点上方加仓后，可以把<strong>整体仓位的止损上移</strong>到该信号 K 线下方 1 个最小报价单位处，然后<strong>继续跟踪止损</strong>。</div></div>
+</div>
+<div class="callout"><strong>一个常见的止损参考位：</strong>在“早入场并只剩摆动头寸”的假设下，止损常应放在<strong>盈亏平衡点</strong>，或者某个早期信号 K 线高点下方约 10 美分（视品种最小报价单位而定）。这正体现了“与早入场者使用同样止损”的等价原则。</div>
+</section>
+
+<section id="myths">
+<h2>6. 关键逻辑与六种常见误区</h2>
+<table><thead><tr><th>概念</th><th>它回答的问题</th><th>不应误解为</th></tr></thead><tbody>
+<tr><td>迟到的入场点</td><td>现在还能不能进？</td><td>“必须追高满仓”</td></tr>
+<tr><td>摆动头寸规模</td><td>该买多少？</td><td>“按最初入场的数量买”</td></tr>
+<tr><td>浮盈</td><td>这笔钱算不算我的？</td><td>“浮盈是别人的钱，所以我不该再冒险”</td></tr>
+<tr><td>连续趋势 K 线</td><td>要不要等回调？</td><td>“任何连续趋势 K 线都适用”</td></tr>
+</tbody></table>
+<h3>尤其需要避免的六种错误</h3>
+<ul>
+<li><strong>按初始仓位规模追入：</strong>应该只买“相当于剩余摆动部分”的数量。</li>
+<li><strong>沿用初始止损而不调整仓位：</strong>止损更大时必须降低仓位，让资金风险保持一致。</li>
+<li><strong>把浮盈当成“别人的钱”：</strong>那是你的钱，风险与现在买入完全一样。</li>
+<li><strong>在连续长趋势 K 线之后追入：</strong>那可能是高潮，之后常有长时间横盘或下跌。</li>
+<li><strong>因为“已经错过”而完全不参与：</strong>在明确方向下，这是放弃高概率机会。</li>
+<li><strong>加仓不加止损管理：</strong>加仓后应上移整体止损并继续跟踪。</li>
+</ul>
+</section>
+
+<section id="workflow">
+<h2>7. 操作流程</h2>
+<div class="steps">
+<div class="step" data-n="1"><div><strong>确认方向是否明确</strong><br>市场是否处于明确的“始终入场”方向？如果不是，本章规则不适用。</div></div>
+<div class="step" data-n="2"><div><strong>做“假如早入场”的假设计算</strong><br>如果我在最早入场点进场，现在按我的跟踪止损方式，会剩下多少头寸、止损在哪？</div></div>
+<div class="step" data-n="3"><div><strong>照此确定数量与止损</strong><br>买入数量＝剩余的摆动部分；止损＝同样的跟踪止损。</div></div>
+<div class="step" data-n="4"><div><strong>用风险金额复核</strong><br>止损比刮头皮更大 → 降低数量，使资金风险保持同一水平。</div></div>
+<div class="step" data-n="5"><div><strong>检查是否属于高潮</strong><br>连续趋势 K 线是否太长？太长则为高潮，不适用本条规则。</div></div>
+<div class="step" data-n="6"><div><strong>入场后寻找加仓与管理止损</strong><br>在盘整或回调中加仓；加仓后上移整体止损并继续跟踪。</div></div>
+</div>
+<div class="callout good"><strong>一句话原则：</strong><strong>不要问“我是不是来晚了”，要问“如果早来，我现在还持有什么”。</strong>前者是情绪，后者是算术——而算术可以给出明确答案。</div>
+</section>
+
+<section id="practice">
+<h2>8. 自测与清单</h2>
+<div class="quiz">
+<p><strong>问题 1：</strong>“迟到的入场点”的核心规则是？</p>
+<label><input type="radio" name="q1" value="a"> A. 错过就永远不要入场</label>
+<label><input type="radio" name="q1" value="b"> B. 如果早入场现在仍会持有一部分摆动头寸，就以市价入场，并买相当于那部分的规模</label>
+<label><input type="radio" name="q1" value="c"> C. 按最初计划的满仓规模追入</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 2：</strong>假设早入场会买 300 股、现在仍持有 100 股、止损 1.5 美元，那么现在入场应该？</p>
+<label><input type="radio" name="q2" value="a"> A. 买 300 股，止损 1.5 美元</label>
+<label><input type="radio" name="q2" value="b"> B. 买 100 股，止损 1.5 美元</label>
+<label><input type="radio" name="q2" value="c"> C. 买 100 股，止损放到更近的位置</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 3：</strong>“那笔有浮盈的交易已经没有风险，我追进去像拿别人的钱冒险”——这个说法？</p>
+<label><input type="radio" name="q3" value="a"> A. 完全正确</label>
+<label><input type="radio" name="q3" value="b"> B. 不对：那也是你的钱，你现在买入承受的风险与之完全相同</label>
+<label><input type="radio" name="q3" value="c"> C. 只在股票市场成立</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 4：</strong>关于“连续 4 根以上多头趋势 K 线就先少量建仓”，重要的限定是？</p>
+<label><input type="radio" name="q4" value="a"> A. 没有任何限定</label>
+<label><input type="radio" name="q4" value="b"> B. K 线不能太长——太长则可能是高潮，之后常伴随长时间横盘或下跌</label>
+<label><input type="radio" name="q4" value="c"> C. 只在下跌趋势中适用</label>
+<hr style="border:0;border-top:1px solid var(--line)">
+<p><strong>问题 5：</strong>迟到的入场在止损上更大，因此应该？</p>
+<label><input type="radio" name="q5" value="a"> A. 提高仓位以补偿</label>
+<label><input type="radio" name="q5" value="b"> B. 适当降低仓位，让资金风险保持在同一水平</label>
+<label><input type="radio" name="q5" value="c"> C. 取消止损</label>
+<button onclick="checkQuiz()">检查答案</button>
+<div id="quiz-result" class="result" aria-live="polite"></div>
+</div>
+<h3>操作检查清单</h3>
+<div class="checklist">
+<label><input type="checkbox"> 我确认了市场处于明确的“始终入场”方向。</label>
+<label><input type="checkbox"> 我做了“假如早入场现在还剩多少”的计算，并照此确定数量。</label>
+<label><input type="checkbox"> 我使用了与“早入场剩余头寸”相同的跟踪止损。</label>
+<label><input type="checkbox"> 我因止损更大而降低了仓位，让资金风险保持一致。</label>
+<label><input type="checkbox"> 我检查了连续趋势 K 线是否太长（是否属于高潮）。</label>
+<label><input type="checkbox"> 入场后我在盘整或回调中加仓，并上移整体止损继续跟踪。</label>
+<label><input type="checkbox"> 我没有因为“浮盈是别人的钱”这种错觉而放弃高概率机会。</label>
+</div>
+</section>
+
+<section id="summary">
+<h2>最后记住：六条核心结论</h2>
+<ol>
+<li><strong>如果早入场现在仍会持有一部分摆动头寸，那么现在就以市价入场。</strong></li>
+<li><strong>买入数量＝那部分摆动头寸的规模，止损＝同样的跟踪止损。</strong></li>
+<li><strong>晚入场并使用初始止损，与持有初始头寸的摆动部分使用同样止损，绝对等同。</strong></li>
+<li><strong>“浮盈是别人的钱”是错觉：那也是你的钱，风险完全相同。</strong></li>
+<li><strong>连续出现 4 根以上且不太长的同向趋势 K 线时，应考虑至少先少量建仓，不等回调。</strong></li>
+<li><strong>止损更大时必须降低仓位，让资金风险保持同一水平；加仓后上移整体止损并继续跟踪。</strong></li>
+</ol>
+<div class="callout good"><strong>最值得养成的习惯：</strong>把“我来晚了”这句话，自动翻译成一道算术题——<strong>“如果早来，我现在还持有什么？”</strong>算完之后，要么按剩余规模入场，要么明确说明为什么不满意；无论哪种，都不再是情绪决定。</div>
+<p class="muted small">资料说明：本页面为学习笔记，依据用户提供的《高级趋势技术分析》第 11 章内容整理、归纳并重新表述，加入表格与练习题；<strong>不是原文转录或逐段摘要</strong>。不同版本的章节编排与术语翻译可能不同，请以手中译本为准。内容仅用于学习，不构成投资建议。</p>
+</section>
+<div class="footer">PRICE ACTION STUDY NOTES · 第 11 章 迟到的与错过的入场点</div>
+</main></div></div>
+<script>
+function checkQuiz(){
+ const answers={q1:"b",q2:"b",q3:"b",q4:"b",q5:"b"};
+ let score=0;
+ for(const [q,a] of Object.entries(answers)){
+   const selected=document.querySelector('input[name="'+q+'"]:checked');
+   if(selected&&selected.value===a)score++;
+ }
+ const explanations=[
+  "第 1 题：如果早入场现在仍会持有一部分摆动头寸，就应以市价入场，并买相当于那部分的规模。",
+  "第 2 题：应买 100 股、止损 1.5 美元——数量对应“现在仍会持有的摆动部分”，止损与早入场相同。",
+  "第 3 题：浮盈同样是你的钱；现在买入承受的风险与持有原有摆动头寸完全一样。",
+  "第 4 题：关键限定是 K 线不能太长；连续长趋势 K 线可能是高潮，其后常有长时间横盘或下跌。",
+  "第 5 题：止损更大时必须降低仓位，使资金风险保持在同一水平。"
+ ];
+ document.getElementById("quiz-result").textContent="答对 "+score+"/5 题。"+(score===5?"理解得不错！":"建议复习：")+ " "+explanations.filter((x,i)=>{const s=document.querySelector('input[name="q'+(i+1)+'"]:checked');return !s||s.value!==answers["q"+(i+1)];}).join(" ");
+}
+</script>
+</body>
+</html>
